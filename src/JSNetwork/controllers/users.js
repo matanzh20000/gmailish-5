@@ -37,7 +37,5 @@ exports.getUserById = (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  // You might want to exclude the password here
-  const { password, ...safeUser } = user;
-  return res.json(safeUser);
+
 };

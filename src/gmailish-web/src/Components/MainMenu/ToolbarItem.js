@@ -6,7 +6,8 @@ const ToolbarItem = ({
     allSelected,
     onToggleSelectAll,
     labels,
-    onAssignLabel
+    onAssignLabel,
+    visibleMailCount
 }) => {
     const theme = darkMode
         ? {
@@ -38,12 +39,14 @@ const ToolbarItem = ({
             }}
         >
             <div className="d-flex align-items-center gap-3">
-                <input
-                    className={`${theme.checkbox}`}
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={onToggleSelectAll}
-                />
+                {visibleMailCount > 0 && (
+                    <input
+                        className={`${theme.checkbox}`}
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={onToggleSelectAll}
+                    />
+                )}
 
                 <div
                     className="d-flex align-items-center gap-3"

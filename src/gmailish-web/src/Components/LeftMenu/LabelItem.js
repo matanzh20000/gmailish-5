@@ -10,7 +10,7 @@ const LabelItem = ({ label, darkMode, onSelect, onEdit, onDelete, isCustom, mail
 
 const activeClass = isActive
   ? darkMode
-    ? 'bg-info text-white fw-bold'
+    ? 'bg-info border-4 text-white fw-bold'
     : 'bg-light border-4 fw-bold text-dark'
   : '';
 
@@ -28,7 +28,7 @@ const activeClass = isActive
           <span
             className="badge rounded-pill ms-5"
             style={{
-              backgroundColor: darkMode ? '#0dcaf0' : '#efae7e',
+              backgroundColor: darkMode ? '#0088e9' : '#efae7e',
               color: darkMode ? 'black' : 'black',
               flexBasis: '15%'
             }}

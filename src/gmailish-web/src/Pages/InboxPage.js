@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LeftMenuItem from '../Components/LeftMenuItem';
-import MainMenu from '../Components/MainMenu';
+import LeftMenuItem from '../Components/LeftMenu/LeftMenuItem';
+import MainMenu from '../Components/MainMenu/MainMenu';
+import TopMenuItem from '../Components/TopMenu/TopMenuItem';
 
 const GmailishMainPage = ({ onSignOut }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -24,12 +25,12 @@ const GmailishMainPage = ({ onSignOut }) => {
     };
 
   // Sample mail list with label assignments
-  const mails = [
+  const [mails, setMails] = useState([
     {
       id: 1,
       from: 'noa@university.edu',
       to: ['you@gmail.com'],
-      labels: ['Inbox'],
+      label: 'Inbox',
       subject: 'Exam Schedule Released',
       body: 'The final exam schedule for all courses has now been published. Please check your student portal for details.',
       createdAt: '2025-06-04T10:15:00Z'
@@ -38,7 +39,7 @@ const GmailishMainPage = ({ onSignOut }) => {
       id: 2,
       from: 'linkedin@jobs.com',
       to: ['you@gmail.com'],
-      labels: ['Inbox', 'Starred'],
+      label: 'Inbox',
       subject: 'Top jobs for Software Engineers',
       body: 'Check out this list of top companies hiring. We have curated a list of the best job openings for software engineers based on your profile.',
       createdAt: '2025-06-03T18:40:00Z'
@@ -47,57 +48,51 @@ const GmailishMainPage = ({ onSignOut }) => {
       id: 3,
       from: 'noreply@github.com',
       to: ['you@gmail.com'],
-      labels: ['Inbox', 'Spam'],
+      label: 'Inbox',
       subject: 'New pull request on your repository',
       body: 'There is a new pull request waiting for your review. Please check it out at your earliest convenience.',
       createdAt: '2025-06-01T22:05:00Z'
     }
-  ];
+  ]);
+
+  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam'];
+
+  const visibleMails = mails.filter(mail => mail.label === selectedLabel);
+
+  const [customLabels, setCustomLabels] = useState([]);
 
 
   return (
-    <div style={{ backgroundColor: themeColors.background, transition: 'all 0.3s ease-in-out' }} className={`vh-100 ${themeColors.text}`}>
+    <div style={{
+      backgroundColor: themeColors.background,
+      minHeight: '100vh',
+      height: '100%',
+    }} className={` ${themeColors.text} h-100 transition-theme`}>
       {/* Top Menu */}
-      <div className={`d-flex justify-content-between align-items-center px-4 py-2 border-bottom ${themeColors.text} ${themeColors.border}`} style={{ height: '60px' }}>
-        <div className="col-md-6">
-          <input type="text" className={`form-control ${darkMode ? 'bg-dark text-light' : ''}`} placeholder="Search mail..." />
-        </div>
-        <div className="col-md-3 text-end">
-          <button className={`btn ${darkMode ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={toggleTheme}>
-            {darkMode ? 'Dark' : 'Light'} Mode
-          </button>
-        </div>
-        <div className="col-md-3 text-end">
-          <div className="dropdown">
-            <button className={`btn ${darkMode ? 'btn-secondary' : 'btn-outline-secondary'} dropdown-toggle`} data-bs-toggle="dropdown">
-              <img src="/user.png" alt="User" className="rounded-circle" width="30" height="30" />
-            </button>
-            <ul className={`dropdown-menu dropdown-menu-end ${darkMode ? 'bg-dark text-light' : ''}`}>
-              <li><span className="dropdown-item">John Doe</span></li>
-              <li><span className="dropdown-item">john.doe@example.com</span></li>
-              <li><hr className="dropdown-divider" /></li>
-              <li>
-                <button className="dropdown-item btn btn-link" type="button" onClick={onSignOut}>
-                  Sign Out
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} />
 
       {/* Main Content Area */}
-      <div className="d-flex h-100">
+      <div className="d-flex flex-grow-1">
+        
         <LeftMenuItem
           darkMode={darkMode}
           selectedLabel={selectedLabel}
           onSelectLabel={setSelectedLabel}
+          labels={labels}
+          customLabels={customLabels}
+          setCustomLabels={setCustomLabels}
+          setMails={setMails}
+          mails={mails}
         />
         <MainMenu
           darkMode={darkMode}
-          mails={mails}
+          mails={visibleMails}
+          setMails={setMails}
           selectedLabel={selectedLabel}
+          defaultLabels={labels}
+          customLabels={customLabels}
         />
+
       </div>
     </div>
   );
