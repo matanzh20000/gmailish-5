@@ -1,7 +1,8 @@
 const TokenModel = require('../models/tokens');
 const jwt = require('jsonwebtoken');
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
 
-// SECRET KEY should be here
+const SECRET_KEY = process.env.SECRET_KEY;
 
 exports.isUserTokenValid = (req, res) => {
     const { mail, password } = req.body;
