@@ -1,0 +1,31 @@
+# Use an official C++ build image
+FROM gcc:latest
+
+# Install build tools and dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    cmake \
+    g++ \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy only the necessary files for better caching
+COPY . .
+
+# Create a build directory and compile
+RUN mkdir build && cd build && cmake .. && make
+
+# Set the compiled binary as the entrypoint
+WORKDIR /app/bin
+
+# Set default environment variables
+ENV DATA_PATH=/app/data
+ENV SERVER_PORT=5555
+ENV BLOOM_SIZE=8
+ENV SEEDS="1 2"
+
+# Use shell form for CMD to allow environment variables
+CMD ["./my_app", "$SERVER_PORT", "$BLOOM_SIZE", "$SEEDS"]

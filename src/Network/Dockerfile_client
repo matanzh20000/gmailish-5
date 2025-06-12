@@ -1,0 +1,19 @@
+# Base image
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy the client.py and requirements.txt file into the container
+COPY client.py /app/client.py
+
+# Install dependencies
+RUN pip install --upgrade pip
+
+# Set default environment variables
+ENV SERVER_HOST=localhost
+ENV SERVER_PORT=5555
+
+
+# Command to run the Python client
+CMD ["python3", "client.py", "$SERVER_HOST", "$SERVER_PORT"]
