@@ -19,6 +19,7 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
         { name: 'Snoozed', icon: 'bi-clock' },
         { name: 'Sent', icon: 'bi-send' },
         { name: 'Spam', icon: 'bi-exclamation-circle' },
+        { name: 'Drafts', icon: 'bi-file-earmark-text' },
     ].map(label => ({
         ...label,
         count: mails.filter(mail => mail.label === label.name).length

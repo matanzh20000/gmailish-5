@@ -27,7 +27,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
         const updateDimensions = () => {
             const ratio = window.innerWidth / window.innerHeight;
             const height = Math.min(window.innerHeight * 0.8, 700);
-            const width = (height * ratio) * 0.9;
+            const width = (height * ratio);
             setDimensions({ width, height });
         };
 
@@ -80,12 +80,11 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
-                width: `${dimensions.width}px`,
-                height: `${dimensions.height}px`,
                 maxHeight: '88vh',
-                marginTop: '2rem',
-                marginLeft: '2rem',
-                marginBottom: '2rem',
+                marginTop: '1rem',
+                marginRight: '1rem',
+                width: 'min(90vw, 1470px)',
+                height: 'min(80vh, 1000px)',
             }}
         >
 
@@ -101,7 +100,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     height: '100%',
                     pointerEvents: 'none'
                 }}
-                color={darkMode ? [0.4, 0.4, 0.4] : [0.85, 0.85, 0.85]}
+                color={darkMode ? [0.2, 0.6, 0.75] : [0.75, 0.75, 0.75]}
                 speed={0.5}
                 amplitude={0.05}
             />
@@ -111,7 +110,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 style={{
                     position: 'relative',
                     zIndex: 1,
-                    padding: '2rem',
+                    padding: '0.8rem',
                     borderRadius: 'inherit',
                     height: '100%',
                 }}
@@ -123,6 +122,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     onToggleSelectAll={toggleSelectAll}
                     labels={combinedLabels}
                     onAssignLabel={handleAssignLabel}
+                    visibleMailCount={mails.length}
                 />
 
                 {trimmedMails.map(mail => (

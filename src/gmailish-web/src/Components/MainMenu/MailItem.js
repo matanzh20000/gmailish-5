@@ -4,8 +4,9 @@ const MailItem = ({ mail, darkMode, timestampClass, isSelected, onToggleSelected
         ? { card: 'bg-dark text-light', checkbox: 'form-check-input bg-secondary' }
         : { card: 'bg-white text-dark', checkbox: 'form-check-input' };
 
-    const preview = mail.body.length > 50
-        ? mail.body.slice(0, 50) + '...'
+    const bodyLength = 50 * window.innerWidth / 1920;
+    const preview = mail.body.length > bodyLength
+        ? mail.body.slice(0, bodyLength) + '...'
         : mail.body;
 
     return (
@@ -40,7 +41,8 @@ const MailItem = ({ mail, darkMode, timestampClass, isSelected, onToggleSelected
                         </div>
                     </div>
                 </div>
-                <small className={`ms-3 ${timestampClass}`}>
+                <small className={`ms-3 ${timestampClass} mail-date`}
+                     style={{ flexShrink: 0 }}>
                     {new Date(mail.createdAt).toLocaleDateString()}
                 </small>
             </div>

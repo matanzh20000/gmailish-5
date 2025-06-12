@@ -1,73 +1,163 @@
-import ProfileCard from "./ProfileCard";
-
+import ThemeSwitch from "./ThemeSwitch";
+import { useState, useEffect } from "react";
+import UserCard from "./UserCard";
 const TopMenu = ({ darkMode, toggleTheme }) => {
     const themeColors = darkMode
         ? { text: 'text-light', border: 'border-secondary' }
         : { text: 'text-dark', border: 'border-light' };
+    const btnTheme = darkMode
+        ? 'btn btn-dark border-0'
+        : 'btn btn-light border-0';
     const background = darkMode ? '#333558' : '#cce6e6';
+    const searchColor = darkMode ? '#66667d' : '#ffffff';
+    const placeholderColor = darkMode ? '#cccccc' : '#666666';
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+    const user = {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        imageUrl: "/option4.png", // replace with actual user image URL
+    };
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!query) {
+                setResults([]);
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:8080/api/mails/search/${encodeURIComponent(query)}`);
+                if (!res.ok) throw new Error("Failed to fetch");
+                const data = await res.json();
+                setResults(data);
+            } catch (err) {
+                console.error(err);
+                setResults([]);
+            }
+        };
+
+        const timeoutId = setTimeout(fetchData, 300); // debounce input
+        return () => clearTimeout(timeoutId);
+    }, [query]);
 
 
     return (
         <div
-            className={`d-flex justify-content-between align-items-center px-4 py-2 border-bottom ${themeColors.text} ${themeColors.border} transition-theme`}
-            style={{ height: '60px', backgroundColor: background }}
+            className={`d-flex  align-items-center px-4 py-2 ${themeColors.text} ${themeColors.border} transition-theme`}
+            style={{ height: '80px', backgroundColor: background }}
         >
-            {/* Search Bar */}
-            <div className="col-md-6">
-                <input
-                    type="text"
-                    className={`form-control ${darkMode ? 'bg-dark text-light' : ''}`}
-                    placeholder="Search mail..."
+
+            <div
+                className="d-flex align-items-center"
+                style={{ cursor: 'pointer', marginLeft: '70px' }}
+            >
+                <img
+                    src="/option2.png"
+                    alt="Gmailish Logo"
+                    style={{
+                        width: '120px',
+                        height: 'auto',
+                        cursor: 'pointer',
+                        marginTop: '15px',
+                    }}
                 />
             </div>
 
+            <div style={{ flex: 1, minWidth: '200px', marginLeft: '90px', position: 'relative' }}>
+                <style>
+                    {`
+        .custom-search::placeholder {
+            color: ${placeholderColor};
+        }`}
+                </style>
+                <input
+                    type="text"
+                    className="form-control custom-search"
+                    placeholder="Search mail..."
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    style={{
+                        backgroundColor: searchColor,
+                        minWidth: '150px',
+                        width: '100%',
+                        maxWidth: '1000px'
+                    }}
+                />
+                {results.length > 0 && (
+                    <div
+                        className="dropdown-menu show"
+                        style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0, // align to parent input
+                            width: '100%',
+                            backgroundColor: darkMode ? '#444' : 'white',
+                            zIndex: 1000,
+                            border: '1px solid #ccc',
+                            borderTop: 'none',
+                            maxHeight: '300px',
+                            maxWidth: '1000px',
+                            overflowY: 'auto',
+                            padding: 0
+                        }}
+                    >
+                        {results.map(data => (
+                            <div
+                                key={data.id}
+                                style={{
+                                    padding: '8px',
+                                    borderBottom: 'transparent',
+                                    color: darkMode ? 'white' : 'black',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => console.log('Clicked mail', data.id)}
+                            >
+                                <i className="bi bi-envelope-fill me-2"></i>
+                                <strong>{data.subject}</strong><br />
+                                <small>From: {data.from}</small><br />
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+
             {/* Theme Toggle */}
-            <div className="col-md-3 text-end">
-                <button
-                    className={`btn ${darkMode ? 'btn-secondary' : 'btn-outline-secondary'}`}
-                    onClick={toggleTheme}
-                >
-                    {darkMode ? 'Dark' : 'Light'} Mode
-                </button>
+            <div
+                style={{ cursor: 'pointer', marginLeft: '100px' }}>
+                <ThemeSwitch darkMode={darkMode} toggleTheme={toggleTheme} />
             </div>
 
             {/* User Dropdown */}
-            <div className="col-md-3 text-end">
-                <div className="dropdown">
-                    <button
-                        className={`btn ${darkMode ? 'btn-secondary' : 'btn-outline-secondary'} dropdown-toggle`}
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                    >
-                        <img
-                            src="/user.png"
-                            alt="User"
-                            className="rounded-circle"
-                            width="30"
-                            height="30"
-                        />
-                    </button>
+            <div className="dropdown">
+                <button
+                    className={`${btnTheme} dropdown-toggle p-0`}
+                    type="button"
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <img
+                        src={user.imageUrl}
+                        alt="User Avatar"
+                        className="rounded-circle"
+                        style={{ width: '40px', height: '40px' }}
+                    />
+                </button>
 
-                    <div className="dropdown-menu dropdown-menu-end p-0 border-0" style={{ minWidth: '300px' }}>
-                        <ProfileCard
-                            avatarUrl="/user.png"
-                            miniAvatarUrl="/user.png"
-                            name="John Doe"
-                            title="Fullstack Developer"
-                            handle="johndoe"
-                            status="Available"
-                            contactText="Sign Out"
-                            onContactClick={() => console.log('Signed out')}
-                            showBehindGradient={true}
-                            enableTilt={true}
-                            className="px-2 py-2"
-                        />
-                    </div>
-                </div>
+                <ul
+                    className="dropdown-menu dropdown-menu-end p-2"
+                    aria-labelledby="userDropdown"
+                    style={{ minWidth: '250px' }}
+                >
+                    <li className="px-0">
+                        <UserCard user={user} darkMode={darkMode} />
+                    </li>
+                </ul>
             </div>
-
-        </div>
+        </div >
     );
+
 };
 
 export default TopMenu;

@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import InboxPage from './Pages/InboxPage';
 import SignInPage from './Pages/SignInPage';
+import SignUpPage from './Pages/SignUpPage';
 
 // Wrapper to use useNavigate inside AppRoutes
 function AppRoutes({ token, setToken, darkMode, setDarkMode }) {
@@ -41,6 +42,10 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode }) {
             <Navigate to="/" />
           )
         }
+      />
+      <Route 
+      path="/register"
+      element={<SignUpPage />}
       />
     </Routes>
   );

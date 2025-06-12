@@ -13,6 +13,12 @@
   }
 }
 
+@media (max-width: 75em) {
+  .mail-date {
+    display: none;
+  }
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -105,3 +111,9 @@ input[type='checkbox']:checked {
 .custom-border {
   border-left-color: #efae7e;
 }
+
+.custom-search {
+            height: 50px;               
+            font-size: 1rem;            
+            padding: 10px 12px;         
+        }
