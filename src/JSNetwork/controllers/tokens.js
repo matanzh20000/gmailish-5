@@ -1,16 +1,21 @@
 const TokenModel = require('../models/tokens');
+const jwt = require('jsonwebtoken');
+
+// SECRET KEY should be here
 
 exports.isUserTokenValid = (req, res) => {
-    const { username, password } = req.body;
+    const { mail, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
+    if (!mail || !password) {
+        return res.status(400).json({ message: 'mail and password are required' });
     }
 
-    const userId = TokenModel.isUserTokenValid(username, password);
+    const userId = TokenModel.isUserTokenValid(mail, password);
     if (!userId) {
         return res.status(404).json({ message: 'Invalid credentials' });
     }
 
-    return res.status(200).json({ id: userId });
+    const token = jwt.sign({ id: userId, mail }, SECRET_KEY, { expiresIn: '2h' });
+
+    return res.status(200).json({ token });
 };

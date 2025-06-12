@@ -5,14 +5,14 @@ exports.getAllLabels = (req, res) => {
 }
 
 exports.createLabel = (req, res) => {
-    const { name } = req.body;
+    const { name, icon } = req.body;
     if (!name) {
         return res.status(400).json({ error: 'Label name is required' });
     }
     if (Label.getLabelByName(name)) {
         return res.status(400).json({ error: 'Label with this name already exists' });
     }
-    const newLabel = Label.createLabel(name);
+    const newLabel = Label.createLabel(name, icon);
     return res.status(201).json(newLabel);
 }
 

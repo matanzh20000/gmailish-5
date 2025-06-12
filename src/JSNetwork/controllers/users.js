@@ -1,33 +1,43 @@
-const User = require('../models/users')
+const User = require('../models/users');
 
 exports.createUser = (req, res) => {
-    const { name, username, password, email, image } = req.body
-    const isValidEmail = email => typeof email === 'string' && /^[^@\s]+@[^@\s]+\.com$/i.test(email);
+  const { firstName, lastName, birthDate, gender, mail, password, backupMail } = req.body;
 
-    if (!name || !email || !username || !password) {
-        return res.status(400).json({ message: 'Missing required fields' })
-    }
-    if (User.getUserByUsername(username)) {
-        return res.status(400).json({ message: 'Username already exists' })
-    }
-    if (User.getUserByEmail(email)) {
-        return res.status(400).json({ message: 'Email already exists' })
-    }
-    // Validate email addresses
-    if (!isValidEmail(email)) {
-        return res.status(400).json({ error: 'Email address is invalid' });
-    }
-    const newUser = User.createUser(name, username, password, email, image)
-    res.status(201).location(`/api/users/${newUser.id}`).end()
-}
+  const isValidEmail = email =>
+    typeof email === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(email);
+
+  // Validate required fields
+  if (!firstName || !lastName || !birthDate || !gender || !mail || !password) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  if (!birthDate.year || !birthDate.month || !birthDate.day) {
+    return res.status(400).json({ message: 'Incomplete birthDate object' });
+  }
+
+  if (!isValidEmail(mail)) {
+    return res.status(400).json({ message: 'Invalid primary email' });
+  }
+
+  if (backupMail && !isValidEmail(backupMail)) {
+    return res.status(400).json({ message: 'Invalid backup email' });
+  }
+
+  if (User.getUserByMail(mail)) {
+    return res.status(400).json({ message: 'Email already exists' });
+  }
+
+  const newUser = User.createUser(firstName, lastName, birthDate, gender, mail, password, backupMail);
+  return res.status(201).location(`/api/users/${newUser.id}`).end();
+};
 
 exports.getUserById = (req, res) => {
-    const user = User.getUser(parseInt(req.params.id))
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' })
-    }
-    return res.json(user)
-}
+  const user = User.getUser(parseInt(req.params.id));
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
 
-
-
+  // You might want to exclude the password here
+  const { password, ...safeUser } = user;
+  return res.json(safeUser);
+};

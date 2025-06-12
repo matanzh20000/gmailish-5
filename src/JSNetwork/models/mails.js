@@ -16,6 +16,7 @@ const createMail = ({ from, to = [], copy = [], blindCopy = [], subject = '', bo
     blindCopy:  blindCopy,
     subject:    subject,
     body:       body,
+    label:      ['Inbox'],
     draft:      true,
     isRead:     false,
     createdAt:  timestamp,

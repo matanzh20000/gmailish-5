@@ -1,8 +1,8 @@
 const labels = []
 let idCounter = 0
 
-const createLabel = (name) => {
-    const newLabel = { id: ++idCounter, name }
+const createLabel = (name, icon) => {
+    const newLabel = { id: ++idCounter, name, icon}
     labels.push(newLabel)
     return newLabel
 }
