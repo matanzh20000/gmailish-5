@@ -1,8 +1,7 @@
 const User = require('../models/users');
 
 exports.createUser = (req, res) => {
-  const { firstName, lastName, birthDate, gender, password, backupMail, email } = req.body;
-  const mail = `${email}@gmailish.com`;
+  const { firstName, lastName, birthDate, gender, mail, password, backupMail } = req.body;
 
   const isValidEmail = (email) =>
     typeof email === 'string' && /^[a-zA-Z0-9._%+-]+@gmailish\.com$/i.test(email);
