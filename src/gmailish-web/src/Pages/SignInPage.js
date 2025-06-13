@@ -108,7 +108,7 @@ const SignInPage = ({ setToken }) => {
               id="email"
               type="email"
               className="form-control form-control-lg"
-              placeholder="your.email@example.com"
+              placeholder="your.email@gmailish.com"
               value={mail}
               onChange={(e) => setMail(e.target.value)}
               required

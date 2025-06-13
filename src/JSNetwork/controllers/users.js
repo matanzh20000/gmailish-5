@@ -1,12 +1,15 @@
 const User = require('../models/users');
 
 exports.createUser = (req, res) => {
-  const { firstName, lastName, birthDate, gender, mail, password, backupMail } = req.body;
+  const { firstName, lastName, birthDate, gender, password, backupMail, email } = req.body;
+  const mail = `${email}@gmailish.com`;
 
-  const isValidEmail = email =>
-    typeof email === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(email);
+  const isValidEmail = (email) =>
+    typeof email === 'string' && /^[a-zA-Z0-9._%+-]+@gmailish\.com$/i.test(email);
 
-  // Validate required fields
+  if (!isValidEmail(mail)) {
+    return res.status(400).json({ message: 'Only gmailish.com addresses are allowed' });
+  }
   if (!firstName || !lastName || !birthDate || !gender || !mail || !password) {
     return res.status(400).json({ message: 'Missing required fields' });
   }

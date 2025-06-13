@@ -1,3 +1,4 @@
+// SignUpPage.js (JS logic only)
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignUpPage.css';
@@ -18,7 +19,7 @@ const SignUpPage = ({ setToken }) => {
 
   const handleNext = () => {
     setError('');
-    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+$/;
 
     if (step === 1) {
       if (!firstName || !lastName || !birthDate || !gender) {
@@ -36,7 +37,7 @@ const SignUpPage = ({ setToken }) => {
         return setError('Email and password are required.');
       }
       if (!emailRegex.test(mail)) {
-        return setError('Invalid email format.');
+        return setError('Invalid email characters. Only letters, numbers, and ". _ % + -" are allowed.');
       }
       if (password.length < 5 || !/\d/.test(password)) {
         return setError('Password must be at least 5 characters and include a number.');
@@ -59,9 +60,9 @@ const SignUpPage = ({ setToken }) => {
 
   const handleSignUp = async () => {
     setError('');
-    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+$/;
 
-    if (backupMail && !emailRegex.test(backupMail)) {
+    if (backupMail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(backupMail)) {
       return setError('Invalid backup email format.');
     }
 
@@ -81,7 +82,7 @@ const SignUpPage = ({ setToken }) => {
           lastName,
           birthDate: birthDateObj,
           gender,
-          mail,
+          mail: mail + '@gmailish.com',
           password,
           backupMail,
           image,
@@ -154,9 +155,19 @@ const SignUpPage = ({ setToken }) => {
 
           {step === 2 && (
             <>
-              <div className="mb-3">
+              <div className="mb-3 email-wrapper">
                 <label className="form-label">Email</label>
-                <input className="form-control form-control-lg" type="email" value={mail} onChange={(e) => setMail(e.target.value)} />
+                <div className="email-input-wrapper">
+                  <input
+                    className="form-control form-control-lg email-input"
+                    type="text"
+                    value={mail}
+                    onChange={(e) => setMail(e.target.value)}
+                    pattern="^[a-zA-Z0-9._%+-]+$"
+                    required
+                  />
+                  <span className="email-domain">@gmailish.com</span>
+                </div>
               </div>
               <div className="mb-4">
                 <label className="form-label">Password</label>

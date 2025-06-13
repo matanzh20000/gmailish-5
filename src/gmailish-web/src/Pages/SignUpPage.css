@@ -88,3 +88,21 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
 }
+
+.email-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.email-input {
+  padding-right: 140px;
+}
+
+.email-domain {
+  position: absolute;
+  right: 1rem;
+  pointer-events: none;
+  color: gray;
+  font-size: 1rem;
+}
