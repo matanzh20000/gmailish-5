@@ -44,10 +44,7 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode, user }) {
           )
         }
       />
-      <Route
-        path="/register"
-        element={<SignUpPage />}
-      />
+      <Route path="/register" element={<SignUpPage setToken={setToken} />} />
       <Route
         path="/inbox/:id"
         element={
