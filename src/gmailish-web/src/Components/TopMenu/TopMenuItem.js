@@ -1,7 +1,7 @@
 import ThemeSwitch from "./ThemeSwitch";
 import { useState, useEffect } from "react";
 import UserCard from "./UserCard";
-const TopMenu = ({ darkMode, toggleTheme }) => {
+const TopMenu = ({ darkMode, toggleTheme, onSignOut, user }) => {
     const themeColors = darkMode
         ? { text: 'text-light', border: 'border-secondary' }
         : { text: 'text-dark', border: 'border-light' };
@@ -13,11 +13,6 @@ const TopMenu = ({ darkMode, toggleTheme }) => {
     const placeholderColor = darkMode ? '#cccccc' : '#666666';
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
-    const user = {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        imageUrl: "/option4.png", // replace with actual user image URL
-    };
     useEffect(() => {
         const fetchData = async () => {
             if (!query) {
@@ -39,7 +34,6 @@ const TopMenu = ({ darkMode, toggleTheme }) => {
         const timeoutId = setTimeout(fetchData, 300); // debounce input
         return () => clearTimeout(timeoutId);
     }, [query]);
-
 
     return (
         <div
@@ -138,7 +132,7 @@ const TopMenu = ({ darkMode, toggleTheme }) => {
                     aria-expanded="false"
                 >
                     <img
-                        src={user.imageUrl}
+                        src={""}
                         alt="User Avatar"
                         className="rounded-circle"
                         style={{ width: '40px', height: '40px' }}
@@ -151,7 +145,7 @@ const TopMenu = ({ darkMode, toggleTheme }) => {
                     style={{ minWidth: '250px' }}
                 >
                     <li className="px-0">
-                        <UserCard user={user} darkMode={darkMode} />
+                        <UserCard user={user} darkMode={darkMode} onSignOut={onSignOut}/>
                     </li>
                 </ul>
             </div>

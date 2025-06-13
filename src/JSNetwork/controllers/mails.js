@@ -2,7 +2,7 @@
 
 const Mail = require('../models/mails');
 const { sendToCppServer } = require('../models/blacklist');
-const {getUserByEmail} = require('../models/users');
+const {getUserByMail} = require('../models/users');
 
 /**
  * Extracts all “http://…”, “https://…”, or “www.…” links from a block of text.
@@ -28,11 +28,11 @@ exports.createMail = async (req, res) => {
   ) {
     return res.status(400).json({ error: 'Mail cannot be created - fields missing' });
   }
-  if (getUserByEmail(from) === null) {
+  if (getUserByMail(from) === null) {
     return res.status(400).json({ error: 'Mail cannot be created - sender does not exist' });
   }
 
-  if (to.some(email => getUserByEmail(email) === null)){
+  if (to.some(email => getUserByMail(email) === null)){
     return res.status(400).json({ error: 'Mail cannot be created - one or more recipients do not exist' });
   }
   

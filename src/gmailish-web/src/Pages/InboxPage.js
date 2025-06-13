@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LeftMenuItem from '../Components/LeftMenu/LeftMenuItem';
 import MainMenu from '../Components/MainMenu/MainMenu';
 import TopMenuItem from '../Components/TopMenu/TopMenuItem';
 
-const GmailishMainPage = ({ onSignOut }) => {
+const GmailishMainPage = ({ onSignOut, user }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState('Inbox');
+  const [mails, setMails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const toggleTheme = () => setDarkMode(!darkMode);
 
@@ -24,42 +27,41 @@ const GmailishMainPage = ({ onSignOut }) => {
       border: 'border-light'
     };
 
-  // Sample mail list with label assignments
-  const [mails, setMails] = useState([
-    {
-      id: 1,
-      from: 'noa@university.edu',
-      to: ['you@gmail.com'],
-      label: 'Inbox',
-      subject: 'Exam Schedule Released',
-      body: 'The final exam schedule for all courses has now been published. Please check your student portal for details.',
-      createdAt: '2025-06-04T10:15:00Z'
-    },
-    {
-      id: 2,
-      from: 'linkedin@jobs.com',
-      to: ['you@gmail.com'],
-      label: 'Inbox',
-      subject: 'Top jobs for Software Engineers',
-      body: 'Check out this list of top companies hiring. We have curated a list of the best job openings for software engineers based on your profile.',
-      createdAt: '2025-06-03T18:40:00Z'
-    },
-    {
-      id: 3,
-      from: 'noreply@github.com',
-      to: ['you@gmail.com'],
-      label: 'Inbox',
-      subject: 'New pull request on your repository',
-      body: 'There is a new pull request waiting for your review. Please check it out at your earliest convenience.',
-      createdAt: '2025-06-01T22:05:00Z'
-    }
-  ]);
 
-  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam'];
 
-  const visibleMails = mails.filter(mail => mail.label === selectedLabel);
+  useEffect(() => {
+    if (!user) return; // wait for user to be set
+
+    const fetchMails = async () => {
+      try {
+        const res = await fetch('http://localhost:8080/api/mails', {
+          headers: {
+            'X-user': user.mail,
+          },
+        });
+        if (!res.ok) throw new Error('Failed to fetch mails');
+        const data = await res.json();
+        setMails(data);
+      } catch (err) {
+        console.error('[DEBUG] Mail fetch error:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMails();
+  }, [user]);
+
+
+  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
+
+  const visibleMails = mails.filter(mail => mail.label.includes(selectedLabel));
 
   const [customLabels, setCustomLabels] = useState([]);
+
+  if (loading) return <div className="p-4">Loading mails...</div>;
+  if (error) return <div className="p-4 text-danger">Error: {error}</div>;
 
 
   return (
@@ -69,11 +71,11 @@ const GmailishMainPage = ({ onSignOut }) => {
       height: '100%',
     }} className={` ${themeColors.text} h-100 transition-theme`}>
       {/* Top Menu */}
-      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} />
+      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} onSignOut={onSignOut} user={user} />
 
       {/* Main Content Area */}
       <div className="d-flex flex-grow-1">
-        
+
         <LeftMenuItem
           darkMode={darkMode}
           selectedLabel={selectedLabel}

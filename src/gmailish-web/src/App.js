@@ -10,9 +10,10 @@ import {
 import InboxPage from './Pages/InboxPage';
 import SignInPage from './Pages/SignInPage';
 import SignUpPage from './Pages/SignUpPage';
+import { jwtDecode } from 'jwt-decode';
 
 // Wrapper to use useNavigate inside AppRoutes
-function AppRoutes({ token, setToken, darkMode, setDarkMode }) {
+function AppRoutes({ token, setToken, darkMode, setDarkMode, user }) {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -37,15 +38,25 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode }) {
         path="/inbox"
         element={
           token ? (
-            <InboxPage onSignOut={handleSignOut} />
+            <InboxPage onSignOut={handleSignOut} user={user} />
           ) : (
             <Navigate to="/" />
           )
         }
       />
-      <Route 
-      path="/register"
-      element={<SignUpPage />}
+      <Route
+        path="/register"
+        element={<SignUpPage />}
+      />
+      <Route
+        path="/inbox/:id"
+        element={
+          token ? (
+            <InboxPage onSignOut={handleSignOut} user={user} />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
       />
     </Routes>
   );
@@ -54,14 +65,36 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode }) {
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [user, setUser] = useState(null);
+
 
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
+      fetchUserFromToken(token);
     } else {
       localStorage.removeItem('token');
+      setUser(null);
     }
   }, [token]);
+
+  const fetchUserFromToken = async (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const userId = decoded.id;
+
+      const res = await fetch(`http://localhost:8080/api/users/${userId}`);
+      if (!res.ok) throw new Error('User not found');
+
+      const userData = await res.json();
+      setUser(userData);
+    } catch (err) {
+      console.error('Failed to fetch user:', err);
+      setToken(null);
+    }
+  };
+
+
 
   return (
     <Router>
@@ -71,6 +104,7 @@ function App() {
           setToken={setToken}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
+          user={user}
         />
       </div>
     </Router>
