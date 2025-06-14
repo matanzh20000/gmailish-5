@@ -22,7 +22,12 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
         { name: 'Drafts', icon: 'bi-file-earmark-text' },
     ].map(label => ({
         ...label,
-        count: mails.filter(mail => mail.label.includes(label.name)).length
+        // count: mails.filter(mail => mail.label.includes(label.name)).length
+        count: mails.filter(mail =>
+        (Array.isArray(mail.label) && mail.label.includes(label.name)) ||
+        (typeof mail.label === 'string' && mail.label === label.name)
+        ).length
+
     }));
 
     useEffect(() => {
