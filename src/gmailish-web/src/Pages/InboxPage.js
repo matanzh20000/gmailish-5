@@ -56,7 +56,11 @@ const InboxPage = ({ onSignOut, user }) => {
 
   const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
 
-  const visibleMails = mails.filter(mail => mail.label.includes(selectedLabel));
+  // const visibleMails = mails.filter(mail => mail.label.includes(selectedLabel));
+  const visibleMails = mails.filter(mail =>
+  (Array.isArray(mail.label) && mail.label.includes(selectedLabel)) ||
+  (typeof mail.label === 'string' && mail.label === selectedLabel)
+);
 
   const handleSendMail = async ({ to, subject, body }) => {
     try {
