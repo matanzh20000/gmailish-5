@@ -3,9 +3,7 @@ import LabelItem from './LabelItem';
 import NewLabelModal from './NewLabelModal';
 import EditLabelModal from './EditLabelModal';
 
-const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails }) => {
-    const background = darkMode ? '#333558' : '#cce6e6';
-    const textColor = darkMode ? 'text-light' : 'text-dark';
+const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails, themeColors, onCompose }) => {
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
     const labelButtonClass = darkMode ? 'btn btn-outline-secondary-dark' : 'btn btn-outline-secondary-light';
     const [showModal, setShowModal] = useState(false);
@@ -22,7 +20,10 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
         { name: 'Drafts', icon: 'bi-file-earmark-text' },
     ].map(label => ({
         ...label,
-        count: mails.filter(mail => mail.label.includes(label.name)).length
+        count: mails.filter(mail =>
+            (Array.isArray(mail.label) && mail.label.includes(label.name)) ||
+            (typeof mail.label === 'string' && mail.label === label.name)
+        ).length
     }));
 
     useEffect(() => {
@@ -139,19 +140,20 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
 
     return (
         <div
-            className={`p-3 ps-4 ${textColor} transition-theme`}
-            style={{ minWidth: '300px', backgroundColor: background }}
+            className={`p-3 ps-4 ${themeColors.text} transition-theme`}
+            style={{ minWidth: '300px', backgroundColor: themeColors.background }}
         >
-            <button className={`${primaryButtonClass} w-100 mb-2`}>
+            <button className={`${primaryButtonClass} w-100 mb-2`}
+                onClick={onCompose}>
                 <i className="bi bi-pen me-2"></i>
                 Compose
             </button>
 
             <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <strong className={`${textColor} fs-5`}>Labels</strong>
+                    <strong className={`${themeColors.text} fs-5`}>Labels</strong>
                     <button
-                        className={`${labelButtonClass} ${textColor}`}
+                        className={`${labelButtonClass} ${themeColors.text}`}
                         style={{ padding: '0.25rem 0.5rem' }}
                         onClick={() => setShowModal(true)}
                     >

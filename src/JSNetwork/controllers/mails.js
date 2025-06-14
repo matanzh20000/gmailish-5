@@ -1,5 +1,3 @@
-// controllers/mails.js
-
 const Mail = require('../models/mails');
 const { sendToCppServer } = require('../models/blacklist');
 const {getUserByMail} = require('../models/users');
@@ -18,7 +16,6 @@ function extractUrls(text) {
 exports.createMail = async (req, res) => {
   const { from, to = [], copy = [], blindCopy = [], subject = '', body = '' } = req.body;
 
-  // Basic validation: must have at least one recipient or some content
   if (
     (!Array.isArray(to) || to.length === 0) &&
     (!Array.isArray(copy) || copy.length === 0) &&
@@ -28,51 +25,66 @@ exports.createMail = async (req, res) => {
   ) {
     return res.status(400).json({ error: 'Mail cannot be created - fields missing' });
   }
+
   if (getUserByMail(from) === null) {
     return res.status(400).json({ error: 'Mail cannot be created - sender does not exist' });
   }
 
-  if (to.some(email => getUserByMail(email) === null)){
+  if (to.some(email => getUserByMail(email) === null)) {
     return res.status(400).json({ error: 'Mail cannot be created - one or more recipients do not exist' });
   }
-  
-  // 1) Pull out any URLs from the body and subject
+
   const urlsInBody = extractUrls(body);
   const urlsInSubject = extractUrls(subject);
-
-  // 2) Combine both lists of URLs
   const allUrls = [...urlsInBody, ...urlsInSubject];
 
-  // 3) For each URL, check against the C++ blacklist service
   for (const url of allUrls) {
     try {
-      // Send a "GET <url>" command to the blacklist server
       const response = await sendToCppServer(`GET ${url}`);
-
-      // Pull out the last non-empty line (e.g. "true false" or "true true")
-      const lines = response
-        .trim()
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line !== '');
+      const lines = response.trim().split('\n').map(line => line.trim()).filter(Boolean);
       const lastLine = lines[lines.length - 1] || '';
 
-      // If lastLine is exactly "true true" (case-insensitive), treat as blacklisted
       if (lastLine.toLowerCase() === 'true true') {
-        return res
-          .status(400)
-          .json({ error: `Cannot create mail: link is blacklisted (${url})` });
+        return res.status(400).json({ error: `Cannot create mail: link is blacklisted (${url})` });
       }
-      // Otherwise ("true false" or anything else), continue
     } catch (err) {
       return res.status(400).json({ error: 'Blacklist service unavailable' });
     }
   }
 
-  // 4) None of the URLs were blacklisted → create and return the new mail
   try {
-    const newMail = Mail.createMail({ from, to, copy, blindCopy, subject, body });
-    return res.status(201).json(newMail);
+    const timestamp = new Date().toISOString();
+
+    // 1. Create sender's copy with label "Sent"
+    const senderMail = Mail.createMail({
+      from,
+      to,
+      copy,
+      blindCopy,
+      subject,
+      body,
+      label: ['Sent'],
+      owner: from,
+      date: timestamp,
+    });
+
+    // 2. Create receiver mails (Inbox)
+    const allRecipients = [...to, ...copy, ...blindCopy];
+    const receiverMails = allRecipients.map(email =>
+      Mail.createMail({
+        from,
+        to,
+        copy,
+        blindCopy,
+        subject,
+        body,
+        label: ['Inbox'],
+        owner: email,
+        date: timestamp,
+      })
+    );
+
+  return res.status(201).json([senderMail, ...receiverMails]);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

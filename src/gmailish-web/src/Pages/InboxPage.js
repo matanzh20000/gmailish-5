@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LeftMenuItem from '../Components/LeftMenu/LeftMenuItem';
 import MainMenu from '../Components/MainMenu/MainMenu';
 import TopMenuItem from '../Components/TopMenu/TopMenuItem';
+import MailView from '../Components/MainMenu/MailView';
+import ComposeModal from '../Components/MainMenu/ComposeModal';
 
-const GmailishMainPage = ({ onSignOut, user }) => {
+const InboxPage = ({ onSignOut, user }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState('Inbox');
   const [mails, setMails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [showCompose, setShowCompose] = useState(false);
+  const { id } = useParams();
+  const isViewingMail = !!id;
   const toggleTheme = () => setDarkMode(!darkMode);
+  const visibleMails = mails.filter(mail =>
+    (Array.isArray(mail.label) && mail.label.includes(selectedLabel)) ||
+    (typeof mail.label === 'string' && mail.label === selectedLabel)
+  );
+  const [customLabels, setCustomLabels] = useState([]);
+  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
 
   const themeColors = darkMode
     ? {
@@ -21,7 +32,7 @@ const GmailishMainPage = ({ onSignOut, user }) => {
       border: 'border-secondary'
     }
     : {
-      background: '#cce6e6',
+      background: '#bcd9db',
       text: 'text-dark',
       card: 'bg-white text-dark',
       border: 'border-light'
@@ -53,12 +64,35 @@ const GmailishMainPage = ({ onSignOut, user }) => {
     fetchMails();
   }, [user]);
 
+  const handleSendMail = async ({ to, subject, body }) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/mails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-user': user.mail,
+        },
+        body: JSON.stringify({
+          from: user.mail,
+          to: [to],
+          subject,
+          body,
+          label: 'Sent',
+          date: new Date().toISOString(),
+        }),
+      });
 
-  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
+      if (!response.ok) throw new Error('Failed to send mail');
 
-  const visibleMails = mails.filter(mail => mail.label.includes(selectedLabel));
+      const newMail = await response.json();
+      setMails(prev => [...prev, newMail]);
+      setShowCompose(false);
+    } catch (err) {
+      alert('Failed to send mail: ' + err.message);
+    }
+  };
 
-  const [customLabels, setCustomLabels] = useState([]);
+
 
   if (loading) return <div className="p-4">Loading mails...</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
@@ -71,7 +105,7 @@ const GmailishMainPage = ({ onSignOut, user }) => {
       height: '100%',
     }} className={` ${themeColors.text} h-100 transition-theme`}>
       {/* Top Menu */}
-      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} onSignOut={onSignOut} user={user} />
+      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} onSignOut={onSignOut} user={user} themeColors={themeColors} />
 
       {/* Main Content Area */}
       <div className="d-flex flex-grow-1">
@@ -85,19 +119,32 @@ const GmailishMainPage = ({ onSignOut, user }) => {
           setCustomLabels={setCustomLabels}
           setMails={setMails}
           mails={mails}
+          themeColors={themeColors}
+          onCompose={() => setShowCompose(true)}
         />
-        <MainMenu
-          darkMode={darkMode}
-          mails={visibleMails}
-          setMails={setMails}
-          selectedLabel={selectedLabel}
-          defaultLabels={labels}
-          customLabels={customLabels}
-        />
+        {isViewingMail ? (
+          <MailView mails={mails} darkMode={darkMode} />
+        ) : (
+          <MainMenu
+            darkMode={darkMode}
+            mails={visibleMails}
+            setMails={setMails}
+            selectedLabel={selectedLabel}
+            defaultLabels={labels}
+            customLabels={customLabels}
+          />
+        )}
 
       </div>
+
+      <ComposeModal
+        show={showCompose}
+        onClose={() => setShowCompose(false)}
+        onSend={handleSendMail}
+        user={user}
+      />
     </div>
   );
 };
 
-export default GmailishMainPage;
+export default InboxPage;

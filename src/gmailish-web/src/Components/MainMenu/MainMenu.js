@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MailItem from './MailItem';
 import ToolbarItem from './ToolbarItem';
 import Iridescence from '../../Pages/Iridescence';
+import StylePanel from './StylePanel';
 
 
 const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) => {
@@ -21,20 +22,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
             timestamp: 'text-muted'
         };
 
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-    useEffect(() => {
-        const updateDimensions = () => {
-            const ratio = window.innerWidth / window.innerHeight;
-            const height = Math.min(window.innerHeight * 0.8, 700);
-            const width = (height * ratio);
-            setDimensions({ width, height });
-        };
-
-        updateDimensions();
-        window.addEventListener('resize', updateDimensions);
-        return () => window.removeEventListener('resize', updateDimensions);
-    }, []);
 
     const [selectedMailIds, setSelectedMailIds] = useState([]);
 
@@ -71,22 +59,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
     }));
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                zIndex: 1,
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                maxHeight: '88vh',
-                marginTop: '1rem',
-                marginRight: '1rem',
-                width: 'min(90vw, 1470px)',
-                height: 'min(80vh, 1000px)',
-            }}
-        >
+        <StylePanel>
 
 
             {/* Shader background inside the floating window */}
@@ -136,7 +109,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     />
                 ))}
             </div>
-        </div>
+        </StylePanel>
 
     );
 };
