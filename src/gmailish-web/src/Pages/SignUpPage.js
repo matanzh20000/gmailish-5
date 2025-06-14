@@ -1,3 +1,4 @@
+// SignUpPage.js (JS logic only)
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignUpPage.css';
