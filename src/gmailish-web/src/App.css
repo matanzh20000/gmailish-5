@@ -52,13 +52,13 @@ html, body, #root {
 }
 
 .btn.btn-primary-light {
-  background-color: #48a0a0;
-  border-color: #2a7070;
+  background-color: #6fa0da;
+  border-color: #5fa0da;
   color: white;
 }
 
 .btn.btn-primary-light:hover {
-  background-color: #398b8b;
+  background-color: #2f80da;
   border-color: #398b8b;
 }
 
@@ -80,7 +80,7 @@ html, body, #root {
 }
 
 .btn.btn-outline-secondary-light:hover {
-  background-color: #469597;
+  background-color: #6fa0da;
   border: 1px solid transparent;
   color: white;
 }

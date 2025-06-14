@@ -1,18 +1,15 @@
 import ThemeSwitch from "./ThemeSwitch";
 import { useState, useEffect } from "react";
-import UserCard from "./UserCard";
-const TopMenu = ({ darkMode, toggleTheme, onSignOut, user }) => {
-    const themeColors = darkMode
-        ? { text: 'text-light', border: 'border-secondary' }
-        : { text: 'text-dark', border: 'border-light' };
+import { useNavigate } from 'react-router-dom'; import UserCard from "./UserCard";
+const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
     const btnTheme = darkMode
         ? 'btn btn-dark border-0'
         : 'btn btn-light border-0';
-    const background = darkMode ? '#333558' : '#cce6e6';
     const searchColor = darkMode ? '#66667d' : '#ffffff';
     const placeholderColor = darkMode ? '#cccccc' : '#666666';
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             if (!query) {
@@ -38,7 +35,7 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user }) => {
     return (
         <div
             className={`d-flex  align-items-center px-4 py-2 ${themeColors.text} ${themeColors.border} transition-theme`}
-            style={{ height: '80px', backgroundColor: background }}
+            style={{ height: '80px', backgroundColor: themeColors.background }}
         >
 
             <div
@@ -104,7 +101,10 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user }) => {
                                     color: darkMode ? 'white' : 'black',
                                     cursor: 'pointer'
                                 }}
-                                onClick={() => console.log('Clicked mail', data.id)}
+                                onClick={() => {
+                                    navigate(`/inbox/${data.id}`);
+                                    setQuery('');
+                                }}
                             >
                                 <i className="bi bi-envelope-fill me-2"></i>
                                 <strong>{data.subject}</strong><br />
@@ -145,7 +145,7 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user }) => {
                     style={{ minWidth: '250px' }}
                 >
                     <li className="px-0">
-                        <UserCard user={user} darkMode={darkMode} onSignOut={onSignOut}/>
+                        <UserCard user={user} darkMode={darkMode} onSignOut={onSignOut} />
                     </li>
                 </ul>
             </div>

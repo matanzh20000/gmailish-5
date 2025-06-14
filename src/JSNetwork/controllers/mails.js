@@ -1,5 +1,3 @@
-// controllers/mails.js
-
 const Mail = require('../models/mails');
 const { sendToCppServer } = require('../models/blacklist');
 const {getUserByMail} = require('../models/users');

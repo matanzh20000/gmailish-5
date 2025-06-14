@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LeftMenuItem from '../Components/LeftMenu/LeftMenuItem';
 import MainMenu from '../Components/MainMenu/MainMenu';
 import TopMenuItem from '../Components/TopMenu/TopMenuItem';
-import ComposeModal from '../Components/ComposeModal';
+import MailView from '../Components/MainMenu/MailView';
+import ComposeModal from '../Components/MainMenu/ComposeModal';
 
 const InboxPage = ({ onSignOut, user }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -11,56 +13,56 @@ const InboxPage = ({ onSignOut, user }) => {
   const [mails, setMails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [customLabels, setCustomLabels] = useState([]);
   const [showCompose, setShowCompose] = useState(false);
-  const [selectedMailId, setSelectedMailId] = useState(null);
-  const selectedMail = mails.find(m => m.id === selectedMailId);
-
+  const { id } = useParams();
+  const isViewingMail = !!id;
   const toggleTheme = () => setDarkMode(!darkMode);
+  const visibleMails = mails.filter(mail =>
+    (Array.isArray(mail.label) && mail.label.includes(selectedLabel)) ||
+    (typeof mail.label === 'string' && mail.label === selectedLabel)
+  );
+  const [customLabels, setCustomLabels] = useState([]);
+  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
 
   const themeColors = darkMode
     ? {
-        background: '#333558',
-        text: 'text-light',
-        card: 'bg-secondary text-light',
-        border: 'border-secondary',
-      }
-    : {
-        background: '#cce6e6',
-        text: 'text-dark',
-        card: 'bg-white text-dark',
-        border: 'border-light',
-      };
-
-  const fetchMails = async () => {
-    try {
-      const res = await fetch('http://localhost:8080/api/mails', {
-        headers: {
-          'X-user': user.mail,
-        },
-      });
-      if (!res.ok) throw new Error('Failed to fetch mails');
-      const data = await res.json();
-      setMails(data);
-    } catch (err) {
-      console.error('[DEBUG] Mail fetch error:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      background: '#333558',
+      text: 'text-light',
+      card: 'bg-secondary text-light',
+      border: 'border-secondary'
     }
-  };
+    : {
+      background: '#bcd9db',
+      text: 'text-dark',
+      card: 'bg-white text-dark',
+      border: 'border-light'
+    };
+
+
 
   useEffect(() => {
-    if (user) fetchMails();
+    if (!user) return; // wait for user to be set
+
+    const fetchMails = async () => {
+      try {
+        const res = await fetch('http://localhost:8080/api/mails', {
+          headers: {
+            'X-user': user.mail,
+          },
+        });
+        if (!res.ok) throw new Error('Failed to fetch mails');
+        const data = await res.json();
+        setMails(data);
+      } catch (err) {
+        console.error('[DEBUG] Mail fetch error:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMails();
   }, [user]);
-
-  const labels = ['Inbox', 'Starred', 'Snoozed', 'Sent', 'Spam', 'Drafts'];
-
-  // const visibleMails = mails.filter(mail => mail.label.includes(selectedLabel));
-  const visibleMails = mails.filter(mail =>
-  (Array.isArray(mail.label) && mail.label.includes(selectedLabel)) ||
-  (typeof mail.label === 'string' && mail.label === selectedLabel)
-);
 
   const handleSendMail = async ({ to, subject, body }) => {
     try {
@@ -72,7 +74,7 @@ const InboxPage = ({ onSignOut, user }) => {
         },
         body: JSON.stringify({
           from: user.mail,
-          to: [to],  
+          to: [to],
           subject,
           body,
           label: 'Sent',
@@ -90,28 +92,24 @@ const InboxPage = ({ onSignOut, user }) => {
     }
   };
 
+
+
   if (loading) return <div className="p-4">Loading mails...</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
 
+
   return (
-    <div
-      style={{
-        backgroundColor: themeColors.background,
-        minHeight: '100vh',
-        height: '100%',
-      }}
-      className={` ${themeColors.text} h-100 transition-theme`}
-    >
+    <div style={{
+      backgroundColor: themeColors.background,
+      minHeight: '100vh',
+      height: '100%',
+    }} className={` ${themeColors.text} h-100 transition-theme`}>
       {/* Top Menu */}
-      <TopMenuItem
-        darkMode={darkMode}
-        toggleTheme={toggleTheme}
-        onSignOut={onSignOut}
-        user={user}
-      />
+      <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} onSignOut={onSignOut} user={user} themeColors={themeColors} />
 
       {/* Main Content Area */}
       <div className="d-flex flex-grow-1">
+
         <LeftMenuItem
           darkMode={darkMode}
           selectedLabel={selectedLabel}
@@ -121,39 +119,24 @@ const InboxPage = ({ onSignOut, user }) => {
           setCustomLabels={setCustomLabels}
           setMails={setMails}
           mails={mails}
-          onCompose={() => setShowCompose(true)} 
+          themeColors={themeColors}
+          onCompose={() => setShowCompose(true)}
         />
-        <MainMenu
-          darkMode={darkMode}
-          mails={visibleMails}
-          setMails={setMails}
-          selectedLabel={selectedLabel}
-          defaultLabels={labels}
-          customLabels={customLabels}
-          onSelectMail={setSelectedMailId}
+        {isViewingMail ? (
+          <MailView mails={mails} darkMode={darkMode} />
+        ) : (
+          <MainMenu
+            darkMode={darkMode}
+            mails={visibleMails}
+            setMails={setMails}
+            selectedLabel={selectedLabel}
+            defaultLabels={labels}
+            customLabels={customLabels}
+          />
+        )}
 
-        />
       </div>
-                  {selectedMail && (
-            <div
-              className={`p-4 ${themeColors.card} border ${themeColors.border}`}
-              style={{
-                maxWidth: '90vw',
-                margin: '1rem auto',
-                borderRadius: '16px',
-              }}
-            >
-              <h5>{selectedMail.subject}</h5>
-              <p><strong>From:</strong> {selectedMail.from}</p>
-              <p><strong>To:</strong> {selectedMail.to.join(', ')}</p>
-              <p>{selectedMail.body}</p>
-              <button className="btn btn-sm btn-outline-secondary mt-3" onClick={() => setSelectedMailId(null)}>
-                Close
-              </button>
-            </div>
-          )}
 
-      {/* Compose Modal */}
       <ComposeModal
         show={showCompose}
         onClose={() => setShowCompose(false)}

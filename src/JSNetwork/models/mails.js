@@ -1,5 +1,3 @@
-// models/mails.js
-
 const mails = [];
 let idCounter = 0;
 
@@ -67,7 +65,7 @@ const updateMail = (id, changes) => {
     }
   });
 
-  if(exists){
+  if (exists) {
     mail.updatedAt = new Date();
     return mail;
   }
@@ -89,7 +87,7 @@ const deleteMail = (id) => {
  * descending by creation time, limited to the most recent 50 by default.
  */
 const getMailsForUser = (userEmail, limit = 50) => {
-    console.log('[DEBUG] Fetching mails for', userEmail);
+  console.log('[DEBUG] Fetching mails for', userEmail);
   return mails
     .filter(mail => mail.owner === userEmail)
     .sort((a, b) => b.createdAt - a.createdAt)
