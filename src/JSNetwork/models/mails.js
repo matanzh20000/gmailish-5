@@ -6,25 +6,38 @@ let idCounter = 0;
 /**
  * Create a new mail. Returns the new mail object.
  */
-const createMail = ({ from, to = [], copy = [], blindCopy = [], subject = '', body = '' }) => {
-  const timestamp = new Date();
+const createMail = ({
+  from,
+  to = [],
+  copy = [],
+  blindCopy = [],
+  subject = '',
+  body = '',
+  label = ['Inbox'],
+  draft = false,
+  owner = from,
+  createdAt = new Date(),
+}) => {
+  const timestamp = createdAt;
   const newMail = {
-    id:        ++idCounter,
-    from:       from,
-    to:         to,
-    copy:       copy,
-    blindCopy:  blindCopy,
-    subject:    subject,
-    body:       body,
-    label:      ['Inbox'],
-    draft:      true,
-    isRead:     false,
-    createdAt:  timestamp,
-    updatedAt:  timestamp,
+    id: ++idCounter,
+    from,
+    to,
+    copy,
+    blindCopy,
+    subject,
+    body,
+    label,
+    draft,
+    isRead: false,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    owner, // NEW FIELD
   };
   mails.push(newMail);
   return newMail;
 };
+
 
 /**
  * Get a single mail by its numeric ID, or null if not found.
@@ -76,13 +89,9 @@ const deleteMail = (id) => {
  * descending by creation time, limited to the most recent 50 by default.
  */
 const getMailsForUser = (userEmail, limit = 50) => {
+    console.log('[DEBUG] Fetching mails for', userEmail);
   return mails
-    .filter(mail =>
-      mail.from === userEmail ||
-      mail.to.includes(userEmail) ||
-      mail.copy.includes(userEmail) ||
-      mail.blindCopy.includes(userEmail)
-    )
+    .filter(mail => mail.owner === userEmail)
     .sort((a, b) => b.createdAt - a.createdAt)
     .slice(0, limit);
 };

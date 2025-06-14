@@ -3,7 +3,7 @@ import LabelItem from './LabelItem';
 import NewLabelModal from './NewLabelModal';
 import EditLabelModal from './EditLabelModal';
 
-const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails }) => {
+const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails, onCompose }) => {
     const background = darkMode ? '#333558' : '#cce6e6';
     const textColor = darkMode ? 'text-light' : 'text-dark';
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
@@ -142,10 +142,13 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
             className={`p-3 ps-4 ${textColor} transition-theme`}
             style={{ minWidth: '300px', backgroundColor: background }}
         >
-            <button className={`${primaryButtonClass} w-100 mb-2`}>
-                <i className="bi bi-pen me-2"></i>
+          <button
+                className="btn btn-primary m-3"
+                onClick={onCompose} // ✅ use the passed prop
+                >
                 Compose
-            </button>
+                </button>
+
 
             <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-3">
