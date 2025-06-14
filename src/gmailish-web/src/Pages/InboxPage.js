@@ -84,8 +84,8 @@ const InboxPage = ({ onSignOut, user }) => {
 
       if (!response.ok) throw new Error('Failed to send mail');
 
-      const newMail = await response.json();
-      setMails(prev => [...prev, newMail]);
+      const newMails = await response.json();
+      setMails(prev => [...prev, ...newMails]);
       setShowCompose(false);
     } catch (err) {
       alert('Failed to send mail: ' + err.message);
