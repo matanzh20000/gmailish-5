@@ -10,18 +10,24 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
+
     useEffect(() => {
         const fetchData = async () => {
             if (!query) {
                 setResults([]);
                 return;
             }
-
             try {
-                const res = await fetch(`http://localhost:8080/api/mails/search/${encodeURIComponent(query)}`);
+                const res = await fetch(`http://localhost:8080/api/mails/search/${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-user': user.mail
+                    }
+                });
                 if (!res.ok) throw new Error("Failed to fetch");
-                const data = await res.json();
-                setResults(data);
+                const allResults = await res.json();
+
+                // Results are already filtered by server (ownership + deduplicated)
+                setResults(allResults);
             } catch (err) {
                 console.error(err);
                 setResults([]);
@@ -30,7 +36,8 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
 
         const timeoutId = setTimeout(fetchData, 300); // debounce input
         return () => clearTimeout(timeoutId);
-    }, [query]);
+    }, [query, user]);
+
 
     return (
         <div

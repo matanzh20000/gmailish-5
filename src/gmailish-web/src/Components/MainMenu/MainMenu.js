@@ -4,7 +4,6 @@ import ToolbarItem from './ToolbarItem';
 import Iridescence from '../../Pages/Iridescence';
 import StylePanel from './StylePanel';
 
-
 const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) => {
     const themeColors = darkMode
         ? {
@@ -21,8 +20,6 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
             border: 'border-light',
             timestamp: 'text-muted'
         };
-
-
 
     const [selectedMailIds, setSelectedMailIds] = useState([]);
 
@@ -42,14 +39,36 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
         );
     };
 
-    const handleAssignLabel = (labelName) => {
-        setMails(prevMails =>
-            prevMails.map(mail =>
-                selectedMailIds.includes(mail.id)
-                    ? { ...mail, label: labelName }
-                    : mail
-            )
+    const handleAssignLabel = async (labelName) => {
+        const updatedIds = new Set(selectedMailIds);
+
+        const updatedMailList = await Promise.all(
+            mails.map(async (mail) => {
+                if (!updatedIds.has(mail.id)) return mail;
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ label: [labelName] }),
+                    });
+
+                    if (response.status === 204) {
+                        return { ...mail, label: [labelName] }; // ✅ locally reflect new label
+                    } else {
+                        console.error(`Failed to update label for mail ${mail.id}`);
+                        return mail;
+                    }
+                } catch (err) {
+                    console.error('Label update error:', err);
+                    return mail;
+                }
+            })
         );
+
+        setMails(updatedMailList);
         setSelectedMailIds([]);
     };
 
@@ -60,9 +79,6 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
 
     return (
         <StylePanel>
-
-
-            {/* Shader background inside the floating window */}
             <Iridescence
                 style={{
                     position: 'absolute',
@@ -78,7 +94,6 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 amplitude={0.05}
             />
 
-            {/* Foreground content */}
             <div
                 style={{
                     position: 'relative',
@@ -110,7 +125,6 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 ))}
             </div>
         </StylePanel>
-
     );
 };
 
