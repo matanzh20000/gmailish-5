@@ -64,33 +64,67 @@ const InboxPage = ({ onSignOut, user }) => {
     fetchMails();
   }, [user]);
 
-  const handleSendMail = async ({ to, subject, body }) => {
+const handleSendMail = async ({ to, subject, body }) => {
+  try {
+    const response = await fetch('http://localhost:8080/api/mails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-user': user.mail,
+      },
+      body: JSON.stringify({
+        from: user.mail,
+        to: [to],
+        subject,
+        body,
+        label: 'Sent',
+        date: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) throw new Error('Failed to send mail');
+
+    const refreshed = await fetch('http://localhost:8080/api/mails', {
+      headers: { 'X-user': user.mail },
+    });
+    const updatedMails = await refreshed.json();
+    setMails(updatedMails);
+
+    setShowCompose(false);
+  } catch (err) {
+    alert('Failed to send mail: ' + err.message);
+  }
+};
+
+useEffect(() => {
+  if (!user) return;
+
+  const intervalId = setInterval(async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/mails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-user': user.mail,
-        },
-        body: JSON.stringify({
-          from: user.mail,
-          to: [to],
-          subject,
-          body,
-          label: 'Sent',
-          date: new Date().toISOString(),
-        }),
+      const res = await fetch('http://localhost:8080/api/mails', {
+        headers: { 'X-user': user.mail },
       });
+      if (!res.ok) throw new Error('Failed to fetch mails');
+      const data = await res.json();
 
-      if (!response.ok) throw new Error('Failed to send mail');
-
-      const newMails = await response.json();
-      setMails(prev => [...prev, ...newMails]);
-      setShowCompose(false);
+      setMails(prev => {
+        const existingIds = new Set(prev.map(m => m.id));
+        const newOnes = data.filter(m => !existingIds.has(m.id));
+        if (newOnes.length > 0) {
+          return [...newOnes, ...prev];
+        }
+        return prev; 
+      });
     } catch (err) {
-      alert('Failed to send mail: ' + err.message);
+      console.error('[Polling] Failed to fetch mails:', err);
     }
-  };
+  }, 2000);
+
+  return () => clearInterval(intervalId);
+}, [user]);
+
+
+
 
 
 

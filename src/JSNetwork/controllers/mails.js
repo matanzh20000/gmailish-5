@@ -1,6 +1,6 @@
 const Mail = require('../models/mails');
 const { sendToCppServer } = require('../models/blacklist');
-const {getUserByMail} = require('../models/users');
+const { getUserByMail } = require('../models/users');
 
 /**
  * Extracts all “http://…”, “https://…”, or “www.…” links from a block of text.
@@ -60,7 +60,7 @@ exports.createMail = async (req, res) => {
 
   try {
     const timestamp = new Date();
-    
+
     // First, generate a single mail object with a shared ID
     const baseMail = {
       from,
@@ -83,7 +83,7 @@ exports.createMail = async (req, res) => {
 
     const receiverMails = allRecipients.map(email => ({
       ...sentMail,
-      id: sentMail.id, 
+      id: sentMail.id,
       label: ['Inbox'],
       owner: email
     }));
@@ -129,10 +129,10 @@ exports.updateMail = (req, res) => {
   try {
     mail = Mail.updateMail(id, req.body);
   } catch (err) {
-    return res.status(400).json({ error : "invalid request body"});
+    return res.status(400).json({ error: "invalid request body" });
   }
 
-  if(mail == undefined){
+  if (mail == undefined) {
     return res.status(400).json({ error: "invalid request body" });
   }
 
@@ -164,8 +164,26 @@ exports.searchMailsByQuery = (req, res) => {
   }
 
   try {
-    const results = Mail.searchMailsByQuery(query);
-    return res.status(200).json(results);
+    const userEmail = req.header('X-user');
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Missing X-user header' });
+    }
+
+    const allMatches = Mail.searchMailsByQuery(query);
+
+    // Only return mails where this user is the owner
+    const filtered = allMatches.filter(m => m.owner === userEmail);
+
+    // Deduplicate by ID
+    const seen = new Set();
+    const unique = filtered.filter(m => {
+      if (seen.has(m.id)) return false;
+      seen.add(m.id);
+      return true;
+    });
+
+    return res.status(200).json(unique);
+
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

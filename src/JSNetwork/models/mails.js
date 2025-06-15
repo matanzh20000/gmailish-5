@@ -53,11 +53,11 @@ const updateMail = (id, changes) => {
   const mail = getMailById(id);
   if (!mail) return null;
 
-  if (!mail.draft) {
-    throw new Error('Cannot modify a mail that has already been sent.');
+  if (!mail.draft && Object.keys(changes).some(key => key !== 'label')) {
+    throw new Error('Cannot modify a mail that has already been sent except for label.');
   }
 
-  const editableFields = ['to', 'copy', 'blindCopy', 'subject', 'body', 'draft'];
+  const editableFields = ['to', 'copy', 'blindCopy', 'subject', 'body', 'draft', 'label'];
   editableFields.forEach(field => {
     if (changes[field] !== undefined) {
       exists = 1;
