@@ -39,38 +39,92 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
         );
     };
 
-    const handleAssignLabel = async (labelName) => {
-        const updatedIds = new Set(selectedMailIds);
+   const handleAssignLabel = async (labelName) => {
+    const updatedIds = new Set(selectedMailIds);
 
-        const updatedMailList = await Promise.all(
-            mails.map(async (mail) => {
-                if (!updatedIds.has(mail.id)) return mail;
+    function extractUrls(text) {
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+        return text.match(urlRegex) || [];
+    }
 
-                try {
-                    const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ label: [labelName] }),
-                    });
+    console.log(`>>> Assigning label "${labelName}" to selected mails:`, [...updatedIds]);
 
-                    if (response.status === 204) {
-                        return { ...mail, label: [labelName] }; // ✅ locally reflect new label
-                    } else {
-                        console.error(`Failed to update label for mail ${mail.id}`);
-                        return mail;
+    const updatedMailList = await Promise.all(
+        mails.map(async (mail) => {
+            if (!updatedIds.has(mail.id)) return mail;
+
+            console.log(`--- Updating mail ID: ${mail.id}`);
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ label: [labelName] }),
+                });
+
+                if (response.status === 204) {
+                    console.log(`✅ Label updated successfully for mail ${mail.id}`);
+                    
+                    if (labelName === 'Spam') {
+                        const urls = extractUrls(`${mail.subject}\n${mail.body}`);
+                        console.log(`📨 Mail ID ${mail.id} moved to Spam`);
+                        console.log(`🔎 Extracted URLs:`, urls);
+
+                        for (const url of urls) {
+                            try {
+                                const getUrl = `http://localhost:8080/api/blacklist/${encodeURIComponent(url)}`;
+                                console.log(`🌐 [GET] Checking blacklist status for URL: ${url}`);
+                                console.log(`➡️ Fetching: ${getUrl}`);
+
+                                const checkRes = await fetch(getUrl);
+                                const check = await checkRes.json();
+
+                                console.log(`⬅️ Response from GET ${url}:`, check);
+
+                                if (!check.blacklisted) {
+                                    const postUrl = 'http://localhost:8080/api/blacklist';
+                                    console.log(`🌐 [POST] Blacklisting URL: ${url}`);
+                                    console.log(`➡️ Posting to: ${postUrl} with body:`, { url });
+
+                                    const postRes = await fetch(postUrl, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ url }),
+                                    });
+
+                                    const postText = await postRes.text();
+                                    if (postRes.ok) {
+                                        console.log(`✅ Successfully blacklisted "${url}". Server replied: ${postText}`);
+                                    } else {
+                                        console.warn(`❌ Failed to POST ${url} to blacklist. Status: ${postRes.status}, Body: ${postText}`);
+                                    }
+                                } else {
+                                    console.log(`ℹ️ "${url}" is already blacklisted. Skipping.`);
+                                }
+                            } catch (e) {
+                                console.error(`❗ Error syncing URL "${url}" to blacklist:`, e);
+                            }
+                        }
                     }
-                } catch (err) {
-                    console.error('Label update error:', err);
+                    
+
+                    return { ...mail, label: [labelName] };
+                } else {
+                    console.error(`❌ Failed to update label for mail ${mail.id}. Status: ${response.status}`);
                     return mail;
                 }
-            })
-        );
+            } catch (err) {
+                console.error('❗ Label update error:', err);
+                return mail;
+            }
+        })
+    );
 
-        setMails(updatedMailList);
-        setSelectedMailIds([]);
-    };
+    setMails(updatedMailList);
+    setSelectedMailIds([]);
+};
 
     const trimmedMails = mails.map(mail => ({
         ...mail,
@@ -114,7 +168,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 />
 
                             {trimmedMails.map(mail => (
-                    <div key={mail.id} onClick={() => onSelectMail(mail.id)} style={{ cursor: 'pointer' }}>
+                    <div key={mail.id} onClick={() => toggleMailSelection(mail.id)} style={{ cursor: 'pointer' }}>
                         <MailItem
                         mail={mail}
                         darkMode={darkMode}
