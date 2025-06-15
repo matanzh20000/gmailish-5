@@ -113,16 +113,18 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     visibleMailCount={mails.length}
                 />
 
-                {trimmedMails.map(mail => (
-                    <MailItem
-                        key={mail.id}
+                            {trimmedMails.map(mail => (
+                    <div key={mail.id} onClick={() => onSelectMail(mail.id)} style={{ cursor: 'pointer' }}>
+                        <MailItem
                         mail={mail}
                         darkMode={darkMode}
                         timestampClass={themeColors.timestamp}
                         isSelected={selectedMailIds.includes(mail.id)}
                         onToggleSelected={() => toggleMailSelection(mail.id)}
-                    />
-                ))}
+                        />
+                    </div>
+                    ))}
+
             </div>
         </StylePanel>
     );

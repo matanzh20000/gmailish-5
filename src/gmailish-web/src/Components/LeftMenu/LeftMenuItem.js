@@ -3,6 +3,7 @@ import LabelItem from './LabelItem';
 import NewLabelModal from './NewLabelModal';
 import EditLabelModal from './EditLabelModal';
 
+
 const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails, themeColors, onCompose }) => {
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
     const labelButtonClass = darkMode ? 'btn btn-outline-secondary-dark' : 'btn btn-outline-secondary-light';
@@ -19,10 +20,12 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
         { name: 'Drafts', icon: 'bi-file-earmark-text' },
     ].map(label => ({
         ...label,
+
         count: mails.filter(mail =>
             (Array.isArray(mail.label) && mail.label.includes(label.name)) ||
             (typeof mail.label === 'string' && mail.label === label.name)
         ).length
+
     }));
 
     useEffect(() => {
@@ -154,8 +157,10 @@ const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, 
         >
             <button className={`${primaryButtonClass} w-100 mb-2`} onClick={onCompose}>
                 <i className="bi bi-pen me-2"></i>
+
                 Compose
-            </button>
+                </button>
+
 
             <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-3">
