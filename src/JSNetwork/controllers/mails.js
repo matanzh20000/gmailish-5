@@ -2,19 +2,23 @@ const Mail = require('../models/mails');
 const { sendToCppServer } = require('../models/blacklist');
 const { getUserByMail } = require('../models/users');
 
-/**
- * Extracts all “http://…”, “https://…”, or “www.…” links from a block of text.
- * Returns an array of matched URL strings.
- */
 function extractUrls(text) {
-  // Use a global regex to find any substring starting with http:// or https:// or www.
   const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
   const matches = text.match(urlRegex);
   return matches || [];
 }
 
 exports.createMail = async (req, res) => {
-  const { from, to = [], copy = [], blindCopy = [], subject = '', body = '' } = req.body;
+  const {
+    from,
+    to = [],
+    copy = [],
+    blindCopy = [],
+    subject = '',
+    body = '',
+    draft = false,
+    label = draft ? ['Drafts'] : ['Sent']
+  } = req.body;
 
   if (
     (!Array.isArray(to) || to.length === 0) &&
@@ -32,36 +36,37 @@ exports.createMail = async (req, res) => {
 
   const allRecipients = [...to, ...copy, ...blindCopy];
 
-  if (allRecipients.some(email => getUserByMail(email) === null)) {
-    return res.status(400).json({ error: 'Mail cannot be created - one or more recipients do not exist' });
-  }
+  if (!draft) {
+    if (allRecipients.some(email => getUserByMail(email) === null)) {
+      return res.status(400).json({ error: 'Mail cannot be created - one or more recipients do not exist' });
+    }
 
-  if (allRecipients.includes(from)) {
-    return res.status(400).json({ error: 'Cannot send mail to yourself' });
-  }
+    if (allRecipients.includes(from)) {
+      return res.status(400).json({ error: 'Cannot send mail to yourself' });
+    }
 
-  const urlsInBody = extractUrls(body);
-  const urlsInSubject = extractUrls(subject);
-  const allUrls = [...urlsInBody, ...urlsInSubject];
+    const urlsInBody = extractUrls(body);
+    const urlsInSubject = extractUrls(subject);
+    const allUrls = [...urlsInBody, ...urlsInSubject];
 
-  for (const url of allUrls) {
-    try {
-      const response = await sendToCppServer(`GET ${url}`);
-      const lines = response.trim().split('\n').map(line => line.trim()).filter(Boolean);
-      const lastLine = lines[lines.length - 1] || '';
+    for (const url of allUrls) {
+      try {
+        const response = await sendToCppServer(`GET ${url}`);
+        const lines = response.trim().split('\n').map(line => line.trim()).filter(Boolean);
+        const lastLine = lines[lines.length - 1] || '';
 
-      if (lastLine.toLowerCase() === 'true true') {
-        return res.status(400).json({ error: `Cannot create mail: link is blacklisted (${url})` });
+        if (lastLine.toLowerCase() === 'true true') {
+          return res.status(400).json({ error: `Cannot create mail: link is blacklisted (${url})` });
+        }
+      } catch (err) {
+        return res.status(400).json({ error: 'Blacklist service unavailable' });
       }
-    } catch (err) {
-      return res.status(400).json({ error: 'Blacklist service unavailable' });
     }
   }
 
   try {
     const timestamp = new Date();
 
-    // First, generate a single mail object with a shared ID
     const baseMail = {
       from,
       to,
@@ -69,34 +74,35 @@ exports.createMail = async (req, res) => {
       blindCopy,
       subject,
       body,
-      draft: false,
+      draft,
       createdAt: timestamp,
       updatedAt: timestamp
     };
 
-    // Create the sender's version
     const sentMail = Mail.createMail({
       ...baseMail,
-      label: ['Sent'],
+      label,
       owner: from
     });
 
-    const receiverMails = allRecipients.map(email => ({
-      ...sentMail,
-      id: sentMail.id,
-      label: ['Inbox'],
-      owner: email
-    }));
+    if (!draft) {
+      const receiverMails = allRecipients.map(email => ({
+        ...sentMail,
+        id: sentMail.id,
+        label: ['Inbox'],
+        owner: email
+      }));
 
-    // Add each inbox mail manually to the mail store
-    receiverMails.forEach(m => Mail.createMail(m));
+      receiverMails.forEach(m => Mail.createMail(m));
 
-    return res.status(201).json([sentMail, ...receiverMails]);
+      return res.status(201).json([sentMail, ...receiverMails]);
+    } else {
+      return res.status(201).json([sentMail]);
+    }
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.getRecentMails = (req, res) => {
   const userEmail = req.header('X-user');
@@ -152,10 +158,6 @@ exports.deleteMail = (req, res) => {
   return res.status(204).end();
 };
 
-/**
- * New: Search mails by a substring in any field.
- * GET /api/mails/search/:query
- */
 exports.searchMailsByQuery = (req, res) => {
   const { query } = req.params;
 
@@ -170,11 +172,7 @@ exports.searchMailsByQuery = (req, res) => {
     }
 
     const allMatches = Mail.searchMailsByQuery(query);
-
-    // Only return mails where this user is the owner
     const filtered = allMatches.filter(m => m.owner === userEmail);
-
-    // Deduplicate by ID
     const seen = new Set();
     const unique = filtered.filter(m => {
       if (seen.has(m.id)) return false;
@@ -183,7 +181,6 @@ exports.searchMailsByQuery = (req, res) => {
     });
 
     return res.status(200).json(unique);
-
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

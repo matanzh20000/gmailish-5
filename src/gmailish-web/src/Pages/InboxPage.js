@@ -14,6 +14,8 @@ const InboxPage = ({ onSignOut, user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCompose, setShowCompose] = useState(false);
+  const [editingDraftId, setEditingDraftId] = useState(null);
+  const [editingDraftData, setEditingDraftData] = useState(null);
   const { id } = useParams();
   const isViewingMail = !!id;
   const toggleTheme = () => setDarkMode(!darkMode);
@@ -38,17 +40,12 @@ const InboxPage = ({ onSignOut, user }) => {
       border: 'border-light'
     };
 
-
-
   useEffect(() => {
-    if (!user) return; // wait for user to be set
-
+    if (!user) return;
     const fetchMails = async () => {
       try {
         const res = await fetch('http://localhost:8080/api/mails', {
-          headers: {
-            'X-user': user.mail,
-          },
+          headers: { 'X-user': user.mail },
         });
         if (!res.ok) throw new Error('Failed to fetch mails');
         const data = await res.json();
@@ -60,90 +57,123 @@ const InboxPage = ({ onSignOut, user }) => {
         setLoading(false);
       }
     };
-
     fetchMails();
   }, [user]);
 
-const handleSendMail = async ({ to, subject, body }) => {
-  try {
-    const response = await fetch('http://localhost:8080/api/mails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-user': user.mail,
-      },
-      body: JSON.stringify({
-        from: user.mail,
-        to: [to],
-        subject,
-        body,
-        label: 'Sent',
-        date: new Date().toISOString(),
-      }),
-    });
-
-    if (!response.ok) throw new Error('Failed to send mail');
-
-    const refreshed = await fetch('http://localhost:8080/api/mails', {
-      headers: { 'X-user': user.mail },
-    });
-    const updatedMails = await refreshed.json();
-    setMails(updatedMails);
-
-    setShowCompose(false);
-  } catch (err) {
-    alert('Failed to send mail: ' + err.message);
-  }
-};
-
-useEffect(() => {
-  if (!user) return;
-
-  const intervalId = setInterval(async () => {
+  const handleSendMail = async ({ to, cc, bcc, subject, body, draftId }) => {
     try {
-      const res = await fetch('http://localhost:8080/api/mails', {
+      if (draftId) {
+        await fetch(`http://localhost:8080/api/mails/${draftId}`, {
+          method: 'DELETE',
+        });
+      }
+
+      const response = await fetch('http://localhost:8080/api/mails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-user': user.mail,
+        },
+        body: JSON.stringify({
+          from: user.mail,
+          to,
+          copy: cc,
+          blindCopy: bcc,
+          subject,
+          body,
+          label: ['Sent'],
+          date: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to send mail');
+
+      const refreshed = await fetch('http://localhost:8080/api/mails', {
         headers: { 'X-user': user.mail },
       });
-      if (!res.ok) throw new Error('Failed to fetch mails');
-      const data = await res.json();
-
-      setMails(prev => {
-        const existingIds = new Set(prev.map(m => m.id));
-        const newOnes = data.filter(m => !existingIds.has(m.id));
-        if (newOnes.length > 0) {
-          return [...newOnes, ...prev];
-        }
-        return prev; 
-      });
+      const updatedMails = await refreshed.json();
+      setMails(updatedMails);
     } catch (err) {
-      console.error('[Polling] Failed to fetch mails:', err);
+      alert('Failed to send mail: ' + err.message);
+    } finally {
+      setShowCompose(false);
+      setEditingDraftId(null);
+      setEditingDraftData(null);
     }
-  }, 2000);
-
-  return () => clearInterval(intervalId);
-}, [user]);
+  };
 
 
+  const handleSaveDraft = async ({ to, cc, bcc, subject, body, draftId }) => {
+    const isEmpty = !to.length && !cc.length && !bcc.length && !subject.trim() && !body.trim();
+    if (isEmpty) return;
 
+    const payload = {
+      from: user.mail,
+      to,
+      copy: cc,
+      blindCopy: bcc,
+      subject,
+      body,
+      draft: true,
+      label: ['Drafts'],
+      createdAt: new Date().toISOString(),
+    };
 
+    try {
+      if (draftId) {
+        await fetch(`http://localhost:8080/api/mails/${draftId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch('http://localhost:8080/api/mails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-user': user.mail,
+          },
+          body: JSON.stringify(payload),
+        });
+      }
+      const refreshed = await fetch('http://localhost:8080/api/mails', {
+        headers: { 'X-user': user.mail },
+      });
+      const updatedMails = await refreshed.json();
+      setMails(updatedMails);
+    } catch (err) {
+      console.error("Draft save failed:", err);
+    }
+  };
 
+  useEffect(() => {
+    if (!user) return;
+    const intervalId = setInterval(async () => {
+      try {
+        const res = await fetch('http://localhost:8080/api/mails', {
+          headers: { 'X-user': user.mail },
+        });
+        if (!res.ok) throw new Error('Failed to fetch mails');
+        const data = await res.json();
+        setMails(prev => {
+          const existingIds = new Set(prev.map(m => m.id));
+          const newOnes = data.filter(m => !existingIds.has(m.id));
+          return newOnes.length > 0 ? [...newOnes, ...prev] : prev;
+        });
+      } catch (err) {
+        console.error('[Polling] Failed to fetch mails:', err);
+      }
+    }, 2000);
+    return () => clearInterval(intervalId);
+  }, [user]);
 
   if (loading) return <div className="p-4">Loading mails...</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
 
-
   return (
-    <div style={{
-      backgroundColor: themeColors.background,
-      minHeight: '100vh',
-      height: '100%',
-    }} className={` ${themeColors.text} h-100 transition-theme`}>
-      {/* Top Menu */}
+    <div style={{ backgroundColor: themeColors.background, minHeight: '100vh', height: '100%' }} className={`${themeColors.text} h-100 transition-theme`}>
       <TopMenuItem darkMode={darkMode} toggleTheme={toggleTheme} onSignOut={onSignOut} user={user} themeColors={themeColors} />
-
-      {/* Main Content Area */}
       <div className="d-flex flex-grow-1">
-
         <LeftMenuItem
           darkMode={darkMode}
           selectedLabel={selectedLabel}
@@ -154,28 +184,53 @@ useEffect(() => {
           setMails={setMails}
           mails={mails}
           themeColors={themeColors}
-          onCompose={() => setShowCompose(true)}
+          onCompose={() => {
+            setEditingDraftId(null);
+            setEditingDraftData(null);
+            setShowCompose(true);
+          }}
         />
-        {isViewingMail ? (
-          <MailView mails={mails} darkMode={darkMode} />
-        ) : (
-          <MainMenu
-            darkMode={darkMode}
-            mails={visibleMails}
-            setMails={setMails}
-            selectedLabel={selectedLabel}
-            defaultLabels={labels}
-            customLabels={customLabels}
-          />
-        )}
+        {(() => {
+          const selectedMail = mails.find(m => m.id === parseInt(id));
+          if (isViewingMail && selectedMail?.draft && selectedMail.label.includes('Drafts')) {
+            setTimeout(() => {
+              setEditingDraftId(selectedMail.id);
+              setEditingDraftData(selectedMail);
+              setShowCompose(true);
+            }, 0);
+            return null;
+          }
 
+          return isViewingMail ? (
+            <MailView mails={mails} darkMode={darkMode} />
+          ) : (
+            <MainMenu
+              darkMode={darkMode}
+              mails={visibleMails}
+              setMails={setMails}
+              selectedLabel={selectedLabel}
+              defaultLabels={labels}
+              customLabels={customLabels}
+              onEditDraft={(draft) => {
+                setEditingDraftId(draft.id);
+                setEditingDraftData(draft);
+                setShowCompose(true);
+              }}
+            />
+          );
+        })()}
       </div>
-
       <ComposeModal
         show={showCompose}
-        onClose={() => setShowCompose(false)}
+        onCloseModal={() => {
+          setShowCompose(false);
+          setEditingDraftId(null);
+          setEditingDraftData(null);
+        }}
         onSend={handleSendMail}
-        user={user}
+        onSaveDraft={handleSaveDraft}
+        draftId={editingDraftId}
+        initialData={editingDraftData}
       />
     </div>
   );

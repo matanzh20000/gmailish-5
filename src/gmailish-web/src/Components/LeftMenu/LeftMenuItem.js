@@ -13,7 +13,7 @@ const LeftMenuItem = ({ darkMode,
     mails,
     themeColors,
     onCompose }) => {
-    
+
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
     const labelButtonClass = darkMode ? 'btn btn-outline-secondary-dark' : 'btn btn-outline-secondary-light';
     const [showModal, setShowModal] = useState(false);
@@ -168,7 +168,7 @@ const LeftMenuItem = ({ darkMode,
                 <i className="bi bi-pen me-2"></i>
 
                 Compose
-                </button>
+            </button>
 
 
             <div className="mb-3">
@@ -185,6 +185,7 @@ const LeftMenuItem = ({ darkMode,
                 <div className="d-grid gap-2">
                     {defaultLabels.map((label) => (
                         <LabelItem
+                            key={label.name} 
                             label={label}
                             darkMode={darkMode}
                             onSelect={() => onSelectLabel(label.name)}
