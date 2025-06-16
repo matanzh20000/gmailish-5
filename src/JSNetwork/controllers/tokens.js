@@ -1,6 +1,7 @@
 const TokenModel = require('../models/tokens');
 const jwt = require('jsonwebtoken');
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+const envPath = require('path').resolve(__dirname, '../.env');
+require('dotenv').config({ path: envPath });
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -15,6 +16,11 @@ exports.isUserTokenValid = (req, res) => {
     if (!userId) {
         return res.status(404).json({ message: 'Invalid credentials' });
     }
+    if (!process.env.SECRET_KEY) {
+        console.error('[ERROR] SECRET_KEY is undefined. Check .env loading.');
+        return res.status(500).json({ message: 'Internal server error: missing secret' });
+    }
+
 
     const token = jwt.sign({ id: userId, mail }, SECRET_KEY, { expiresIn: '2h' });
 

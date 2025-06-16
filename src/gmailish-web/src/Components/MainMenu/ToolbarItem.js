@@ -32,7 +32,7 @@ const ToolbarItem = ({
 
     return (
         <div
-            className={`d-flex align-items-center justify-content-between px-3 py-2 transition-theme ${darkMode ? 'toolbar-dark' : 'toolbar-light'} ${theme.text}`}
+            className={`d-flex align-items-center justify-content-between px-4 py-3 transition-theme ${darkMode ? 'toolbar-dark' : 'toolbar-light'} ${theme.text}`}
             style={{
                 marginBottom: '12px',
                 border: 'none'

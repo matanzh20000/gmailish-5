@@ -1,12 +1,17 @@
 const User = require('../models/users');
 
+
 exports.createUser = (req, res) => {
   const { firstName, lastName, birthDate, gender, mail, password, backupMail } = req.body;
+  const imageFile = req.file;
 
   const isValidEmail = email =>
     typeof email === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(email);
 
+  const imageUrl = req.file ? `uploads/${req.file.filename}` : 'uploads/default-avatar.png';
+
   // Validate required fields
+
   if (!firstName || !lastName || !birthDate || !gender || !mail || !password) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
@@ -27,7 +32,7 @@ exports.createUser = (req, res) => {
     return res.status(400).json({ message: 'Email already exists' });
   }
 
-  const newUser = User.createUser(firstName, lastName, birthDate, gender, mail, password, backupMail);
+  const newUser = User.createUser(firstName, lastName, birthDate, gender, mail, password, backupMail, imageUrl);
   return res.status(201).location(`/api/users/${newUser.id}`).end();
 };
 

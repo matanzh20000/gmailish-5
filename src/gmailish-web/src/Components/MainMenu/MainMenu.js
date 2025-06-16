@@ -56,7 +56,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     });
 
                     if (response.status === 204) {
-                        return { ...mail, label: [labelName] }; // ✅ locally reflect new label
+                        return { ...mail, label: [labelName] };
                     } else {
                         console.error(`Failed to update label for mail ${mail.id}`);
                         return mail;
@@ -98,31 +98,52 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 style={{
                     position: 'relative',
                     zIndex: 1,
-                    padding: '0.8rem',
                     borderRadius: 'inherit',
+                    padding: '0.5rem',
                     height: '100%',
+                    overflowY: 'auto',
+                    maxHeight: '100%',
                 }}
             >
-                <ToolbarItem
-                    darkMode={darkMode}
-                    selectedCount={selectedMailIds.length}
-                    allSelected={selectedMailIds.length === mails.length}
-                    onToggleSelectAll={toggleSelectAll}
-                    labels={combinedLabels}
-                    onAssignLabel={handleAssignLabel}
-                    visibleMailCount={mails.length}
-                />
-
-                {trimmedMails.map(mail => (
-                    <MailItem
-                        key={mail.id}
-                        mail={mail}
+                <div
+                    style={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: darkMode ? 'rgba(41, 88, 126, 0.7)' : 'rgba(109, 167, 253, 0.7)',
+                        borderRadius: 'inherit',
+                        height: '4.5rem',
+                    }}
+                >
+                    <ToolbarItem
                         darkMode={darkMode}
-                        timestampClass={themeColors.timestamp}
-                        isSelected={selectedMailIds.includes(mail.id)}
-                        onToggleSelected={() => toggleMailSelection(mail.id)}
+                        selectedCount={selectedMailIds.length}
+                        allSelected={selectedMailIds.length === mails.length}
+                        onToggleSelectAll={toggleSelectAll}
+                        labels={combinedLabels}
+                        onAssignLabel={handleAssignLabel}
+                        visibleMailCount={mails.length}
                     />
-                ))}
+                </div>
+
+                <div
+                    style={{
+                        overflowY: 'auto',
+                        flexGrow: 1,
+                        padding: '0.8rem',
+                    }}
+                >
+                    {trimmedMails.map(mail => (
+                        <MailItem
+                            key={mail.id}
+                            mail={mail}
+                            darkMode={darkMode}
+                            timestampClass={themeColors.timestamp}
+                            isSelected={selectedMailIds.includes(mail.id)}
+                            onToggleSelected={() => toggleMailSelection(mail.id)}
+                        />
+                    ))}
+                </div>
             </div>
         </StylePanel>
     );

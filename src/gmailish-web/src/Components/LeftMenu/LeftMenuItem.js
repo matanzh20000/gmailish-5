@@ -3,7 +3,16 @@ import LabelItem from './LabelItem';
 import NewLabelModal from './NewLabelModal';
 import EditLabelModal from './EditLabelModal';
 
-const LeftMenuItem = ({ darkMode, onSelectLabel, customLabels, setCustomLabels, selectedLabel, setMails, mails, themeColors, onCompose }) => {
+const LeftMenuItem = ({ darkMode,
+    onSelectLabel,
+    customLabels,
+    setCustomLabels,
+    selectedLabel,
+    setMails,
+    mails,
+    themeColors,
+    onCompose }) => {
+        
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
     const labelButtonClass = darkMode ? 'btn btn-outline-secondary-dark' : 'btn btn-outline-secondary-light';
     const [showModal, setShowModal] = useState(false);
