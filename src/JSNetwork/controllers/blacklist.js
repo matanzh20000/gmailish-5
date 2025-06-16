@@ -41,5 +41,3 @@ exports.getBlacklistUrl = async (req, res) => {
   }
 };
 
-
-
