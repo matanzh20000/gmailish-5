@@ -39,6 +39,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
         );
     };
 
+
   const handleAssignLabel = async (labelName) => {
     const updatedIds = new Set(selectedMailIds);
 
@@ -134,12 +135,24 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                 style={{
                     position: 'relative',
                     zIndex: 1,
-                    padding: '0.8rem',
                     borderRadius: 'inherit',
+                    padding: '0.5rem',
                     height: '100%',
+                    overflowY: 'auto',
+                    maxHeight: '100%',
                 }}
             >
-                <ToolbarItem
+                <div
+                    style={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: darkMode ? 'rgba(41, 88, 126, 0.7)' : 'rgba(109, 167, 253, 0.7)',
+                        borderRadius: 'inherit',
+                        height: '4.5rem',
+                    }}
+                >
+                    <ToolbarItem
                     darkMode={darkMode}
                     selectedCount={selectedMailIds.length}
                     allSelected={selectedMailIds.length === mails.length}
@@ -154,13 +167,33 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                         <MailItem
                         mail={mail}
                         darkMode={darkMode}
-                        timestampClass={themeColors.timestamp}
-                        isSelected={selectedMailIds.includes(mail.id)}
-                        onToggleSelected={() => toggleMailSelection(mail.id)}
-                        />
-                    </div>
-                    ))}
+                        selectedCount={selectedMailIds.length}
+                        allSelected={selectedMailIds.length === mails.length}
+                        onToggleSelectAll={toggleSelectAll}
+                        labels={combinedLabels}
+                        onAssignLabel={handleAssignLabel}
+                        visibleMailCount={mails.length}
+                    />
+                </div>
 
+                <div
+                    style={{
+                        overflowY: 'auto',
+                        flexGrow: 1,
+                        padding: '0.8rem',
+                    }}
+                >
+                    {trimmedMails.map(mail => (
+                        <MailItem
+                            key={mail.id}
+                            mail={mail}
+                            darkMode={darkMode}
+                            timestampClass={themeColors.timestamp}
+                            isSelected={selectedMailIds.includes(mail.id)}
+                            onToggleSelected={() => toggleMailSelection(mail.id)}
+                        />
+                    ))}
+                </div>
             </div>
         </StylePanel>
     );

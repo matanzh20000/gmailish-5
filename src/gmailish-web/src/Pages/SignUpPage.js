@@ -12,7 +12,7 @@ const SignUpPage = ({ setToken }) => {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [backupMail, setBackupMail] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -60,7 +60,6 @@ const SignUpPage = ({ setToken }) => {
 
   const handleSignUp = async () => {
     setError('');
-    const emailRegex = /^[a-zA-Z0-9._%+-]+$/;
 
     if (backupMail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(backupMail)) {
       return setError('Invalid backup email format.');
@@ -73,20 +72,24 @@ const SignUpPage = ({ setToken }) => {
       year: birth.getFullYear(),
     };
 
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('gender', gender);
+    formData.append('password', password);
+    formData.append('mail', mail + '@gmailish.com');
+    formData.append('backupMail', backupMail);
+    if (image) {
+      formData.append('avatar', image);
+    }
+    formData.append('birthDate[day]', birthDateObj.day);
+    formData.append('birthDate[month]', birthDateObj.month);
+    formData.append('birthDate[year]', birthDateObj.year);
+
     try {
       const res = await fetch('http://localhost:8080/api/users', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          birthDate: birthDateObj,
-          gender,
-          mail: mail + '@gmailish.com',
-          password,
-          backupMail,
-          image,
-        }),
+        body: formData
       });
 
       if (!res.ok) {
@@ -183,8 +186,13 @@ const SignUpPage = ({ setToken }) => {
                 <input className="form-control form-control-lg" type="email" value={backupMail} onChange={(e) => setBackupMail(e.target.value)} />
               </div>
               <div className="mb-4">
-                <label className="form-label">Image URL</label>
-                <input className="form-control form-control-lg" type="text" value={image} onChange={(e) => setImage(e.target.value)} />
+                <label className="form-label">Upload Profile Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-control form-control-lg"
+                  onChange={(e) => setImage(e.target.files[0])}
+                />
               </div>
             </>
           )}

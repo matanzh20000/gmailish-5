@@ -16,6 +16,7 @@ app.use('/api/mails', mailsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tokens', tokenRoutes);
 app.use('/api/blacklist', blacklistRoutes);
+app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

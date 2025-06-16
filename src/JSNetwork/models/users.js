@@ -1,7 +1,7 @@
 const users = [];
 let idCounter = 0;
 
-const createUser = (firstName, lastName, birthDate, gender, mail, password, backupMail = null) => {
+const createUser = (firstName, lastName, birthDate, gender, mail, password, backupMail = null, image = null) => {
   const newUser = {
     id: ++idCounter,
     firstName,
@@ -10,7 +10,8 @@ const createUser = (firstName, lastName, birthDate, gender, mail, password, back
     gender,
     mail,
     password,
-    backupMail
+    backupMail,
+    image
   };
   users.push(newUser);
   return newUser;

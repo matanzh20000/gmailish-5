@@ -139,11 +139,12 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                     aria-expanded="false"
                 >
                     <img
-                        src={""}
+                        src={user.image ? `http://localhost:8080/${user.image}` : 'http://localhost:8080/uploads/default-avatar.png'}
                         alt="User Avatar"
                         className="rounded-circle"
                         style={{ width: '40px', height: '40px' }}
                     />
+
                 </button>
 
                 <ul
