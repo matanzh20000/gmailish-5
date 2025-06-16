@@ -5,8 +5,8 @@ exports.createUser = (req, res) => {
   const { firstName, lastName, birthDate, gender, mail, password, backupMail } = req.body;
   const imageFile = req.file;
 
-  const isValidEmail = email =>
-    typeof email === 'string' && /^[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(email);
+  const isValidEmail = (email) =>
+    typeof email === 'string' && /^[a-zA-Z0-9._%+-]+@gmailish\.com$/i.test(email);
 
   const imageUrl = req.file ? `uploads/${req.file.filename}` : 'uploads/default-avatar.png';
 
