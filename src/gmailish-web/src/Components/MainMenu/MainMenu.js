@@ -39,38 +39,75 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
         );
     };
 
-    const handleAssignLabel = async (labelName) => {
-        const updatedIds = new Set(selectedMailIds);
 
-        const updatedMailList = await Promise.all(
-            mails.map(async (mail) => {
-                if (!updatedIds.has(mail.id)) return mail;
+  const handleAssignLabel = async (labelName) => {
+    const updatedIds = new Set(selectedMailIds);
 
-                try {
-                    const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ label: [labelName] }),
-                    });
+    function extractUrls(text) {
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+        return text.match(urlRegex) || [];
+    }
 
-                    if (response.status === 204) {
-                        return { ...mail, label: [labelName] };
+    const updatedMailList = await Promise.all(
+        mails.map(async (mail) => {
+            if (!updatedIds.has(mail.id)) return mail;
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ label: [labelName] }),
+                });
+
+                if (response.status === 204) {
+                    const urls = extractUrls(`${mail.subject}\n${mail.body}`);
+
+                    if (labelName === 'Spam') {
+                        for (const url of urls) {
+                            try {
+                                const checkRes = await fetch(`http://localhost:8080/api/blacklist/${encodeURIComponent(url)}`);
+                                const check = await checkRes.json();
+
+                                if (!check.blacklisted) {
+                                    await fetch('http://localhost:8080/api/blacklist', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ url }),
+                                    });
+                                }
+                            } catch (e) {
+                                // Handle silently
+                            }
+                        }
                     } else {
-                        console.error(`Failed to update label for mail ${mail.id}`);
-                        return mail;
+                        for (const url of urls) {
+                            try {
+                                await fetch(`http://localhost:8080/api/blacklist/${encodeURIComponent(url)}`, {
+                                    method: 'DELETE',
+                                });
+                            } catch (e) {
+                                // Handle silently
+                            }
+                        }
                     }
-                } catch (err) {
-                    console.error('Label update error:', err);
+
+                    return { ...mail, label: [labelName] };
+                } else {
                     return mail;
                 }
-            })
-        );
+            } catch (err) {
+                return mail;
+            }
+        })
+    );
 
-        setMails(updatedMailList);
-        setSelectedMailIds([]);
-    };
+    setMails(updatedMailList);
+    setSelectedMailIds([]);
+};
+
+
 
     const trimmedMails = mails.map(mail => ({
         ...mail,
@@ -116,6 +153,19 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels }) =>
                     }}
                 >
                     <ToolbarItem
+                    darkMode={darkMode}
+                    selectedCount={selectedMailIds.length}
+                    allSelected={selectedMailIds.length === mails.length}
+                    onToggleSelectAll={toggleSelectAll}
+                    labels={combinedLabels}
+                    onAssignLabel={handleAssignLabel}
+                    visibleMailCount={mails.length}
+                />
+
+                            {trimmedMails.map(mail => (
+                    <div key={mail.id} onClick={() => toggleMailSelection(mail.id)} style={{ cursor: 'pointer' }}>
+                        <MailItem
+                        mail={mail}
                         darkMode={darkMode}
                         selectedCount={selectedMailIds.length}
                         allSelected={selectedMailIds.length === mails.length}
