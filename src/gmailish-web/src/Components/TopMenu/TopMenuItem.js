@@ -68,26 +68,86 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
             color: ${placeholderColor};
         }`}
                 </style>
-                <input
-                    type="text"
-                    className="form-control custom-search"
-                    placeholder="Search mail..."
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
-                    style={{
-                        backgroundColor: searchColor,
-                        minWidth: '150px',
-                        width: '100%',
-                        maxWidth: '1000px'
-                    }}
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                        type="text"
+                        className="form-control custom-search pe-5"
+                        placeholder="Search mail..."
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                        style={{
+                            backgroundColor: searchColor,
+                            minWidth: '150px',
+                            width: '100%',
+                            maxWidth: '1000px'
+                        }}
+                    />
+                    {query && (
+                        <button
+                            type="button"
+                            className="btn btn-sm position-absolute"
+                            onClick={() => setQuery('')}
+                            style={{
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'transparent',
+                                border: 'none',
+                                color: darkMode ? '#ccc' : '#333',
+                                fontSize: '1rem'
+                            }}
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    )}
+
+                    {results.length > 0 && (
+                        <div
+                            className="dropdown-menu show"
+                            style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                width: '100%',
+                                backgroundColor: darkMode ? '#444' : 'white',
+                                zIndex: 1000,
+                                border: '1px solid #ccc',
+                                borderTop: 'none',
+                                maxHeight: '300px',
+                                maxWidth: '1000px',
+                                overflowY: 'auto',
+                                padding: 0
+                            }}
+                        >
+                            {results.map(data => (
+                                <div
+                                    key={data.id}
+                                    style={{
+                                        padding: '8px',
+                                        color: darkMode ? 'white' : 'black',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => {
+                                        navigate(`/inbox/${data.id}`);
+                                        setQuery('');
+                                    }}
+                                >
+                                    <i className="bi bi-envelope-fill me-2"></i>
+                                    <strong>{data.subject}</strong><br />
+                                    <small>From: {data.from}</small><br />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 {results.length > 0 && (
                     <div
                         className="dropdown-menu show"
                         style={{
                             position: 'absolute',
                             top: '100%',
-                            left: 0, // align to parent input
+                            left: 0, 
                             width: '100%',
                             backgroundColor: darkMode ? '#444' : 'white',
                             zIndex: 1000,

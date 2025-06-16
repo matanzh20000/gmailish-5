@@ -7,7 +7,8 @@ const ToolbarItem = ({
     onToggleSelectAll,
     labels,
     onAssignLabel,
-    visibleMailCount
+    visibleMailCount,
+    onDeleteMails
 }) => {
     const theme = darkMode
         ? {
@@ -83,7 +84,11 @@ const ToolbarItem = ({
 
                     </div>
 
-                    <button className={`btn btn-sm ${theme.icon}`} title="Delete Mail">
+                    <button
+                        className={`btn btn-sm ${theme.icon}`}
+                        title="Delete Mail"
+                        onClick={onDeleteMails} 
+                    >
                         <i className="bi bi-trash" style={{ fontSize: '1.2rem' }}></i>
                     </button>
                 </div>

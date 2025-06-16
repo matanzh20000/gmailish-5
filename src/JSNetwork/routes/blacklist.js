@@ -7,4 +7,5 @@ router.route('/').post(controller.createBlacklist);
 router.route('/:id')
 .delete(controller.deleteBlacklist).get(controller.getBlacklistUrl);
 
+
 module.exports = router;

@@ -11,7 +11,6 @@ const SignUpPage = ({ setToken }) => {
   const [gender, setGender] = useState('');
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
-  const [backupMail, setBackupMail] = useState('');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -19,7 +18,6 @@ const SignUpPage = ({ setToken }) => {
 
   const handleNext = () => {
     setError('');
-    const emailRegex = /^[a-zA-Z0-9._%+-]+$/;
 
     if (step === 1) {
       if (!firstName || !lastName || !birthDate || !gender) {
@@ -36,8 +34,9 @@ const SignUpPage = ({ setToken }) => {
       if (!mail || !password) {
         return setError('Email and password are required.');
       }
-      if (!emailRegex.test(mail)) {
-        return setError('Invalid email characters. Only letters, numbers, and ". _ % + -" are allowed.');
+      const allowedChars = /^[a-z0-9._%+/-]+$/;
+      if (!allowedChars.test(mail)) {
+        return setError('Email must contain only lowercase letters, numbers, and ._%+/-');
       }
       if (password.length < 5 || !/\d/.test(password)) {
         return setError('Password must be at least 5 characters and include a number.');
@@ -61,10 +60,6 @@ const SignUpPage = ({ setToken }) => {
   const handleSignUp = async () => {
     setError('');
 
-    if (backupMail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(backupMail)) {
-      return setError('Invalid backup email format.');
-    }
-
     const birth = new Date(birthDate);
     const birthDateObj = {
       day: birth.getDate(),
@@ -78,7 +73,6 @@ const SignUpPage = ({ setToken }) => {
     formData.append('gender', gender);
     formData.append('password', password);
     formData.append('mail', mail + '@gmailish.com');
-    formData.append('backupMail', backupMail);
     if (image) {
       formData.append('avatar', image);
     }
@@ -166,7 +160,6 @@ const SignUpPage = ({ setToken }) => {
                     type="text"
                     value={mail}
                     onChange={(e) => setMail(e.target.value)}
-                    pattern="^[a-zA-Z0-9._%+-]+$"
                     required
                   />
                   <span className="email-domain">@gmailish.com</span>
@@ -181,10 +174,6 @@ const SignUpPage = ({ setToken }) => {
 
           {step === 3 && (
             <>
-              <div className="mb-3">
-                <label className="form-label">Backup Email</label>
-                <input className="form-control form-control-lg" type="email" value={backupMail} onChange={(e) => setBackupMail(e.target.value)} />
-              </div>
               <div className="mb-4">
                 <label className="form-label">Upload Profile Image</label>
                 <input
