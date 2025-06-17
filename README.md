@@ -1,120 +1,126 @@
-# Bloom Filter CLI Application
-
 ## Table of Contents
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-- [Features](#features)
-- [Network](#network)
-- [How to Run](#how-to-run)
-  - [Running with Docker](#running-with-docker)
-- [Persistence](#persistence)
-- [Run Demo](#Run-Demo)
+
+* [Overview](#overview)
+* [Project Structure](#project-structure)
+* [Features](#features)
+* [Network](#network)
+* [How to Run](#how-to-run)
+
+  * [Running with Docker](#running-with-docker)
+* [Persistence](#persistence)
+* [Notes](#notes)
 
 ---
 
 ## Overview
-This project is a Gmail-like mail system designed with a modular architecture, emphasizing clean design, extensibility, and fault tolerance. It includes:
-  - A Node.js/Express-based server that handles user and mail operations (create, update, send, etc.).
-  - A C++ TCP server responsible for URL blacklist validation in email bodies, acting as a content filter.
-  - A GTest test suite to validate C++ server logic and simulate real client-server interaction.
+
+This project is a Gmail-like mail system designed with modular architecture, clean design, and robust fault tolerance.
+
+It includes:
+
+* A **Node.js/Express** server for user and mail operations.
+* A **C++ TCP server** for blacklist URL validation using a Bloom Filter.
+* A **React** frontend styled with Bootstrap.
+* GTest-based test suite for C++ components.
 
 **Main Components**:
-1. **Node.js Express Server (MVC Architecture)**
 
-    **Responsibilities**:
-   - User creation and validation.
-   - Mail creation, patching and deletion.
-   - Checks if a mail body contains a blacklisted URL by sending it to the C++ server.
-   - Label creation and management.
+1. **Node.js Express Server** (MVC Architecture)
 
- **URL Validation Flow**:
-  1. Extract URLs from the mail body.
-  2. Open a TCP socket to the C++ URL filter server.
-  3. Send: GET\n<URL>\n
-  4. If response is "true true", reject mail.
+   * Manages users, mails, and labels.
+   * Uses JWT-based authentication.
+   * Validates emails for blacklisted URLs via a TCP call to the C++ server.
 
 2. **C++ TCP Server**
 
-   **Responsibilities**:
-   - Listens on a port for TCP connections.
-   - Parses incoming messages like: GET\n<URL>\n.
-   - In case of URL validation, Responds with:
-      1. "true true": URL is in the Bloom Filter and blacklisted.
-      2. "true false": In Bloom Filter, but not explicitly blacklisted.
-      3. "false": Not found at all.
+   * Responds to `GET\n<URL>\n` format.
+   * Returns:
 
- **Implementation**:
-  1. Uses a Bloom Filter for space-efficient storage of URLs.
-  2. Supports multiple hash functions, loaded from seeds.
-  3. Persists:
+     * `true true`: Found in Bloom filter and explicitly blacklisted.
+     * `true false`: Found in Bloom filter but not in explicit blacklist.
+     * `false`: Not found at all.
 
-  - bits.txt: Bloom bit array.
-  - urls.txt: Explicit blacklist.
-  - seeds.txt: Hash seeds.
+3. **React Web App**
 
----
+   * Built with React.js and styled using Bootstrap, providing a modern, responsive, and user-friendly interface.
+   * Sign in / Sign up with profile picture.
+   * Compose mail with `To`, `Cc`, and `Bcc` fields. The compose interface is designed to mimic the real Gmail experience. Users can dynamically add or hide `Cc` and `Bcc` fields using toggle buttons, which improves usability. Each of these fields is validated to ensure recipients exist in the system. Additionally, the compose window supports saving drafts.
+   * Mail drafts allow users to save unfinished emails and return to them later. The dark/light mode toggle enhances accessibility and user comfort by allowing interface theme changes. The search bar enables users to find specific mails by keywords. Label functionality supports email organization by allowing users to categorize emails under customizable tags for better filtering and management.
 
-## Project Structure
-- **src/**: Contains core application logic.
-  - **Bloom/**: Bloom Filter implementation including BitArray and HashFunctions.
-  - **persistence/**: Handles saving/loading data from files.
-  - **cli/**: Command-line interface commands and app flow.
-  - **Network/**: TCP server logic and functionality.
-  - **JSNetwork**: MVC Architecture of HTTP server.
-- **tests/**: GoogleTest-based unit tests for various modules.
-- **Dockerfile**: For containerized builds and execution.
-- **CMakeLists.txt**: Build configuration for CMake.
+
+Our project structure supports full-stack development by keeping frontend, backend, and core server logic logically organized and accessible within one repository. It simplifies Dockerization and helps developers switch between components seamlessly.
+
+### Backend (`JSNetwork/`)
+
+* Follows MVC (Model-View-Controller) pattern for Node.js Express server.
+
+### Core C++ Server (`src/`)
+
+```
+src/
+├── Bloom/                    # Bloom filter core logic, BitArray, and hash functions
+├── persistence/              # Save/load from bits.txt, urls.txt, seeds.txt
+├── cli/                      # CLI interface logic (optional for command-line operations)
+├── Network/                  # TCP server setup, socket handling
+├── tests/                    # Unit tests for C++ components (GTest)
+├── Dockerfile                # Docker image build instructions
+├── docker-compose.yml        # Multi-container setup
+└── CMakeLists.txt            # C++ build system
+```
 
 ---
 
 ## Features
-- **Bloom Filter Implementation**:
-  - Supports multiple hash functions.
-  - Efficient URL addition and lookup.
-  - False positive-aware checks (`mightContain`) and strict blacklist checks.
-  
-- **Persistence**:
-  - Saves filter bit array, hash functions invokes and blacklisted URLs to files.
-  
-- **API and HTTP requests**
-  - Demonstrate a real web server, with Gmail-like functionality
-  - respond to many HTTP request for users, mails and more.
+
+### Bloom Filter + C++ Server
+
+* Efficient and space-saving URL validation.
+* Fast testing with false-positive.
+* TCP-based interface for external querying.
+
+### Node.js Server
+
+* Secure JWT-based login & registration.
+* Only registered users can send/receive emails.
+* Validates input fields thoroughly.
+* Sends content to C++ server for blacklist scanning before allowing send.
+
+### Frontend (React + Bootstrap)
+
+* Fully responsive interface.
+* Compose with `To`, `Cc`, `Bcc`.
+* Sign up supports uploading a profile picture (or uses default).
+* Dark mode / light mode toggle.
+* Labels and email categorization.
+* Mail search.
+* Save emails as draft.
+* Logout and login flow.
+
 ---
 
 ## Network
 
- Network protocols define rules for data exchange between devices. Common types include:
- - **TCP (Transmission Control Protocol)**
-  Reliable, connection-oriented. Guarantees delivery and order of data. Used for web, email, file transfer.
- - **UDP (User Datagram Protocol)**
-  Fast, connectionless. No guarantee of delivery or order. Used for video streaming, gaming, VoIP.
-  
- We chose **TCP** for our project due to its key advantages:
- - Reliable data transmission
- - Ensures full command messages are delivered
- - Handles packet ordering and retransmission automatically
- - Simple to implement custom text-based protocols over it
+### Why TCP?
 
-Our project uses a client-server model over TCP:
-- **Server (C++):**
-  - Listens on a TCP port using socket, bind, listen, and accept.
-  - For each client connection, reads commands, processes them, and returns responses.
-  - Delegates command logic to the App class and maintains state via AppState.
-- **Client (Node js):**
-  - Connects to the server
-  - Sends user-typed commands over TCP
-  - Receives and handles server’s response
+TCP provides reliable, ordered delivery of messages, which is essential for custom text-based protocols like our `GET\n<URL>\n` queries.
 
-  **Supporting Concepts**
-  - **Sockets**
-      - A socket is an endpoint for sending or receiving data between machines.
-      - We use TCP/IP sockets: SOCK_STREAM for TCP, AF_INET for IPv4.
-      - The server creates a socket to listen for connections, the client creates one to connect.
-  - **IP Adresses**
-      - An IP address identifies a device on a network.
-      - Our server listens on INADDR_ANY (0.0.0.0) to accept connections from any address.
-      - The client connects to 127.0.0.1 (localhost) or a configured container name (like server-container in Docker).
+### Architecture
 
+* **Server (C++)**:
+
+  * Listens for connections on a TCP port.
+  * Parses incoming URL check requests.
+  * Maintains Bloom filter and blacklist state.
+
+* **Client (Node.js)**:
+
+  * Sends extracted URLs from email body to C++ server.
+  * Decides to allow or reject based on response.
+
+### Supporting Concepts
+
+* **Sockets**: Endpoint for data exchange.
+* **IP**: Uses `INADDR_ANY` on server side; connects to `127.0.0.1` or container alias from Node.
 
 ---
 
@@ -122,43 +128,64 @@ Our project uses a client-server model over TCP:
 
 ### Running with Docker
 
-1. **Clone repository to local machine**
+1. Clone this repository.
+2. Open Docker Desktop.
+3. Navigate to the `src/` folder in terminal.
+4. Create a folder named `data` inside `src`.
+5. Inside `src`, create a `.env` file with:
 
-2. **Open Docker Desktop**
-
-4. **Create a folder named 'data' in src folder**
-
-5. **Inside /src folder, Create .env file with the following content:**
-   ```bash
+   ```env
    SECRET_KEY=SOMEKEY
-6. **Verify that all docker conatiners and images related to the project are deleted**
+   ```
+6. Delete all containers/images related to the project:
 
-7. **IMPORTANT: Navigtae to /src folder**
+   ```bash
+   docker container prune
+   docker image prune -a
+   ```
+7. Build the containers:
 
-8. **Build the images**
    ```bash
    docker-compose build
+   ```
+8. Start the containers:
 
-9. **Run container**
    ```bash
    docker-compose up
+   ```
+9. Open Gmailish in your browser:
 
-10. **Open Gmailish at:**
-   ```bash
+   ```
    http://localhost:3000/
+   ```
 
+---
 
-
-  
 ## Persistence
 
-### Files:
-- **bits.txt**: Stores Bloom Filter bit array.
-- **urls.txt**: Stores blacklisted URLs.
-- **seeds.txt**: Stores hash function seeds.
+### Files
 
+In order to confirm that a url is blacklisted open docker desktop, and navigate to containers/src/cpp_server/files/app/data/urls.txt - Open in editor.
+* `bits.txt`: Bloom Filter bit array
+* `urls.txt`: Explicitly blacklisted URLs
+* `seeds.txt`: Hash function seeds
 
-### Saving:
-- After running `Init`, `DeleteURL` `AddURL`, the app automatically saves the updated filter and blacklist.
+### Behavior
 
+* Upon URL addition/deletion or `Init`, the updated Bloom state is saved automatically.
 
+---
+
+## Notes
+
+* If no profile image is uploaded on registration, a default one is used.
+* On registration, enter your **name** (e.g., `alice`) and **not** an email format like `alice@gmailish.com`.
+
+---
+
+## Security & Configuration
+
+* JWT tokens are used for secure authentication.
+* `.env` file contains the secret key for token generation (do not expose publicly).
+
+---
