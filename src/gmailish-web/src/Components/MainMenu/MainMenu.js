@@ -94,7 +94,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
                                             body: JSON.stringify({ url }),
                                         });
                                     }
-                                } catch (e) {}
+                                } catch (e) { }
                             }
                         } else {
                             for (const url of urls) {
@@ -102,7 +102,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
                                     await fetch(`http://localhost:8080/api/blacklist/${encodeURIComponent(url)}`, {
                                         method: 'DELETE',
                                     });
-                                } catch (e) {}
+                                } catch (e) { }
                             }
                         }
 
@@ -165,7 +165,8 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
                 {trimmedMails.map(mail => (
                     <div
                         key={mail.id}
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.stopPropagation();
                             if (mail.label.includes('Drafts') && mail.draft && typeof onEditDraft === 'function') {
                                 onEditDraft(mail);
                             } else {

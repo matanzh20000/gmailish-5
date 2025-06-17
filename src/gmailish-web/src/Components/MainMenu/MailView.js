@@ -68,9 +68,21 @@ const MailView = ({ mails, darkMode }) => {
 
                 {/* From + Label */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
                         <i className="bi bi-person-circle" style={{ fontSize: '1.2rem', color: metaColor }}></i>
                         <span style={{ fontWeight: 500 }}>From: {mail.from}</span>
+
+                        {mail.copy?.length > 0 && (
+                            <span style={{ fontWeight: 500, color: metaColor }}>
+                                Cc: {mail.copy.join(', ')}
+                            </span>
+                        )}
+
+                        {mail.blindCopy?.length > 0 && (
+                            <span style={{ fontWeight: 500, color: metaColor }}>
+                                Bcc: {mail.blindCopy.join(', ')}
+                            </span>
+                        )}
                     </div>
                     {mail.label && (
                         <span

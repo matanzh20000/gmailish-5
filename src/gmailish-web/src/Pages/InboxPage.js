@@ -6,6 +6,8 @@ import MainMenu from '../Components/MainMenu/MainMenu';
 import TopMenuItem from '../Components/TopMenu/TopMenuItem';
 import MailView from '../Components/MainMenu/MailView';
 import ComposeModal from '../Components/MainMenu/ComposeModal';
+import { useNavigate } from 'react-router-dom';
+
 
 const InboxPage = ({ onSignOut, user }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -19,6 +21,7 @@ const InboxPage = ({ onSignOut, user }) => {
   const { id } = useParams();
   const isViewingMail = !!id;
   const toggleTheme = () => setDarkMode(!darkMode);
+  const navigate = useNavigate();
   const visibleMails = mails.filter(mail =>
     (Array.isArray(mail.label) && mail.label.includes(selectedLabel)) ||
     (typeof mail.label === 'string' && mail.label === selectedLabel)
@@ -194,12 +197,14 @@ const InboxPage = ({ onSignOut, user }) => {
           const selectedMail = mails.find(m => m.id === parseInt(id));
           if (isViewingMail && selectedMail?.draft && selectedMail.label.includes('Drafts')) {
             setTimeout(() => {
+              navigate('/inbox'); 
               setEditingDraftId(selectedMail.id);
               setEditingDraftData(selectedMail);
               setShowCompose(true);
             }, 0);
             return null;
           }
+
 
           return isViewingMail ? (
             <MailView mails={mails} darkMode={darkMode} />
