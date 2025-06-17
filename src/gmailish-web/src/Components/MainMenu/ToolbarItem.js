@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 const ToolbarItem = ({
     darkMode,
     selectedCount,
@@ -24,10 +22,8 @@ const ToolbarItem = ({
             checkbox: 'form-check-input text-primary'
         };
 
-    const [dropDown, setDropdownOpen] = useState(false);
 
     const handleLabelSelect = (labelName) => {
-        setDropdownOpen(false);
         onAssignLabel(labelName);
     };
 
