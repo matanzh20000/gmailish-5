@@ -78,11 +78,6 @@ const MailView = ({ mails, darkMode }) => {
                             </span>
                         )}
 
-                        {mail.blindCopy?.length > 0 && (
-                            <span style={{ fontWeight: 500, color: metaColor }}>
-                                Bcc: {mail.blindCopy.join(', ')}
-                            </span>
-                        )}
                     </div>
                     {mail.label && (
                         <span

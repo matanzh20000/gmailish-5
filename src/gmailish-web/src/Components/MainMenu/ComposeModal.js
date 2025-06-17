@@ -16,6 +16,7 @@ const ComposeModal = ({
   const [body, setBody] = useState('');
   const [showCc, setShowCc] = useState(false);
   const [showBcc, setShowBcc] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const resetFields = () => {
@@ -37,21 +38,31 @@ const ComposeModal = ({
     setBody(initialData.body || '');
   }, [draftId, initialData]);
 
-  const handleSubmit = () => {
-    const toList = to.split(',').map(e => e.trim()).filter(Boolean);
-    const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
-    const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
+const handleSubmit = async () => {
+  const toList = to.split(',').map(e => e.trim()).filter(Boolean);
+  const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
+  const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
 
-    if (toList.length === 0) {
-      alert('Please specify at least one recipient.');
-      return;
-    }
+  if (toList.length === 0) {
+    setErrorMessage('Please specify at least one recipient.');
+    return;
+  }
 
-    onSend({ to: toList, cc: ccList, bcc: bccList, subject, body, draftId });
-    resetFields();
-  };
+  await onSend(
+    {
+      to: toList,
+      cc: ccList,
+      bcc: bccList,
+      subject,
+      body,
+      draftId,
+    },
+    setErrorMessage 
+  );
 
-  const handleClose = () => {
+  resetFields();
+};
+ const handleClose = () => {
     const toList = to.split(',').map(e => e.trim()).filter(Boolean);
     const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
     const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
@@ -111,6 +122,13 @@ const ComposeModal = ({
               </div>
             )}
 
+              {errorMessage && (
+              <div className="alert alert-danger" role="alert">
+                {errorMessage}
+              </div>
+            )}
+
+
             <div className="mb-3">
               <label className="form-label">Subject</label>
               <input type="text" className="form-control" value={subject} onChange={(e) => setSubject(e.target.value)} />
@@ -131,3 +149,4 @@ const ComposeModal = ({
 };
 
 export default ComposeModal;
+
