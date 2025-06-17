@@ -62,48 +62,60 @@ const InboxPage = ({ onSignOut, user }) => {
     };
     fetchMails();
   }, [user]);
-
-  const handleSendMail = async ({ to, cc, bcc, subject, body, draftId }) => {
-    try {
-      if (draftId) {
-        await fetch(`http://localhost:8080/api/mails/${draftId}`, {
-          method: 'DELETE',
-        });
-      }
-
-      const response = await fetch('http://localhost:8080/api/mails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-user': user.mail,
-        },
-        body: JSON.stringify({
-          from: user.mail,
-          to,
-          copy: cc,
-          blindCopy: bcc,
-          subject,
-          body,
-          label: ['Sent'],
-          date: new Date().toISOString(),
-        }),
+const handleSendMail = async (
+  { to, cc, bcc, subject, body, draftId },
+  setErrorMessage
+) => {
+  try {
+    if (draftId) {
+      await fetch(`http://localhost:8080/api/mails/${draftId}`, {
+        method: 'DELETE',
       });
-
-      if (!response.ok) throw new Error('Failed to send mail');
-
-      const refreshed = await fetch('http://localhost:8080/api/mails', {
-        headers: { 'X-user': user.mail },
-      });
-      const updatedMails = await refreshed.json();
-      setMails(updatedMails);
-    } catch (err) {
-      alert('Failed to send mail: ' + err.message);
-    } finally {
-      setShowCompose(false);
-      setEditingDraftId(null);
-      setEditingDraftData(null);
     }
-  };
+
+    const response = await fetch('http://localhost:8080/api/mails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-user': user.mail,
+      },
+      body: JSON.stringify({
+        from: user.mail,
+        to,
+        copy: cc,
+        blindCopy: bcc,
+        subject,
+        body,
+        label: ['Sent'],
+        date: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      if (response.status === 400 && errorText.includes("blacklist")) {
+        setErrorMessage('Cannot send mail. It contains a blacklisted URL.');
+      } else {
+        setErrorMessage('Failed to send mail. Please try again.');
+      }
+      return;
+    }
+
+    const refreshed = await fetch('http://localhost:8080/api/mails', {
+      headers: { 'X-user': user.mail },
+    });
+    const updatedMails = await refreshed.json();
+    setMails(updatedMails);
+
+    // Success: clear error
+    setErrorMessage('');
+    setShowCompose(false);
+    setEditingDraftId(null);
+    setEditingDraftData(null);
+  } catch (err) {
+    setErrorMessage('An unexpected error occurred: ' + err.message);
+  }
+};
 
 
   const handleSaveDraft = async ({ to, cc, bcc, subject, body, draftId }) => {
