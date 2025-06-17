@@ -41,9 +41,6 @@ exports.createMail = async (req, res) => {
       return res.status(400).json({ error: 'Mail cannot be created - one or more recipients do not exist' });
     }
 
-    if (allRecipients.includes(from)) {
-      return res.status(400).json({ error: 'Cannot send mail to yourself' });
-    }
 
     const urlsInBody = extractUrls(body);
     const urlsInSubject = extractUrls(subject);

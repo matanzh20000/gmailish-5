@@ -10,7 +10,7 @@ function sendToCppServer(message) {
   return new Promise((resolve, reject) => {
     const client = new net.Socket();
 
-    client.connect(5555, 'localhost', () => {
+    client.connect(5555, 'cppserver', () => {
       client.write(message + '\n');
     });
 

@@ -30,6 +30,19 @@ const ComposeModal = ({
   };
 
   useEffect(() => {
+    if (!show) return;
+
+    // If it's not editing a draft, fully reset
+    if (!draftId && !initialData) {
+      resetFields();
+      setErrorMessage('');
+    } else {
+      // If editing a draft, ensure error is still cleared
+      setErrorMessage('');
+    }
+  }, [show, draftId, initialData]);
+
+  useEffect(() => {
     if (!draftId || !initialData) return;
     setTo(initialData.to?.join(', ') || '');
     setCc(initialData.copy?.join(', ') || '');
@@ -38,31 +51,31 @@ const ComposeModal = ({
     setBody(initialData.body || '');
   }, [draftId, initialData]);
 
-const handleSubmit = async () => {
-  const toList = to.split(',').map(e => e.trim()).filter(Boolean);
-  const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
-  const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
+  const handleSubmit = async () => {
+    const toList = to.split(',').map(e => e.trim()).filter(Boolean);
+    const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
+    const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
 
-  if (toList.length === 0) {
-    setErrorMessage('Please specify at least one recipient.');
-    return;
-  }
+    if (toList.length === 0) {
+      setErrorMessage('Please specify at least one recipient.');
+      return;
+    }
 
-  await onSend(
-    {
-      to: toList,
-      cc: ccList,
-      bcc: bccList,
-      subject,
-      body,
-      draftId,
-    },
-    setErrorMessage 
-  );
+    await onSend(
+      {
+        to: toList,
+        cc: ccList,
+        bcc: bccList,
+        subject,
+        body,
+        draftId,
+      },
+      setErrorMessage
+    );
 
-  resetFields();
-};
- const handleClose = () => {
+    resetFields();
+  };
+  const handleClose = () => {
     const toList = to.split(',').map(e => e.trim()).filter(Boolean);
     const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
     const bccList = bcc.split(',').map(e => e.trim()).filter(Boolean);
@@ -73,6 +86,7 @@ const handleSubmit = async () => {
     }
 
     resetFields();
+    setErrorMessage('');
     onCloseModal();
     setTimeout(() => navigate('/inbox'), 0);
   };
@@ -122,7 +136,7 @@ const handleSubmit = async () => {
               </div>
             )}
 
-              {errorMessage && (
+            {errorMessage && (
               <div className="alert alert-danger" role="alert">
                 {errorMessage}
               </div>
