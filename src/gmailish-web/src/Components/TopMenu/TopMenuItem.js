@@ -1,12 +1,13 @@
 import ThemeSwitch from "./ThemeSwitch";
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'; import UserCard from "./UserCard";
+import { useNavigate } from 'react-router-dom';
+import UserCard from "./UserCard";
+
 const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
-    const btnTheme = darkMode
-        ? 'btn btn-dark border-0'
-        : 'btn btn-light border-0';
+    const btnTheme = darkMode ? 'btn btn-dark border-0' : 'btn btn-light border-0';
     const searchColor = darkMode ? '#66667d' : '#ffffff';
     const placeholderColor = darkMode ? '#cccccc' : '#666666';
+
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
@@ -19,14 +20,10 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
             }
             try {
                 const res = await fetch(`http://localhost:8080/api/mails/search/${encodeURIComponent(query)}`, {
-                    headers: {
-                        'X-user': user.mail
-                    }
+                    headers: { 'X-user': user.mail }
                 });
                 if (!res.ok) throw new Error("Failed to fetch");
                 const allResults = await res.json();
-
-                // Results are already filtered by server (ownership + deduplicated)
                 setResults(allResults);
             } catch (err) {
                 console.error(err);
@@ -34,17 +31,15 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
             }
         };
 
-        const timeoutId = setTimeout(fetchData, 300); // debounce input
+        const timeoutId = setTimeout(fetchData, 300); // debounce
         return () => clearTimeout(timeoutId);
     }, [query, user]);
 
-
     return (
         <div
-            className={`d-flex  align-items-center px-4 py-2 ${themeColors.text} ${themeColors.border} transition-theme`}
+            className={`d-flex align-items-center px-4 py-2 ${themeColors.text} ${themeColors.border} transition-theme`}
             style={{ height: '80px', backgroundColor: themeColors.background }}
         >
-
             <div
                 className="d-flex align-items-center"
                 style={{ cursor: 'pointer', marginLeft: '70px' }}
@@ -61,25 +56,22 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                 />
             </div>
 
-            <div style={{ flex: 1, minWidth: '200px', marginLeft: '90px', position: 'relative' }}>
+            <div style={{ flex: 1, minWidth: '200px', marginLeft: '90px' }}>
                 <style>
-                    {`
-        .custom-search::placeholder {
-            color: ${placeholderColor};
-        }`}
+                    {`.custom-search::placeholder { color: ${placeholderColor}; }`}
                 </style>
-                <div style={{ position: 'relative', width: '100%' }}>
+
+                <div style={{ position: 'relative', width: '100%', maxWidth: '1000px' }}>
                     <input
                         type="text"
-                        className="form-control custom-search pe-5"
+                        className="form-control custom-search"
                         placeholder="Search mail..."
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         style={{
                             backgroundColor: searchColor,
-                            minWidth: '150px',
-                            width: '100%',
-                            maxWidth: '1000px'
+                            paddingRight: '2.5rem',
+                            width: '100%'
                         }}
                     />
                     {query && (
@@ -93,8 +85,10 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                                 transform: 'translateY(-50%)',
                                 background: 'transparent',
                                 border: 'none',
+                                padding: '0',
                                 color: darkMode ? '#ccc' : '#333',
-                                fontSize: '1rem'
+                                fontSize: '1.25rem',
+                                zIndex: 2
                             }}
                         >
                             <i className="bi bi-x-lg"></i>
@@ -114,7 +108,6 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                                 border: '1px solid #ccc',
                                 borderTop: 'none',
                                 maxHeight: '300px',
-                                maxWidth: '1000px',
                                 overflowY: 'auto',
                                 padding: 0
                             }}
@@ -140,56 +133,12 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                         </div>
                     )}
                 </div>
-
-                {results.length > 0 && (
-                    <div
-                        className="dropdown-menu show"
-                        style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: 0, 
-                            width: '100%',
-                            backgroundColor: darkMode ? '#444' : 'white',
-                            zIndex: 1000,
-                            border: '1px solid #ccc',
-                            borderTop: 'none',
-                            maxHeight: '300px',
-                            maxWidth: '1000px',
-                            overflowY: 'auto',
-                            padding: 0
-                        }}
-                    >
-                        {results.map(data => (
-                            <div
-                                key={data.id}
-                                style={{
-                                    padding: '8px',
-                                    borderBottom: 'transparent',
-                                    color: darkMode ? 'white' : 'black',
-                                    cursor: 'pointer'
-                                }}
-                                onClick={() => {
-                                    navigate(`/inbox/${data.id}`);
-                                    setQuery('');
-                                }}
-                            >
-                                <i className="bi bi-envelope-fill me-2"></i>
-                                <strong>{data.subject}</strong><br />
-                                <small>From: {data.from}</small><br />
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
 
-
-            {/* Theme Toggle */}
-            <div
-                style={{ cursor: 'pointer', marginLeft: '100px' }}>
+            <div style={{ cursor: 'pointer', marginLeft: '100px' }}>
                 <ThemeSwitch darkMode={darkMode} toggleTheme={toggleTheme} />
             </div>
 
-            {/* User Dropdown */}
             <div className="dropdown">
                 <button
                     className={`${btnTheme} dropdown-toggle p-0`}
@@ -204,7 +153,6 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                         className="rounded-circle"
                         style={{ width: '40px', height: '40px' }}
                     />
-
                 </button>
 
                 <ul
@@ -217,9 +165,8 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                     </li>
                 </ul>
             </div>
-        </div >
+        </div>
     );
-
 };
 
 export default TopMenu;

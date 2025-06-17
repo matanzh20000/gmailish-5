@@ -35,7 +35,6 @@
 settings.json
 .vscode
 /build
-/src/data
 CMakeCache.txt
 CMakeFiles/
 /CTestTestfile.cmake
