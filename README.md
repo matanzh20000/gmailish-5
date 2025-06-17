@@ -1,14 +1,14 @@
-## Table of Contents
+![8](https://github.com/user-attachments/assets/b8f80eb1-c7b2-4603-aae7-cf98ef4ef687)## Table of Contents
 
 * [Overview](#overview)
 * [Project Structure](#project-structure)
 * [Features](#features)
 * [Network](#network)
 * [How to Run](#how-to-run)
-
-  * [Running with Docker](#running-with-docker)
+* [Running with Docker](#running-with-docker)
 * [Persistence](#persistence)
 * [Notes](#notes)
+* [Run Demo](#rundemo)
 
 ---
 
@@ -189,3 +189,32 @@ In order to confirm that a url is blacklisted open docker desktop, and navigate 
 * `.env` file contains the secret key for token generation (do not expose publicly).
 
 ---
+
+## Run demo:
+![1](https://github.com/user-attachments/assets/dcd994ef-0385-464f-b897-489c2a5191cc)
+![2](https://github.com/user-attachments/assets/f903ca05-dcd0-4677-b991-c3c656c229f0)
+![3](https://github.com/user-attachments/assets/f599f14f-51bc-4c55-89cb-45dfa7f65ee1)
+![4](https://github.com/user-attachments/assets/aebc39ba-89b2-43e7-b086-f34a6aa96908)
+![5](https://github.com/user-attachments/assets/343d3385-3dcb-4566-8bfd-428029d3f95e)
+![7](https://github.com/user-attachments/assets/2d2cbc7a-3953-4ddf-b0e4-f2d4331e2e81)
+![8](https://github.com/user-attachments/assets/aa96e0a5-0650-4c67-a95e-7445ee0f179d)
+![9](https://github.com/user-attachments/assets/9373b172-5755-4413-814a-f81d8ecd9bb2)
+![10](https://github.com/user-attachments/assets/16c6616b-6c24-43c8-a1e0-548f70ebad49)
+![11](https://github.com/user-attachments/assets/f7c85406-b4e2-4eea-befe-a0f1adef55cc)
+![12](https://github.com/user-attachments/assets/9cdd9c03-b563-4b8b-a78f-ca51df463914)
+![13](https://github.com/user-attachments/assets/9ebecd3e-6bc4-4dbf-9d08-07b7c9d28a12)
+![14](https://github.com/user-attachments/assets/f03540c3-e17b-48e2-a521-e54258301623)
+![15](https://github.com/user-attachments/assets/c4817030-38f4-431b-9eb3-5de9c643f79d)
+![16](https://github.com/user-attachments/assets/6aa86a64-db44-4dec-bc10-a974255bff9c)
+
+
+
+
+
+
+
+
+
+
+
+
