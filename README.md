@@ -1,4 +1,4 @@
-![8](https://github.com/user-attachments/assets/b8f80eb1-c7b2-4603-aae7-cf98ef4ef687)## Table of Contents
+## Table of Contents
 
 * [Overview](#overview)
 * [Project Structure](#project-structure)
