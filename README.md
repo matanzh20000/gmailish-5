@@ -126,14 +126,14 @@ Our project uses a client-server model over TCP:
 
 2. **Open Docker Desktop**
 
-3. **IMPORTANT: Navigate to /src folder in terminal**
+4. **Create a folder named 'data' in src folder**
 
-4. **Create a folder named 'data'**
-
-5. **Create .env file with the following content:**
+5. **Inside /src folder, Create .env file with the following content:**
    ```bash
    SECRET_KEY=SOMEKEY
 6. **Verify that all docker conatiners and images related to the project are deleted**
+
+7. **IMPORTANT: Navigtae to /src folder**
 
 8. **Build the images**
    ```bash
