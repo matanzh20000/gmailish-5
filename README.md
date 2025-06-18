@@ -8,7 +8,7 @@
 * [Running with Docker](#running-with-docker)
 * [Persistence](#persistence)
 * [Notes](#notes)
-* [Run Demo](#rundemo)
+- [Run Demo](#run-demo)
 
 ---
 
