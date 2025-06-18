@@ -1,7 +1,6 @@
 ## Table of Contents
 
 * [Overview](#overview)
-* [Project Structure](#project-structure)
 * [Features](#features)
 * [Network](#network)
 * [How to Run](#how-to-run)
