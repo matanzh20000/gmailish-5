@@ -12,7 +12,8 @@ const LeftMenuItem = ({ darkMode,
     setMails,
     mails,
     themeColors,
-    onCompose }) => {
+    onCompose,
+    user }) => {
 
     const primaryButtonClass = darkMode ? 'btn btn-primary-dark' : 'btn btn-primary-light';
     const labelButtonClass = darkMode ? 'btn btn-outline-secondary-dark' : 'btn btn-outline-secondary-light';
@@ -40,16 +41,18 @@ const LeftMenuItem = ({ darkMode,
     useEffect(() => {
         const fetchLabels = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/labels');
+                const response = await fetch('http://localhost:8080/api/labels', {
+                    headers: { 'X-user': user.mail }
+                });
                 const data = await response.json();
-                setCustomLabels(data);
+                setCustomLabels(data.filter(label => label.user === user.mail));
             } catch (err) {
                 console.error('Failed to fetch labels:', err);
             }
         };
 
         fetchLabels();
-    }, [setCustomLabels]);
+    }, [setCustomLabels, user]);
 
     const handleSubmitNewLabel = async () => {
         if (!newLabelName.trim()) return;
@@ -57,8 +60,14 @@ const LeftMenuItem = ({ darkMode,
         try {
             const response = await fetch('http://localhost:8080/api/labels', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newLabelName, icon: 'bi bi-tag' })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-user': user.mail
+                },
+                body: JSON.stringify({
+                    name: newLabelName,
+                    icon: 'bi bi-tag',
+                })
             });
 
             if (!response.ok) {
@@ -185,7 +194,7 @@ const LeftMenuItem = ({ darkMode,
                 <div className="d-grid gap-2">
                     {defaultLabels.map((label) => (
                         <LabelItem
-                            key={label.name} 
+                            key={label.name}
                             label={label}
                             darkMode={darkMode}
                             onSelect={() => onSelectLabel(label.name)}
