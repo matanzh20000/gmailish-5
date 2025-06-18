@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './ComposeModal.css';
+import RecipientFields from './RecipientFields';
+import MessageEditor from './MessageEditor';
+import ErrorAlert from './ErrorAlert';
 
 const ComposeModal = ({
   show,
@@ -31,13 +35,10 @@ const ComposeModal = ({
 
   useEffect(() => {
     if (!show) return;
-
-    // If it's not editing a draft, fully reset
     if (!draftId && !initialData) {
       resetFields();
       setErrorMessage('');
     } else {
-      // If editing a draft, ensure error is still cleared
       setErrorMessage('');
     }
   }, [show, draftId, initialData]);
@@ -61,20 +62,18 @@ const ComposeModal = ({
       return;
     }
 
-    await onSend(
-      {
-        to: toList,
-        cc: ccList,
-        bcc: bccList,
-        subject,
-        body,
-        draftId,
-      },
-      setErrorMessage
-    );
+    await onSend({
+      to: toList,
+      cc: ccList,
+      bcc: bccList,
+      subject,
+      body,
+      draftId,
+    }, setErrorMessage);
 
     resetFields();
   };
+
   const handleClose = () => {
     const toList = to.split(',').map(e => e.trim()).filter(Boolean);
     const ccList = cc.split(',').map(e => e.trim()).filter(Boolean);
@@ -96,11 +95,7 @@ const ComposeModal = ({
       className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
       role="dialog"
       aria-modal="true"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        pointerEvents: 'auto',
-        zIndex: 1050
-      }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', pointerEvents: 'auto', zIndex: 1050 }}
     >
       <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content" style={{ pointerEvents: 'auto' }}>
@@ -109,48 +104,25 @@ const ComposeModal = ({
             <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
           <div className="modal-body">
-            <div className="mb-3">
-              <label className="form-label">To</label>
-              <input type="text" className="form-control" value={to} onChange={(e) => setTo(e.target.value)} />
-              <div className="mt-2">
-                <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={() => setShowCc(!showCc)}>
-                  {showCc ? 'Hide Cc' : 'Add Cc'}
-                </button>
-                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setShowBcc(!showBcc)}>
-                  {showBcc ? 'Hide Bcc' : 'Add Bcc'}
-                </button>
-              </div>
-            </div>
-
-            {showCc && (
-              <div className="mb-3">
-                <label className="form-label">Cc</label>
-                <input type="text" className="form-control" value={cc} onChange={(e) => setCc(e.target.value)} />
-              </div>
-            )}
-
-            {showBcc && (
-              <div className="mb-3">
-                <label className="form-label">Bcc</label>
-                <input type="text" className="form-control" value={bcc} onChange={(e) => setBcc(e.target.value)} />
-              </div>
-            )}
-
-            {errorMessage && (
-              <div className="alert alert-danger" role="alert">
-                {errorMessage}
-              </div>
-            )}
-
-
-            <div className="mb-3">
-              <label className="form-label">Subject</label>
-              <input type="text" className="form-control" value={subject} onChange={(e) => setSubject(e.target.value)} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Body</label>
-              <textarea className="form-control" rows="5" value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-            </div>
+            <RecipientFields
+              to={to}
+              cc={cc}
+              bcc={bcc}
+              showCc={showCc}
+              showBcc={showBcc}
+              setTo={setTo}
+              setCc={setCc}
+              setBcc={setBcc}
+              setShowCc={setShowCc}
+              setShowBcc={setShowBcc}
+            />
+            <ErrorAlert message={errorMessage} />
+            <MessageEditor
+              subject={subject}
+              body={body}
+              setSubject={setSubject}
+              setBody={setBody}
+            />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={handleClose}>Close</button>
@@ -163,4 +135,3 @@ const ComposeModal = ({
 };
 
 export default ComposeModal;
-

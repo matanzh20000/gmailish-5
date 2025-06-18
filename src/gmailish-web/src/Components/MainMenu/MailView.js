@@ -96,8 +96,14 @@ const MailView = ({ mails, darkMode }) => {
 
                 <hr style={{ borderColor: darkMode ? '#444' : '#ccc' }} />
 
-                {/* Body */}
-                <div style={{ lineHeight: '1.75', fontSize: '1.1rem', whiteSpace: 'pre-wrap' }}>
+             {/* Body */}
+                <div style={{
+                    lineHeight: '1.75',
+                    fontSize: '1.1rem',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
+                }}>
                     {mail.body}
                 </div>
             </div>
