@@ -146,44 +146,50 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
                 style={{
                     position: 'relative',
                     zIndex: 1,
-                    padding: '0.8rem',
                     borderRadius: 'inherit',
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
-                <ToolbarItem
-                    darkMode={darkMode}
-                    selectedCount={selectedMailIds.length}
-                    allSelected={selectedMailIds.length === mails.length}
-                    onToggleSelectAll={toggleSelectAll}
-                    labels={combinedLabels}
-                    onAssignLabel={handleAssignLabel}
-                    visibleMailCount={mails.length}
-                    onDeleteMails={handleDeleteMails}
-                />
+                <div
+                    style={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 10,
+                        backgroundColor: darkMode ? 'rgba(54, 118, 190, 0.5)' : 'rgba(103, 169, 212, 0.5)'
+                    }}
+                >
+                    <ToolbarItem
+                        darkMode={darkMode}
+                        selectedCount={selectedMailIds.length}
+                        allSelected={selectedMailIds.length === mails.length}
+                        onToggleSelectAll={toggleSelectAll}
+                        labels={combinedLabels}
+                        onAssignLabel={handleAssignLabel}
+                        visibleMailCount={mails.length}
+                        onDeleteMails={handleDeleteMails}
+                    />
+                </div>
 
-                {trimmedMails.map(mail => (
-                    <div
-                        key={mail.id}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (mail.label.includes('Drafts') && mail.draft && typeof onEditDraft === 'function') {
-                                onEditDraft(mail);
-                            } else {
-                                toggleMailSelection(mail.id);
-                            }
-                        }}
-                        style={{ cursor: 'pointer' }}
-                    >
+                <div
+                    style={{
+                        overflowY: 'auto',
+                        flexGrow: 1,
+                        padding: '0.8rem',
+                    }}
+                >
+                    {trimmedMails.map(mail => (
                         <MailItem
+                            key={mail.id}
                             mail={mail}
                             darkMode={darkMode}
                             timestampClass={themeColors.timestamp}
                             isSelected={selectedMailIds.includes(mail.id)}
                             onToggleSelected={() => toggleMailSelection(mail.id)}
                         />
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </StylePanel>
     );

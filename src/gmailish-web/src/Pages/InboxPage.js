@@ -204,6 +204,7 @@ const handleSendMail = async (
             setEditingDraftData(null);
             setShowCompose(true);
           }}
+          user={user}
         />
         {(() => {
           const selectedMail = mails.find(m => m.id === parseInt(id));
