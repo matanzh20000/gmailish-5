@@ -29,7 +29,7 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
         if (selectedMailIds.length === mails.length) {
             setSelectedMailIds([]);
         } else {
-            setSelectedMailIds(mails.map(m => m.id));
+            setSelectedMailIds(mails.map(m => m._id));
         }
     };
 
@@ -37,13 +37,13 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
         const idsToDelete = [...selectedMailIds];
 
         try {
-            await Promise.all(idsToDelete.map(id =>
-                fetch(`http://localhost:8080/api/mails/${id}`, {
+            await Promise.all(idsToDelete.map(_id =>
+                fetch(`http://localhost:8080/api/mails/${_id}`, {
                     method: 'DELETE',
                 })
             ));
 
-            setMails(prev => prev.filter(mail => !idsToDelete.includes(mail.id)));
+            setMails(prev => prev.filter(mail => !idsToDelete.includes(mail._id)));
             setSelectedMailIds([]);
         } catch (err) {
             console.error("Failed to delete mails:", err);
@@ -67,10 +67,10 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
 
         const updatedMailList = await Promise.all(
             mails.map(async (mail) => {
-                if (!updatedIds.has(mail.id)) return mail;
+                if (!updatedIds.has(mail._id)) return mail;
 
                 try {
-                    const response = await fetch(`http://localhost:8080/api/mails/${mail.id}`, {
+                    const response = await fetch(`http://localhost:8080/api/mails/${mail._id}`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
@@ -181,12 +181,12 @@ const MainMenu = ({ darkMode, mails, setMails, defaultLabels, customLabels, onEd
                 >
                     {trimmedMails.map(mail => (
                         <MailItem
-                            key={mail.id}
+                            key={mail._id}
                             mail={mail}
                             darkMode={darkMode}
                             timestampClass={themeColors.timestamp}
-                            isSelected={selectedMailIds.includes(mail.id)}
-                            onToggleSelected={() => toggleMailSelection(mail.id)}
+                            isSelected={selectedMailIds.includes(mail._id)}
+                            onToggleSelected={() => toggleMailSelection(mail._id)}
                         />
                     ))}
                 </div>

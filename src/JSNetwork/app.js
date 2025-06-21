@@ -5,10 +5,14 @@ const mailsRoutes = require('./routes/mails');
 const userRoutes = require('./routes/users');
 const tokenRoutes = require('./routes/tokens');
 const blacklistRoutes = require('./routes/blacklist');
-const Mail = require('./models/mails');
 const cors = require('cors');
+const mongoose = require('mongoose');
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+const envPath = require('path').resolve(__dirname, '.env');
+require('dotenv').config({ path: envPath });
 
+mongoose.connect(process.env.CONNECTION_STRING);
+console.log('Connected to MongoDB' + process.env.CONNECTION_STRING);
 
 app.use(express.json());
 app.use('/api/labels', labelRoutes);

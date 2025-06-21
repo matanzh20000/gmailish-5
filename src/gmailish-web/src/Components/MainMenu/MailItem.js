@@ -15,7 +15,7 @@ const MailItem = ({ mail, darkMode, timestampClass, isSelected, onToggleSelected
         <div
             className={`card mb-2 ${theme.card}`}
             style={{ transition: 'transform 0.15s ease', cursor: 'pointer' }}
-            onClick={() => navigate(`/inbox/${mail.id}`)}
+            onClick={() => navigate(`/inbox/${mail._id}`)}
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateX(4px)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateX(0px)')}
         >

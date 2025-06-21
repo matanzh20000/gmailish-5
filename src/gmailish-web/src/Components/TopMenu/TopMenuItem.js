@@ -114,14 +114,14 @@ const TopMenu = ({ darkMode, toggleTheme, onSignOut, user, themeColors }) => {
                         >
                             {results.map(data => (
                                 <div
-                                    key={data.id}
+                                    key={data._id}
                                     style={{
                                         padding: '8px',
                                         color: darkMode ? 'white' : 'black',
                                         cursor: 'pointer'
                                     }}
                                     onClick={() => {
-                                        navigate(`/inbox/${data.id}`);
+                                        navigate(`/inbox/${data._id}`);
                                         setQuery('');
                                     }}
                                 >

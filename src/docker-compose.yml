@@ -11,17 +11,28 @@ services:
     networks:
       - server-network
 
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: mongo
+    networks:
+    - server-network
+
   express:
     build:
       context: .
       dockerfile: ./Dockerfile_express
     ports:
       - "8080:8080"
+    container_name: express
     depends_on:
       - cppserver
+      - mongo
     networks:
       - server-network
     environment:
+      - CONNECTION_STRING=mongodb://mongo:27017/gmailish
       - NODE_ENV=development
       - PORT=8080
 
