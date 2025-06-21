@@ -1,15 +1,11 @@
-const SignInItem = ({ mail, password, setMail, setPassword, error, onSubmit }) => {
+const SignInItem = ({ mail, password, setMail, setPassword, error, onSubmit, darkMode }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({ mail, password });
   };
-
+  
   return (
     <>
-      <h1 className="text-center mb-4" style={{ color: '#2575fc', fontWeight: '900' }}>
-        Sign In
-      </h1>
-
       <form onSubmit={handleSubmit} noValidate>
         <div className="mb-4">
           <label htmlFor="email" className="form-label fw-bold">
@@ -58,10 +54,10 @@ const SignInItem = ({ mail, password, setMail, setPassword, error, onSubmit }) =
         </button>
       </form>
 
-      <div className="mt-4 text-center text-muted" style={{ fontSize: '0.9rem' }}>
-        Don’t have an account?{' '}
-        <a href="/register" className="text-primary fw-bold text-decoration-none">
-          Sign Up
+      <div className={`mt-4 text-center signup-prompt ${darkMode ? 'dark' : 'light'}`}>
+        Don't have an account?{' '}
+        <a href="/register" className={darkMode ? 'text-info' : 'text-primary'} style={{ fontWeight: 'bold', textDecoration: 'none' }}>
+          Register here
         </a>
       </div>
     </>

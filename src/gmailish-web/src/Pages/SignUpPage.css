@@ -118,3 +118,16 @@
 .signup-title.dark {
   color: #66ccff;
 }
+
+.signin-prompt {
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.signin-prompt.light {
+  color: #333;
+}
+
+.signin-prompt.dark {
+  color: #ffffff;
+}

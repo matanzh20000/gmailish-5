@@ -101,6 +101,7 @@ const LeftMenuItem = ({ darkMode,
             if (response.status !== 204) {
                 throw new Error('Failed to update label');
             }
+            const oldLabelName = customLabels.find(l => l.id === editingLabelId)?.name;
 
             setCustomLabels((prev) =>
                 prev.map((l) =>
@@ -108,8 +109,32 @@ const LeftMenuItem = ({ darkMode,
                 )
             );
 
+            const updateLabelInMails = async () => {
+
+                const updatePromises = [];
+                setMails((prevMails) =>
+                    prevMails.map((mail) => {
+                        if (
+                            (Array.isArray(mail.label) && mail.label.includes(oldLabelName)) ||
+                            (typeof mail.label === 'string' && mail.label === oldLabelName)
+                        ) {
+                            updatePromises.push(
+                                fetch(`http://localhost:8080/api/mails/${mail.id}`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ label: [newLabelName] }),
+                                })
+                            );
+                            return { ...mail, label: [newLabelName] };
+                        }
+                        return mail;
+                    })
+                );
+                await Promise.all(updatePromises);
+            };
+            await updateLabelInMails();
+
             setEditingLabelId(null);
-            setNewLabelName('');
         } catch (err) {
             console.error(err);
             alert('Label update failed');
