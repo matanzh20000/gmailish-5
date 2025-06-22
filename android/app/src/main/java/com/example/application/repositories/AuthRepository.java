@@ -1,6 +1,8 @@
 
 package com.example.application.repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -20,7 +22,10 @@ public class AuthRepository {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
         api.login(new LoginRequest(mail, password)).enqueue(new Callback<AuthResponse>() {
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> res) {
-                result.setValue(res.isSuccessful() && res.body() != null);
+                if (!res.isSuccessful()) {
+                    Log.e("SignUp", "Error code: " + res.code() + ", message: " + res.message());
+                }
+                result.setValue(res.isSuccessful());
             }
 
             public void onFailure(Call<AuthResponse> call, Throwable t) {
@@ -37,7 +42,9 @@ public class AuthRepository {
                 result.setValue(res.isSuccessful());
             }
 
+
             public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("SignUp", "Failure: " + t.getMessage());
                 result.setValue(false);
             }
         });
