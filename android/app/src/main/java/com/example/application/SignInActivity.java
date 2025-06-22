@@ -4,17 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.application.viewmodels.AuthViewModel;
 
 public class SignInActivity extends AppCompatActivity {
+
     private EditText emailInput, passwordInput;
-    private Button signInButton, goToSignUp;
-    private AuthViewModel authViewModel;
+    private Button signInButton;
+    private TextView goToSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,25 +25,19 @@ public class SignInActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButton);
         goToSignUp = findViewById(R.id.goToSignUp);
 
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
         signInButton.setOnClickListener(v -> {
-            String email = emailInput.getText().toString();
-            String password = passwordInput.getText().toString();
+            String email = emailInput.getText().toString().trim();
+            String password = passwordInput.getText().toString().trim();
 
-            authViewModel.signIn(email, password).observe(this, success -> {
-                if (success) {
-                    Intent intent = new Intent(SignInActivity.this, InboxActivity.class);
-                    intent.putExtra("email", email);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
         });
 
-        goToSignUp.setOnClickListener(v -> {
-            startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
-        });
+        goToSignUp.setOnClickListener(v ->
+                startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
     }
 }
