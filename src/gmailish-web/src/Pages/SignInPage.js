@@ -4,11 +4,10 @@ import AuthLayoutItem from '../Components/Auth/AuthLayoutItem';
 import SignInItem from '../Components/Auth/SignInItem';
 import './SignInPage.css';
 
-const SignInPage = ({ setToken }) => {
+const SignInPage = ({ setToken, darkMode, setDarkMode }) => {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async ({ mail, password }) => {

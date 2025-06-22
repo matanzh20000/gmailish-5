@@ -4,7 +4,7 @@ import StylePanel from "./StylePanel";
 const MailView = ({ mails, darkMode }) => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const mail = mails.find(m => m.id === parseInt(id));
+    const mail = mails.find(m => m._id === id);
 
     if (!mail) return <div className="p-4">Mail not found</div>;
 

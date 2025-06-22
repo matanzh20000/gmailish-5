@@ -30,7 +30,10 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode, user }) {
           token ? (
             <Navigate to="/inbox" />
           ) : (
-            <SignInPage setToken={setToken} />
+            <SignInPage
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
+              setToken={setToken} />
           )
         }
       />
@@ -56,7 +59,7 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode, user }) {
       />
       <Route
         path="/register"
-        element={<SignUpPage />}
+        element={<SignUpPage darkMode={darkMode} setDarkMode={setDarkMode} />}
       />
 
     </Routes>
@@ -64,10 +67,17 @@ function AppRoutes({ token, setToken, darkMode, setDarkMode, user }) {
 }
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem('darkMode');
+    return stored === 'true'; 
+  });
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [user, setUser] = useState(null);
-
 
   useEffect(() => {
     if (token) {

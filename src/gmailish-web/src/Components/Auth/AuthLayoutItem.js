@@ -4,6 +4,7 @@ const AuthLayoutItem = ({ children, darkMode }) => {
   return (
     <div className={`signin-container ${darkMode ? 'dark' : ''}`}>
       <div className={`signin-card ${darkMode ? 'dark' : ''}`} tabIndex={0}>
+        <h1 className={`signup-title ${darkMode ? 'dark' : ''}`}>Sign In</h1>
         <FloatingCircles />
         {children}
       </div>

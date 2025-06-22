@@ -1,4 +1,3 @@
-// Updated SignUpPage.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SignUpLayout from '../Components/SignUp/SignUpLayout';
@@ -6,8 +5,7 @@ import SignUpSteps from '../Components/SignUp/SignUpSteps';
 import SignUpNavItem from '../Components/SignUp/SignUpNavItem';
 import './SignUpPage.css';
 
-const SignUpPage = ({ setToken }) => {
-  const [darkMode, setDarkMode] = useState(false);
+const SignUpPage = ({ darkMode, setDarkMode }) => {
   const [step, setStep] = useState(1);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -53,7 +51,6 @@ const SignUpPage = ({ setToken }) => {
       if (step < 3) {
         handleNext();
       } else {
-        setStep(4);
         handleSignUp();
       }
     }
@@ -79,6 +76,7 @@ const SignUpPage = ({ setToken }) => {
     formData.append('birthDate[day]', birthDateObj.day);
     formData.append('birthDate[month]', birthDateObj.month);
     formData.append('birthDate[year]', birthDateObj.year);
+
     try {
       const res = await fetch('http://localhost:8080/api/users', {
         method: 'POST',
@@ -88,6 +86,9 @@ const SignUpPage = ({ setToken }) => {
         const data = await res.json();
         return setError(data.message || 'Sign-up failed');
       }
+
+      // Progress bar reaches 100%
+      setStep(4);
       setSuccess(true);
       setTimeout(() => navigate('/'), 3000);
     } catch (err) {
@@ -96,21 +97,21 @@ const SignUpPage = ({ setToken }) => {
     }
   };
 
-  const progressPercentage = ((step - 1) / 3) * 100;
+  // 👇 Updated progress calculation
+  const progressPercentage = Math.min((step - 1) / 3 * 100, 100);
 
   return (
     <SignUpLayout darkMode={darkMode}>
       <button
         onClick={() => setDarkMode(prev => !prev)}
         className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-fill'} btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3`}
-      >
-      </button>
+      ></button>
 
-      <div className="progress mb-4" style={{ transition: 'width 0.3s ease' }}>
+      <div className="progress mb-4">
         <div
           className="progress-bar bg-success"
           role="progressbar"
-          style={{ width: `${progressPercentage}%` }}
+          style={{ width: `${progressPercentage}%`, transition: 'width 0.4s ease' }}
           aria-valuenow={step}
           aria-valuemin="1"
           aria-valuemax="3"
@@ -143,12 +144,11 @@ const SignUpPage = ({ setToken }) => {
         />
       </form>
 
-      <div className="mt-4 text-center text-muted" style={{ fontSize: '0.9rem', transition: 'color 0.3s ease' }}>
-        {darkMode ? (
-          <>Already have an account? <a href="/" className="text-info fw-bold text-decoration-none">Sign in here</a></>
-        ) : (
-          <>Already have an account? <a href="/" className="text-primary fw-bold text-decoration-none">Sign in here</a></>
-        )}
+      <div className={`mt-4 text-center signin-prompt ${darkMode ? 'dark' : 'light'}`}>
+        Already have an account?{' '}
+        <a href="/" className={darkMode ? 'text-info' : 'text-primary'} style={{ fontWeight: 'bold', textDecoration: 'none' }}>
+          Sign in here
+        </a>
       </div>
     </SignUpLayout>
   );

@@ -2,6 +2,7 @@
   min-height: 100vh;
   background: radial-gradient(circle at top left, #6a11cb, #2575fc);
   display: flex;
+  overflow: hidden;
   justify-content: center;
   align-items: center;
   padding: 1rem;
@@ -13,7 +14,8 @@
   background-color: rgba(255, 255, 255, 0.95);
   max-width: 500px;
   width: 100%;
-  padding: 2.5rem 2.5rem 4rem 2.5rem; /* increased bottom padding */
+  padding: 2.5rem 2.5rem 4rem 2.5rem;
+  /* increased bottom padding */
   border: 1px solid #ddd;
   border-radius: 1rem;
   box-shadow: 0 8px 32px rgba(38, 57, 77, 0.1);
@@ -32,7 +34,7 @@
   left: 0;
   right: 0;
   height: 60px;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,0.6), transparent);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.6), transparent);
   z-index: -1;
 }
 
@@ -78,13 +80,27 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(15px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(15px);
+  }
 }
 
 @keyframes floatReverse {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 .email-input-wrapper {
@@ -117,4 +133,17 @@
 
 .signup-title.dark {
   color: #66ccff;
+}
+
+.signin-prompt {
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.signin-prompt.light {
+  color: #333;
+}
+
+.signin-prompt.dark {
+  color: #ffffff;
 }

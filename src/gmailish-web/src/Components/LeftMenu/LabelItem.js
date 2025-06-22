@@ -59,9 +59,9 @@ const LabelItem = ({ label, darkMode, onSelect, onEdit, onDelete, isCustom, mail
             className="dropdown-menu dropdown-menu-end"
             aria-labelledby={`dropdownMenu-${label.name}`}
           >
-            {/* <li>
+            <li>
               <button className="dropdown-item" onClick={() => onEdit(label)}>Change label</button>
-            </li> */}
+            </li>
             <li>
               <button className="dropdown-item text-danger" onClick={() => onDelete(label)}>Delete label</button>
             </li>
