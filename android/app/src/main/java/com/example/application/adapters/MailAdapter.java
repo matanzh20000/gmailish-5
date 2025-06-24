@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.application.models.Mail;
+
+import com.example.application.models.MailEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder> {
-    private List<Mail> mailList = new ArrayList<>();
+    private List<MailEntity> mailList = new ArrayList<>();
 
-    public void submitList(List<Mail> mails) {
+    public void submitList(List<MailEntity> mails) {
         mailList = mails;
         notifyDataSetChanged();
     }
@@ -29,7 +30,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MailViewHolder holder, int position) {
-        Mail mail = mailList.get(position);
+        MailEntity mail = mailList.get(position);
         holder.subject.setText(mail.subject);
         holder.preview.setText(mail.body);
     }
