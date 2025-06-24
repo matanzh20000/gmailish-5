@@ -15,5 +15,6 @@ public interface ApiService {
     Call<Void> register(@Body RegisterRequest request);
 
     @GET("api/mails")
-    Call<List<Mail>> getInbox(@Header("X-user") String email);
+    Call<List<MailEntity>> getInbox(@Header("X-user") String email);
+
 }

@@ -12,34 +12,26 @@ import com.example.application.adapters.MailAdapter;
 import com.example.application.viewmodels.MailViewModel;
 
 public class InboxActivity extends AppCompatActivity {
-    private MailViewModel mailViewModel;
-    private RecyclerView mailList;
-    private MailAdapter mailAdapter;
+    private MailAdapter adapter;
+    private MailViewModel vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
-        mailList = findViewById(R.id.mailRecyclerView);
-        mailList.setLayoutManager(new LinearLayoutManager(this));
-        mailAdapter = new MailAdapter();
-        mailList.setAdapter(mailAdapter);
+        // 1) RecyclerView + Adapter setup
+        RecyclerView rv = findViewById(R.id.mailRecyclerView);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MailAdapter();
+        rv.setAdapter(adapter);
 
-        String userEmail = getIntent().getStringExtra("email");
-        if (userEmail == null) {
-            Toast.makeText(this, "User email missing", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        mailViewModel = new ViewModelProvider(this).get(MailViewModel.class);
-        mailViewModel.getMails(userEmail).observe(this, mails -> {
-            if (mails != null) {
-                mailAdapter.submitList(mails);
-            } else {
-                Toast.makeText(this, "Failed to load mails", Toast.LENGTH_SHORT).show();
-            }
+        // 2) ViewModel + LiveData observer
+        vm = new ViewModelProvider(this).get(MailViewModel.class);
+        String userEmail = getSharedPreferences("prefs", MODE_PRIVATE)
+                .getString("user_email", "");
+        vm.fetchInbox(userEmail).observe(this, mails -> {
+            adapter.submitList(mails);
         });
     }
 }

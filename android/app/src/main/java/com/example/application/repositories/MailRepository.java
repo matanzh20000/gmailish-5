@@ -1,32 +1,55 @@
-
 package com.example.application.repositories;
 
+import android.app.Application;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import java.util.List;
 import com.example.application.api.ApiService;
 import com.example.application.api.RetrofitClient;
-import com.example.application.models.Mail;
-
+import com.example.application.db.GmailishDatabase;
+import com.example.application.db.MailDao;
+import com.example.application.models.MailEntity;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MailRepository {
-    private final ApiService api = RetrofitClient.getClient().create(ApiService.class);
+    private final MailDao mailDao;
+    private final ApiService api;
+    private final Executor ioExecutor = Executors.newSingleThreadExecutor();
 
-    public LiveData<List<Mail>> fetchInbox(String userMail) {
-        MutableLiveData<List<Mail>> data = new MutableLiveData<>();
-        api.getInbox(userMail).enqueue(new Callback<List<Mail>>() {
-            public void onResponse(Call<List<Mail>> call, Response<List<Mail>> res) {
-                data.setValue(res.body());
+    public MailRepository(Application application) {
+        GmailishDatabase db = GmailishDatabase.getInstance(application);
+        mailDao = (MailDao) db.mailDao();
+        api = RetrofitClient.getApiService();
+    }
+
+    /**
+     * Triggers a network refresh and returns LiveData from the local cache.
+     */
+    public LiveData<List<MailEntity>> fetchInbox(String userEmail) {
+        refreshFromNetwork(userEmail);
+        return mailDao.loadInbox(userEmail);
+    }
+
+    private void refreshFromNetwork(String userEmail) {
+        api.getInbox(userEmail).enqueue(new Callback<List<MailEntity>>() {
+            @Override
+            public void onResponse(Call<List<MailEntity>> call, Response<List<MailEntity>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ioExecutor.execute(() -> {
+                        mailDao.clearInbox(userEmail);
+                        mailDao.upsertAll(response.body());
+                    });
+                }
             }
 
-            public void onFailure(Call<List<Mail>> call, Throwable t) {
-                data.setValue(null);
+            @Override
+            public void onFailure(Call<List<MailEntity>> call, Throwable t) {
+                // TODO: handle error (log or expose via another LiveData)
             }
         });
-        return data;
     }
 }
+
