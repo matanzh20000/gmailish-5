@@ -27,6 +27,7 @@ public class InboxActivity extends AppCompatActivity {
     private RecyclerView mailList;
     private MailAdapter mailAdapter;
 
+
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menuIcon, userIcon;
@@ -113,6 +114,7 @@ public class InboxActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Failed to load mails", Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 }
