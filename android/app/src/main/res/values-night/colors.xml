@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teal_primary">#05163C</color>
+    <color name="teal_variant">#05163C</color>
+    <color name="cyan_secondary">#114076</color>
+    <color name="background_light">#092962</color>
+    <color name="background_dark">#121212</color>
+    <color name="text_primary_light">#1D2952</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="icon_tint">#FFFFFF</color>
+    <color name="fab_icon_tint">#FFFFFF</color>
+    <color name="drawer_background_dark">#121212</color>
+    <color name="toggle_background">#092962</color>
+</resources>
