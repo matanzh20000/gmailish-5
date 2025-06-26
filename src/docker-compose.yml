@@ -33,7 +33,6 @@ services:
       - server-network
     environment:
       - CONNECTION_STRING=mongodb://mongo:27017/gmailish
-      - NODE_ENV=development
       - PORT=8080
 
   cppserver:
