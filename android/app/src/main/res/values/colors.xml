@@ -9,6 +9,10 @@
     <color name="text_primary_dark">#FFFFFF</color>
     <color name="icon_tint">#000000</color>
     <color name="fab_icon_tint">#FFFFFF</color>
-    <color name="drawer_background_dark">#FFFFFF</color>
+    <color name="drawer_background_dark">#79BCEF</color>
     <color name="toggle_background">#FFFFFF</color>
+    <color name ="label_icon">#000000</color>
+    <color name="highlight">#46DAF2</color>
+
+
 </resources>
