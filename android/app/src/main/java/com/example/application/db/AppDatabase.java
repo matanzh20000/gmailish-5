@@ -4,19 +4,23 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import com.example.application.entities.Label;
+import com.example.application.entities.Mail;
 
-@Database(entities = {Label.class}, version = 3)
-public abstract class LabelDatabase extends RoomDatabase {
+@Database(entities = {Label.class, Mail.class}, version = 4)
+@TypeConverters(Converters.class)
+public abstract class AppDatabase extends RoomDatabase {
 
-    private static LabelDatabase instance;
+    private static AppDatabase instance;
 
     public abstract LabelDao labelDao();
+    public abstract MailDao mailDao();
 
-    public static synchronized LabelDatabase getInstance(Context context) {
+    public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                            LabelDatabase.class, "label_database")
+                            AppDatabase.class, "app_database")
                     .fallbackToDestructiveMigration()
                     .build();
         }

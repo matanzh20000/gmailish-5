@@ -10,4 +10,13 @@
     <string name="compose_new_email">Compose new email</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
+    <string name="sender">sender</string>
+    <string name="mail_body_preview">Mail body preview</string>
+    <string name="subject">Subject</string>
+    <string name="sender_name">Sender Name</string>
+    <string name="_26_jun">26 Jun</string>
+    <string name="back">back</string>
+    <string name="more">more</string>
+    <string name="delete_mail">Delete Mail</string>
+    <string name="move_to_label">Move to Label</string>
 </resources>

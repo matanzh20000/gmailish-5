@@ -85,16 +85,58 @@
                 app:track="@drawable/track_selector" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/topActionMenu"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?attr/colorPrimary"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/back"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="?attr/colorOnPrimary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/moreOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/more"
+                android:padding="8dp"
+                android:src="@drawable/ic_more_vert"
+                app:tint="?attr/colorOnPrimary" />
+        </LinearLayout>
+
+
         <!-- RecyclerView for Emails -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mailRecyclerView"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mailRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/composeFab"
@@ -119,45 +161,57 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/drawer_background_dark">
+        android:background="@color/drawer_background_dark"
+        android:orientation="vertical"
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/addLabelButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/add_label"
-                android:layout_marginTop="16dp" />
+                android:layout_width="222dp"
+                android:layout_height="68dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_label" />
+
             <LinearLayout
                 android:id="@+id/labelActionsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="visible"
-                android:padding="8dp"
-                android:gravity="center_vertical">
+                android:padding="16dp">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/renameLabelButton"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/rename" />
+                    android:layout_marginEnd="16dp"
+                    android:padding="8dp"
+                    android:text=""
+                    app:icon="@drawable/ic_rename"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/label_icon" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/deleteLabelButton"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/delete" />
-
+                    android:padding="8dp"
+                    android:text=""
+                    app:icon="@drawable/ic_trash"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/label_icon" />
             </LinearLayout>
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/labelsRecyclerView"
