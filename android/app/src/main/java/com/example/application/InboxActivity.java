@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +19,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.application.adapters.LabelsAdapter;
+import com.example.application.adapters.MailsAdapter;
 import com.example.application.entities.Label;
+import com.example.application.entities.Mail;
 import com.example.application.ui.theme.PreferenceManager;
 import com.example.application.viewmodels.LabelsViewModel;
+import com.example.application.viewmodels.MailsViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -33,7 +38,13 @@ public class InboxActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private EditText searchBar;
     private LabelsAdapter labelsAdapter;
+    private MailsAdapter mailsAdapter;
+    private MailsViewModel mailsViewModel;
     private Label selectedLabel = null;
+    private LinearLayout topActionMenu;
+    private ImageView backArrow;
+    private ImageView moreOptions;
+    private Mail selectedMail = null;
 
     @SuppressLint("RtlHardcoded")
     @Override
@@ -55,11 +66,18 @@ public class InboxActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         SwitchCompat darkModeSwitch = findViewById(R.id.themeSwitch);
         RecyclerView mailList = findViewById(R.id.mailRecyclerView);
+        topActionMenu = findViewById(R.id.topActionMenu);
+        backArrow = findViewById(R.id.backArrow);
+        moreOptions = findViewById(R.id.moreOptions);
+
+        topActionMenu.setVisibility(View.GONE);
 
         RecyclerView labelsRecyclerView = navigationView.findViewById(R.id.labelsRecyclerView);
         Button addLabelButton = navigationView.findViewById(R.id.addLabelButton);
         Button renameLabelButton = navigationView.findViewById(R.id.renameLabelButton);
         Button deleteLabelButton = navigationView.findViewById(R.id.deleteLabelButton);
+        SwipeRefreshLayout swipeRefresh = findViewById(R.id.swipeRefresh);
+
 
         darkModeSwitch.setThumbDrawable(ContextCompat.getDrawable(this, R.drawable.thumb_selector));
         darkModeSwitch.setTrackDrawable(ContextCompat.getDrawable(this, R.drawable.track_selector));
@@ -77,6 +95,11 @@ public class InboxActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            mailsViewModel.getAllMails();  // This already triggers your LiveData observer
+            swipeRefresh.setRefreshing(false);  // Stop the spinner (can be delayed if needed)
+        });
+
         menuIcon.setOnClickListener(v -> drawerLayout.openDrawer(Gravity.LEFT));
 
         userIcon.setOnClickListener(v ->
@@ -90,6 +113,49 @@ public class InboxActivity extends AppCompatActivity {
         });
 
         mailList.setLayoutManager(new LinearLayoutManager(this));
+
+        mailsViewModel = new ViewModelProvider(this).get(MailsViewModel.class);
+        mailsAdapter = new MailsAdapter(new ArrayList<>(), new MailsAdapter.OnMailClickListener() {
+            @Override
+            public void onMailClick(Mail mail) {
+                Toast.makeText(InboxActivity.this, "Mail clicked: " + mail.getSubject(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onMailLongClick(Mail mail) {
+                selectedMail = mail;
+                topActionMenu.setVisibility(View.VISIBLE);
+            }
+        }, this);
+
+// Back arrow logic:
+        backArrow.setOnClickListener(v -> {
+            mailsAdapter.clearSelection();
+            selectedMail = null;
+            topActionMenu.setVisibility(View.GONE);
+        });
+
+// More options menu:
+        moreOptions.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, v);
+            popup.getMenuInflater().inflate(R.menu.mails_actions_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.action_move) {
+                    showLabelSelectionDialog();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    deleteSelectedMail();
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
+        });
+
+
+        mailList.setAdapter(mailsAdapter);
+
+        mailsViewModel.getAllMails().observe(this, mails -> mailsAdapter.setMails(mails));
 
         String userEmail = getIntent().getStringExtra("email");
         if (userEmail != null) {
@@ -148,10 +214,10 @@ public class InboxActivity extends AppCompatActivity {
 
         renameLabelButton.setOnClickListener(v -> {
             if (selectedLabel != null) {
-                    if (isDefaultLabel(selectedLabel)) {
-                        Toast.makeText(this, "Cannot delete default label: " + selectedLabel.getName(), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                if (isDefaultLabel(selectedLabel)) {
+                    Toast.makeText(this, "Cannot delete default label: " + selectedLabel.getName(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 EditText input = new EditText(this);
                 input.setHint("New Label Name");
 
@@ -195,12 +261,34 @@ public class InboxActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+        new android.os.Handler().postDelayed(() -> {
+            selectedLabel = findLabelByName("Inbox");
+            if (selectedLabel != null) {
+                loadMailsForLabel(selectedLabel.getName());
+                labelsAdapter.highlightLabel(selectedLabel.getName());
+            }
+        }, 500);
+
     }
 
     private void loadMailsForLabel(String labelName) {
-        Toast.makeText(this, "Loading mails for: " + labelName, Toast.LENGTH_SHORT).show();
-        // TODO: Add Retrofit logic to load mails by labelName
+        if (mailsViewModel == null) return;
+
+        mailsViewModel.getAllMails().observe(this, mails -> {
+            if (mails == null) return;
+
+            List<Mail> filtered = new ArrayList<>();
+            for (Mail mail : mails) {
+                if (mail.getLabel() != null && mail.getLabel().contains(labelName)) {
+                    filtered.add(mail);
+                }
+            }
+
+            mailsAdapter.setMails(filtered);
+        });
     }
+
 
     private boolean isDefaultLabel(Label label) {
         String name = label.getName().toLowerCase();
@@ -215,5 +303,50 @@ public class InboxActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    private void showLabelSelectionDialog() {
+        if (selectedMail == null) return;
+
+        List<Label> labels = labelsAdapter.getLabels();
+        String[] labelNames = new String[labels.size()];
+
+        for (int i = 0; i < labels.size(); i++) {
+            labelNames[i] = labels.get(i).getName();
+        }
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Move to Label")
+                .setItems(labelNames, (dialog, which) -> {
+                    String targetLabel = labelNames[which];
+                    List<String> mailLabels = selectedMail.getLabel();
+                    if (mailLabels != null && !mailLabels.contains(targetLabel)) {
+                        mailLabels.clear();
+                        mailLabels.add(targetLabel);
+                        mailsViewModel.updateMail(selectedMail);
+                        Toast.makeText(this, "Mail moved to " + targetLabel, Toast.LENGTH_SHORT).show();
+                    }
+                    clearMailSelection();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> clearMailSelection())
+                .show();
+    }
+    private void deleteSelectedMail() {
+        if (selectedMail == null) return;
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Mail")
+                .setMessage("Are you sure you want to delete this mail?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    mailsViewModel.deleteMail(selectedMail);
+                    clearMailSelection();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> clearMailSelection())
+                .show();
+    }
+    private void clearMailSelection() {
+        mailsAdapter.clearSelection();
+        selectedMail = null;
+        topActionMenu.setVisibility(View.GONE);
     }
 }
