@@ -4,4 +4,10 @@
     <string name="user">User</string>
     <string name="menu">Menu</string>
     <string name="dark_mode">Dark</string>
+    <string name="label_name">Label Name</string>
+    <string name="_0">0</string>
+    <string name="add_label">Add Label</string>
+    <string name="compose_new_email">Compose new email</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
 </resources>
