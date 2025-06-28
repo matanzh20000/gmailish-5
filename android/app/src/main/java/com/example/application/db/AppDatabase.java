@@ -7,8 +7,10 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import com.example.application.entities.Label;
 import com.example.application.entities.Mail;
+import com.example.application.entities.Users;
+import com.example.application.entities.blacklist;
 
-@Database(entities = {Label.class, Mail.class}, version = 4)
+@Database(entities = {Label.class, Mail.class , Users.class}, version = 5)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -16,6 +18,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract LabelDao labelDao();
     public abstract MailDao mailDao();
+    public abstract UserDao usersDao();
 
     public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {
