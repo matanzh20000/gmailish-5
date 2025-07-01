@@ -43,5 +43,4 @@ Makefile
 run_tests
 buildLocal
 /src/JSNetwork/node_modules
-.env
 node_modules
