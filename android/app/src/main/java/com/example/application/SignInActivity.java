@@ -8,6 +8,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.application.R;
+import com.example.application.entities.User;
+import com.example.application.viewmodels.UserViewModel;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -15,29 +20,54 @@ public class SignInActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView goToSignUp;
 
+    private UserViewModel userViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        // Bind Views
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         signInButton = findViewById(R.id.signInButton);
         goToSignUp = findViewById(R.id.goToSignUp);
 
-        signInButton.setOnClickListener(v -> {
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString().trim();
+        // Init ViewModel
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        // Sign In button click
+        signInButton.setOnClickListener(v -> handleSignIn());
 
-            Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
+        // Go to Sign Up screen
+        goToSignUp.setOnClickListener(v -> {
+            Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+            startActivity(intent);
         });
-
-        goToSignUp.setOnClickListener(v ->
-                startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
     }
+
+    private void handleSignIn() {
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        userViewModel.signInWithApi(email, password).observe(this, token -> {
+            if (token != null) {
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, InboxActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+                finish();
+
+            } else {
+                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
