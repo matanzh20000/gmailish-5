@@ -4,28 +4,28 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
-import androidx.room.Delete;
+import androidx.room.OnConflictStrategy;
 
-import com.example.application.models.UserEntity;
+import com.example.application.entities.User;
 
 import java.util.List;
 
 @Dao
 public interface UserDao {
 
-    @Insert
-    void insert(UserEntity user);
+    // Insert a user (replace if conflict)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(User user);
 
-    @Update
-    void update(UserEntity user);
+    // Get user by email (for login check)
+    @Query("SELECT * FROM users WHERE mail = :email LIMIT 1")
+    LiveData<User> getUserByEmail(String email);
 
-    @Delete
-    void delete(UserEntity user);
-
-    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
-    LiveData<UserEntity> getUserByEmail(String email);
-
+    // (Optional) Get all users
     @Query("SELECT * FROM users")
-    List<UserEntity> getAllUsers();
+    LiveData<List<User>> getAllUsers();
+
+    // (Optional) Delete all users (for reset)
+    @Query("DELETE FROM users")
+    void deleteAllUsers();
 }

@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.example.application.api.LabelsApi;
+import com.example.application.db.AppDatabase;
 import com.example.application.db.LabelDao;
-import com.example.application.db.LabelDatabase;
 import com.example.application.entities.Label;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class LabelsRepository {
     private final LabelsApi labelsApi;
 
     public LabelsRepository(Application application) {
-        LabelDatabase database = LabelDatabase.getInstance(application);
+        AppDatabase database = AppDatabase.getInstance(application);
         labelDao = database.labelDao();
 
         insertDefaultLabels();  // Ensure defaults inserted before observing LiveData
