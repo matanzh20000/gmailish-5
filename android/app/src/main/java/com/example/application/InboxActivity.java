@@ -96,8 +96,8 @@ public class InboxActivity extends AppCompatActivity {
         });
 
         swipeRefresh.setOnRefreshListener(() -> {
-            mailsViewModel.getAllMails();  // This already triggers your LiveData observer
-            swipeRefresh.setRefreshing(false);  // Stop the spinner (can be delayed if needed)
+            mailsViewModel.getAllMails();
+            swipeRefresh.setRefreshing(false);
         });
 
         menuIcon.setOnClickListener(v -> drawerLayout.openDrawer(Gravity.LEFT));
@@ -158,7 +158,7 @@ public class InboxActivity extends AppCompatActivity {
         mailsViewModel.getAllMails().observe(this, mails -> mailsAdapter.setMails(mails));
 
         String userEmail = getIntent().getStringExtra("email");
-        if (userEmail != null) {
+        if (userEmail == null) {
             Toast.makeText(this, "User email missing", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -230,12 +230,14 @@ public class InboxActivity extends AppCompatActivity {
                                 selectedLabel.setName(newName);
                                 labelsViewModel.updateLabel(selectedLabel);
                                 new android.os.Handler().postDelayed(() -> {
-                                    selectedLabel = findLabelByName(newName);
-                                    if (selectedLabel != null) {
-                                        loadMailsForLabel(selectedLabel.getName());
-                                        labelsAdapter.highlightLabel(selectedLabel.getName());
+                                    if (selectedLabel == null) {  // Only default to Inbox on first load
+                                        selectedLabel = findLabelByName("Inbox");
+                                        if (selectedLabel != null) {
+                                            loadMailsForLabel(selectedLabel.getName());
+                                            labelsAdapter.highlightLabel(selectedLabel.getName());
+                                        }
                                     }
-                                }, 300);
+                                }, 500);
                             }
                         })
                         .setNegativeButton("Cancel", null)
