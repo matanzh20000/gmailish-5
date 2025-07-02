@@ -4,10 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.application.R;
 import com.example.application.entities.Mail;
 import java.util.List;
@@ -50,16 +53,33 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
             holder.itemView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         }
 
+        // Load user image
+        if (mail.getUserImage() != null && !mail.getUserImage().isEmpty()) {
+            // Use Glide or Picasso for real image loading from URL
+            Glide.with(context)
+                    .load(mail.getUserImage())
+                    .placeholder(R.drawable.ic_user_placeholder)
+                    .circleCrop()
+                    .into(holder.senderImage);
+        } else {
+            holder.senderImage.setImageResource(R.drawable.ic_user_placeholder);
+        }
+
         holder.itemView.setOnClickListener(v -> listener.onMailClick(mail));
 
         holder.itemView.setOnLongClickListener(v -> {
             int previousPosition = selectedPosition;
             selectedPosition = holder.getAdapterPosition();
-            notifyItemChanged(previousPosition);
+
+            if (previousPosition != RecyclerView.NO_POSITION) {
+                notifyItemChanged(previousPosition);
+            }
             notifyItemChanged(selectedPosition);
+
             listener.onMailLongClick(mail);
             return true;
         });
+
     }
 
     @Override
@@ -83,12 +103,14 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
         TextView subjectText;
         TextView fromText;
         TextView previewText;
+        ImageView senderImage;
 
         public MailViewHolder(@NonNull View itemView) {
             super(itemView);
             subjectText = itemView.findViewById(R.id.subjectText);
             fromText = itemView.findViewById(R.id.fromText);
             previewText = itemView.findViewById(R.id.previewText);
+            senderImage = itemView.findViewById(R.id.senderImage);
         }
     }
 }

@@ -18,4 +18,9 @@
         <item name="android:statusBarColor" >@color/teal_variant</item>
     </style>
 
+    <style name="Theme.App.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:windowBackground">@drawable/compose_background</item>
+    </style>
+
 </resources>

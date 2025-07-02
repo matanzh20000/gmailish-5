@@ -31,5 +31,9 @@ public interface MailsApi {
     Call<Void> deleteMail(@Path("id") String id);
 
     @GET("api/mails/search/{query}")
-    Call<List<Mail>> searchMailsByQuery(@Path("query") String query);
+    Call<List<Mail>> searchMails(
+            @Header("X-user") String userEmail,
+            @Path("query") String query
+    );
+
 }

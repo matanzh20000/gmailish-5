@@ -68,6 +68,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show();
 
-        finish(); // Go back to SignInActivity
+        finish();
     }
 }

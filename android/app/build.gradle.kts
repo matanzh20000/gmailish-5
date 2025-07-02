@@ -19,7 +19,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -32,6 +35,8 @@ android {
         viewBinding = true
     }
 }
+
+
 
 dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -50,6 +55,9 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
     // Room (optional)
     implementation("androidx.room:room-runtime:2.6.1")
