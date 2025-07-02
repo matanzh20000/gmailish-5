@@ -7,13 +7,24 @@ const tokenRoutes = require('./routes/tokens');
 const blacklistRoutes = require('./routes/blacklist');
 const cors = require('cors');
 const mongoose = require('mongoose');
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
+// 🟢 Define envPath BEFORE using it
 const envPath = require('path').resolve(__dirname, '.env');
-require('dotenv').config({ path: envPath });
+require('dotenv').config({ path: envPath }); // ✅ Now this works
 
-mongoose.connect(process.env.CONNECTION_STRING);
-console.log('Connected to MongoDB' + process.env.CONNECTION_STRING);
+// ✅ Debug log
+console.log('MONGO_URI:', process.env.MONGO_URI); 
 
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+});
+
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use('/api/labels', labelRoutes);
 app.use('/api/mails', mailsRoutes);

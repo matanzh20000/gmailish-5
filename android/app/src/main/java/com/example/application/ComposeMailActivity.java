@@ -27,6 +27,7 @@ public class ComposeMailActivity extends AppCompatActivity {
     private String userEmail;
     private MailsViewModel mailsViewModel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +51,13 @@ public class ComposeMailActivity extends AppCompatActivity {
 
         mailsViewModel = new ViewModelProvider(this).get(MailsViewModel.class);
 
+
+
         ccBccToggle.setOnClickListener(v -> {
             boolean show = ccInput.getVisibility() == View.GONE;
             ccInput.setVisibility(show ? View.VISIBLE : View.GONE);
             bccInput.setVisibility(show ? View.VISIBLE : View.GONE);
         });
-
         closeIcon.setOnClickListener(v -> finish());
 
         sendButton.setOnClickListener(v -> {
@@ -99,3 +101,4 @@ public class ComposeMailActivity extends AppCompatActivity {
         });
     }
 }
+
