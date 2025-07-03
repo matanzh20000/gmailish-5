@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- App Theme -->
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/teal_primary</item>
         <item name="colorPrimaryVariant">@color/teal_variant</item>
         <item name="colorSecondary">@color/cyan_secondary</item>
 
-        <!-- These ensure NavigationView and other widgets get proper defaults -->
+        <!-- Backgrounds and text -->
         <item name="android:colorBackground">@color/background_light</item>
         <item name="colorOnPrimary">@color/text_primary_light</item>
         <item name="colorOnSecondary">@color/text_primary_light</item>
         <item name="android:statusBarColor">@color/teal_primary</item>
     </style>
+
+    <!-- Custom reusable text appearance for forms -->
+    <style name="FormTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
 </resources>
-
-

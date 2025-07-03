@@ -16,6 +16,8 @@
 
         <!-- Status bar color -->
         <item name="android:statusBarColor" >@color/teal_variant</item>
+
     </style>
+
 
 </resources>
