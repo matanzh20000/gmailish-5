@@ -37,4 +37,19 @@ public class MailsViewModel extends AndroidViewModel {
     public void deleteMail(Mail mail) {
         repository.deleteMail(mail);
     }
+
+    public LiveData<List<Mail>> getMailsByUser(String userEmail) {
+        return repository.getMailsByUser(userEmail);
+    }
+
+    public void refreshMails(String userEmail) {
+        repository.refreshMailsFromApi(userEmail);
+    }
+
+    public LiveData<List<Mail>> searchMailsByQuery(String userEmail, String query) {
+        return repository.searchMailsByQuery(userEmail, query);
+    }
+
+
+
 }

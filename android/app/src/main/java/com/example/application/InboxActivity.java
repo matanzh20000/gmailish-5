@@ -17,10 +17,14 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import com.example.application.adapters.LabelsAdapter;
 import com.example.application.adapters.MailsAdapter;
@@ -47,6 +51,10 @@ public class InboxActivity extends AppCompatActivity {
     private ImageView backArrow;
     private ImageView moreOptions;
     private Mail selectedMail = null;
+    private ImageView userIcon;
+    private LiveData<List<Mail>> allUserMailsLiveData;
+    private String userEmail;
+    private String fullImageUrl;
 
     @SuppressLint("RtlHardcoded")
     @Override
@@ -61,10 +69,22 @@ public class InboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
+        String imagePath = getIntent().getStringExtra("image");
+        String baseUrl = "http://10.0.2.2:8080/";
+
+        fullImageUrl = (imagePath != null && !imagePath.isEmpty()) ? baseUrl + imagePath : baseUrl + "uploads/default-avatar.png";
+
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         ImageView menuIcon = findViewById(R.id.menuIcon);
-        ImageView userIcon = findViewById(R.id.userIcon);
+        userIcon = findViewById(R.id.userIcon);
+
+        Glide.with(this)
+                .load(fullImageUrl)
+                .placeholder(R.drawable.ic_user_placeholder)
+                .circleCrop()
+                .into(userIcon);
+
         searchBar = findViewById(R.id.searchBar);
         SwitchCompat darkModeSwitch = findViewById(R.id.themeSwitch);
         RecyclerView mailList = findViewById(R.id.mailRecyclerView);
@@ -97,34 +117,68 @@ public class InboxActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
-        swipeRefresh.setOnRefreshListener(() -> {
-            mailsViewModel.getAllMails();
-            swipeRefresh.setRefreshing(false);
-        });
 
         menuIcon.setOnClickListener(v -> drawerLayout.openDrawer(Gravity.LEFT));
-        ExtendedFloatingActionButton composeFab = findViewById(R.id.composeFab);
-        composeFab.setOnClickListener(v -> {
-            Intent intent = new Intent(InboxActivity.this, ComposeMailActivity.class);
-            startActivity(intent);
-        });
-        userIcon.setOnClickListener(v ->
-                Toast.makeText(this, "User info clicked", Toast.LENGTH_SHORT).show()
-        );
 
-        searchBar.setOnEditorActionListener((v, actionId, event) -> {
-            String query = searchBar.getText().toString().trim();
-            Toast.makeText(this, "Search: " + query, Toast.LENGTH_SHORT).show();
-            return true;
+        searchBar.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (!query.isEmpty()) {
+                    mailsViewModel.searchMailsByQuery(userEmail, query).observe(InboxActivity.this, mails -> {
+                        if (mails != null) {
+                            String baseUrl = "http://10.0.2.2:8080/";
+                            for (Mail mail : mails) {
+                                if (mail.getUserImage() != null && !mail.getUserImage().isEmpty()) {
+                                    mail.setUserImage(baseUrl + mail.getUserImage());
+                                } else {
+                                    mail.setUserImage(baseUrl + "uploads/default-avatar.png");
+                                }
+                            }
+                            mailsAdapter.setMails(mails);
+                        }
+                    });
+                } else {
+                    loadMailsForLabel(selectedLabel != null ? selectedLabel.getName() : "Inbox");
+                }
+            }
+
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) { }
         });
+
+
+        userEmail = getIntent().getStringExtra("email");
+        if (userEmail == null) {
+            Toast.makeText(this, "User email missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         mailList.setLayoutManager(new LinearLayoutManager(this));
 
+        userIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(InboxActivity.this, UserProfileActivity.class);
+            intent.putExtra("image", imagePath);
+            intent.putExtra("email", userEmail);
+            startActivity(intent);
+        });
+
         mailsViewModel = new ViewModelProvider(this).get(MailsViewModel.class);
         mailsAdapter = new MailsAdapter(new ArrayList<>(), new MailsAdapter.OnMailClickListener() {
+
             @Override
             public void onMailClick(Mail mail) {
-                Toast.makeText(InboxActivity.this, "Mail clicked: " + mail.getSubject(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(InboxActivity.this, MailViewActivity.class);
+                intent.putExtra("subject", mail.getSubject());
+                intent.putExtra("label", mail.getLabel().get(0));
+                intent.putExtra("sender", mail.getFrom());
+                intent.putExtra("body", mail.getBody());
+                startActivity(intent);
             }
 
             @Override
@@ -161,14 +215,14 @@ public class InboxActivity extends AppCompatActivity {
 
         mailList.setAdapter(mailsAdapter);
 
-        mailsViewModel.getAllMails().observe(this, mails -> mailsAdapter.setMails(mails));
 
-        String userEmail = getIntent().getStringExtra("email");
-        if (userEmail == null) {
-            Toast.makeText(this, "User email missing", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        ExtendedFloatingActionButton composeFab = findViewById(R.id.composeFab);
+        composeFab.setOnClickListener(v -> {
+            Intent intent = new Intent(InboxActivity.this, ComposeMailActivity.class);
+            intent.putExtra("email", userEmail);
+            startActivity(intent);
+        });
+
 
         LabelsViewModel labelsViewModel = new ViewModelProvider(this).get(LabelsViewModel.class);
 
@@ -188,7 +242,30 @@ public class InboxActivity extends AppCompatActivity {
 
         labelsRecyclerView.setAdapter(labelsAdapter);
 
-        labelsViewModel.getAllLabels().observe(this, labels -> labelsAdapter.setLabels(labels));
+        labelsViewModel.getAllLabels().observe(this, labels -> {
+            List<Label> userLabels = new ArrayList<>();
+
+            for (Label label : labels) {
+                if (label.getUser().equals(userEmail) || label.getUser().equals("global")) {
+                    userLabels.add(label);
+                }
+            }
+
+            labelsAdapter.setLabels(userLabels);
+
+        });
+
+        allUserMailsLiveData = mailsViewModel.getMailsByUser(userEmail);
+
+        allUserMailsLiveData.observe(this, mails -> {
+            if (selectedLabel != null) {
+                loadMailsForLabel(selectedLabel.getName());
+            } else {
+                mailsAdapter.setMails(mails);
+            }
+            labelsAdapter.setMails(mails);
+        });
+
 
         addLabelButton.setOnClickListener(v -> {
             EditText input = new EditText(this);
@@ -200,8 +277,8 @@ public class InboxActivity extends AppCompatActivity {
                     .setPositiveButton("Add", (dialog, which) -> {
                         String labelName = input.getText().toString().trim();
                         if (!labelName.isEmpty()) {
-                            Label newLabel = new Label(labelName, "icon_label", "global");
-                            labelsViewModel.addLabel(newLabel);
+                            Label newLabel = new Label(labelName, "icon_label", userEmail);
+                            labelsViewModel.addLabel(userEmail, newLabel);
                             new android.os.Handler().postDelayed(() -> {
                                 selectedLabel = findLabelByName(labelName);
                                 if (selectedLabel != null) {
@@ -251,6 +328,8 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
+
+
         deleteLabelButton.setOnClickListener(v -> {
             if (selectedLabel != null) {
                 if (isDefaultLabel(selectedLabel)) {
@@ -270,32 +349,52 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            mailsViewModel.refreshMails(userEmail);
+            swipeRefresh.setRefreshing(false);
+
+        });
+
         new android.os.Handler().postDelayed(() -> {
             selectedLabel = findLabelByName("Inbox");
             if (selectedLabel != null) {
                 loadMailsForLabel(selectedLabel.getName());
                 labelsAdapter.highlightLabel(selectedLabel.getName());
             }
-        }, 500);
+        }, 200);
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Glide.with(this)
+                .load(fullImageUrl)
+                .placeholder(R.drawable.ic_user_placeholder)
+                .circleCrop()
+                .into(userIcon);
+    }
+
+
     private void loadMailsForLabel(String labelName) {
-        if (mailsViewModel == null) return;
+        if (allUserMailsLiveData == null) return;
 
-        mailsViewModel.getAllMails().observe(this, mails -> {
-            if (mails == null) return;
+        List<Mail> filtered = new ArrayList<>();
+        List<Mail> allMails = allUserMailsLiveData.getValue();
 
-            List<Mail> filtered = new ArrayList<>();
-            for (Mail mail : mails) {
+        if (allMails != null) {
+            for (Mail mail : allMails) {
                 if (mail.getLabel() != null && mail.getLabel().contains(labelName)) {
                     filtered.add(mail);
                 }
             }
+        }
 
-            mailsAdapter.setMails(filtered);
-        });
+        mailsAdapter.setMails(filtered);
     }
+
+
 
 
     private boolean isDefaultLabel(Label label) {
@@ -316,17 +415,24 @@ public class InboxActivity extends AppCompatActivity {
     private void showLabelSelectionDialog() {
         if (selectedMail == null) return;
 
-        List<Label> labels = labelsAdapter.getLabels();
-        String[] labelNames = new String[labels.size()];
+        List<Label> allLabels = labelsAdapter.getLabels();
+        List<String> labelNames = new ArrayList<>();
 
-        for (int i = 0; i < labels.size(); i++) {
-            labelNames[i] = labels.get(i).getName();
+        for (Label label : allLabels) {
+            if (label.getUser().equals(userEmail) || label.getUser().equals("global")) {
+                labelNames.add(label.getName());
+            }
+        }
+
+        if (labelNames.isEmpty()) {
+            Toast.makeText(this, "No labels available", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Move to Label")
-                .setItems(labelNames, (dialog, which) -> {
-                    String targetLabel = labelNames[which];
+                .setItems(labelNames.toArray(new String[0]), (dialog, which) -> {
+                    String targetLabel = labelNames.get(which);
                     List<String> mailLabels = selectedMail.getLabel();
                     if (mailLabels != null && !mailLabels.contains(targetLabel)) {
                         mailLabels.clear();
@@ -339,6 +445,18 @@ public class InboxActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", (dialog, which) -> clearMailSelection())
                 .show();
     }
+
+    private void searchMails(String query) {
+        if (mailsViewModel == null || userEmail == null) return;
+
+        mailsViewModel.searchMailsByQuery(userEmail, query).observe(this, mails -> {
+            if (mails != null) {
+                mailsAdapter.setMails(mails);
+            }
+        });
+    }
+
+
     private void deleteSelectedMail() {
         if (selectedMail == null) return;
 
