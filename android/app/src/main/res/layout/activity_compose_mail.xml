@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/closeIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close"
             android:padding="8dp"

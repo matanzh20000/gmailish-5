@@ -8,13 +8,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application.R;
 import com.example.application.entities.User;
+import com.example.application.ui.theme.PreferenceManager;
 import com.example.application.viewmodels.UserViewModel;
 
 public class SignInActivity extends AppCompatActivity {
+
 
     private EditText emailInput, passwordInput;
     private Button signInButton;
@@ -24,9 +29,30 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceManager.isDarkMode(this)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        SwitchCompat darkModeSwitch = findViewById(R.id.themeSwitch);
 
+        darkModeSwitch.setThumbDrawable(ContextCompat.getDrawable(this, R.drawable.thumb_selector));
+        darkModeSwitch.setTrackDrawable(ContextCompat.getDrawable(this, R.drawable.track_selector));
+
+        darkModeSwitch.setChecked(PreferenceManager.isDarkMode(this));
+
+        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PreferenceManager.setDarkMode(this, isChecked);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
         // Bind Views
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
