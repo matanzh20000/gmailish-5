@@ -1,6 +1,7 @@
 package com.example.application.entities;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.Embedded;
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class User {
     private String backupMail;
     private String image;
 
+    @Ignore
     // Default constructor for Room and Retrofit
     public User() {}
 
@@ -57,7 +59,7 @@ public class User {
         private int year;
         private int month;
         private int day;
-
+        @Ignore
         public BirthDate() {}
 
         public BirthDate(int year, int month, int day) {

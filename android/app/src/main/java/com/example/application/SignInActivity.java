@@ -81,19 +81,30 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        userViewModel.signInWithApi(email, password).observe(this, token -> {
-            if (token != null) {
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+        userViewModel.signInWithApi(email, password).observe(this, tokenResponse -> {
+            if (tokenResponse != null && tokenResponse.getToken() != null) {
 
-                Intent intent = new Intent(this, InboxActivity.class);
-                intent.putExtra("email", email);
-                startActivity(intent);
-                finish();
-
+                // You only have email locally, no image from backend
+                userViewModel.getUserByEmail(email).observe(this, user -> {
+                    if (user != null) {
+                        Intent intent = new Intent(this, InboxActivity.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("image", user.getImage());  // Fetched from Room
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(this, InboxActivity.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("image", "uploads/default-avatar.png");  // Fallback
+                        startActivity(intent);
+                        finish();
+                    }
+                });
             } else {
                 Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
 }

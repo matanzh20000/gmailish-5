@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.application.api.TokenResponse;
 import com.example.application.entities.User;
 import com.example.application.repositories.UserRepository;
 
@@ -29,12 +30,18 @@ public class UserViewModel extends AndroidViewModel {
         return repository.getUserByEmail(email);
     }
 
+    public LiveData<User> getUserByIdFromApi(String id) {
+        return repository.getUserByIdFromApi(id);
+    }
+
+
     // 📥 Optional local insert (if needed)
     public void insert(User user) {
         repository.insert(user);
     }
-    public LiveData<String> signInWithApi(String email, String password) {
+    public LiveData<TokenResponse> signInWithApi(String email, String password) {
         return repository.signInWithApi(email, password);
     }
+
 
 }

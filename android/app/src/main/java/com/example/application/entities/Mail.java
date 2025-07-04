@@ -2,6 +2,7 @@ package com.example.application.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -18,7 +19,6 @@ public class Mail {
     @SerializedName("_id")
     @NonNull
     private String id;
-
     private String from;
     private List<String> to;
     private List<String> copy;
@@ -31,6 +31,12 @@ public class Mail {
     private String createdAt;
     private String updatedAt;
     private String owner;
+    private String userImage;
+
+
+    public Mail() {
+
+    }
 
     public String getId() {
         return id;
@@ -136,10 +142,19 @@ public class Mail {
         this.owner = owner;
     }
 
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    @Ignore
     // Constructor with all fields
     public Mail(String id, String from, List<String> to, List<String> copy, List<String> blindCopy,
                 String subject, String body, List<String> label, boolean draft, boolean isRead,
-                String createdAt, String updatedAt, String owner) {
+                String createdAt, String updatedAt, String owner, String userImage) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -153,6 +168,7 @@ public class Mail {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.owner = owner;
+        this.userImage = userImage;
     }
 
 }

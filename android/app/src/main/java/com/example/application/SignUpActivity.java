@@ -142,6 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         userViewModel.createUser(newUser);
         Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show();
+
         finish();
     }
 }

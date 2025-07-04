@@ -9,10 +9,9 @@ import com.example.application.entities.Label;
 import com.example.application.entities.Mail;
 import com.example.application.entities.User;
 
-@Database(entities = {Label.class, Mail.class, User.class}, version = 5)
+@Database(entities = {Label.class, Mail.class, User.class}, version = 7, exportSchema = true)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
-
     private static AppDatabase instance;
 
     public abstract LabelDao labelDao();

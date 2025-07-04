@@ -26,4 +26,7 @@ public interface MailDao {
 
     @Query("SELECT * FROM mails ORDER BY createdAt DESC")
     LiveData<List<Mail>> getAllMails();
+
+    @Query("SELECT * FROM mails WHERE owner = :userEmail")
+    LiveData<List<Mail>> getMailsByUser(String userEmail);
 }

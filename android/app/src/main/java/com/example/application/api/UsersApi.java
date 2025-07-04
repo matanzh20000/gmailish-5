@@ -15,8 +15,9 @@ public interface UsersApi {
     Call<User> createUser(@Body User user);
 
     // Get user by email (sign in or check existence)
-    @GET("/api/users/{id}")
-    Call<User> getUserByEmail(@Path("id") String email);
+    @GET("users/{id}")
+    Call<User> getUserById(@Path("id") String id);
+
 
     @POST("/api/tokens")
     Call<TokenResponse> signIn(@Body SignInRequest request);

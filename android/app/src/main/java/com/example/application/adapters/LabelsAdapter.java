@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application.R;
 import com.example.application.entities.Label;
+import com.example.application.entities.Mail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewHolder> {
@@ -24,6 +26,8 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
     private final OnLabelClickListener listener;
     private final Context context;
     private int selectedPosition = 0;
+    private List<Mail> mails;
+    private String highlightedLabel = null;
 
     public interface OnLabelClickListener {
         void onLabelLongClick(Label label);
@@ -41,7 +45,6 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
         return labels;
     }
 
-
     @NonNull
     @Override
     public LabelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,8 +56,10 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
     @Override
     public void onBindViewHolder(@NonNull LabelViewHolder holder, int position) {
         Label label = labels.get(position);
+        int count = getMailCountForLabel(label.getName());
+
         holder.labelName.setText(label.getName());
-        holder.labelIcon.setImageResource(R.drawable.ic_label);
+        holder.mailCount.setText(String.valueOf(count));
 
         if (position == selectedPosition) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.highlight));
@@ -70,7 +75,6 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
 
             listener.onLabelClick(label.getName());
         });
-
         holder.itemView.setOnLongClickListener(v -> {
             listener.onLabelLongClick(label);
             return true;
@@ -79,7 +83,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
 
     @Override
     public int getItemCount() {
-        return labels != null ? labels.size() : 0;
+        return labels.size();
     }
 
     public void highlightLabel(String labelName) {
@@ -94,6 +98,10 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
         }
     }
 
+    public void setMails(List<Mail> mails) {
+        this.mails = mails;
+        notifyDataSetChanged();
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setLabels(List<Label> newLabels) {
@@ -101,14 +109,28 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelViewH
         notifyDataSetChanged();
     }
 
+    private int getMailCountForLabel(String labelName) {
+        int count = 0;
+        if (mails != null) {
+            for (Mail mail : mails) {
+                if (mail.getLabel() != null && mail.getLabel().contains(labelName)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     static class LabelViewHolder extends RecyclerView.ViewHolder {
         TextView labelName;
         ImageView labelIcon;
+        TextView mailCount;
 
         public LabelViewHolder(@NonNull View itemView) {
             super(itemView);
             labelName = itemView.findViewById(R.id.labelName);
             labelIcon = itemView.findViewById(R.id.labelIcon);
+            mailCount = itemView.findViewById(R.id.mailCount);
         }
     }
 }

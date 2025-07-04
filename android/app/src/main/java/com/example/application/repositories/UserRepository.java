@@ -42,28 +42,51 @@ public class UserRepository {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    public LiveData<String> signInWithApi(String email, String password) {
-        MutableLiveData<String> result = new MutableLiveData<>();
+    public LiveData<TokenResponse> signInWithApi(String email, String password) {
+        MutableLiveData<TokenResponse> result = new MutableLiveData<>();
         SignInRequest request = new SignInRequest(email, password);
 
-        userApi.signIn(request).enqueue(new Callback<>() {
+        userApi.signIn(request).enqueue(new Callback<TokenResponse>() {
             @Override
-            public void onResponse(@NonNull Call<TokenResponse> call, @NonNull Response<TokenResponse> response) {
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    result.setValue(response.body().getToken());
+                    result.setValue(response.body());
                 } else {
                     result.setValue(null);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<TokenResponse> call, @NonNull Throwable t) {
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
                 result.setValue(null);
             }
         });
 
         return result;
     }
+
+
+    public LiveData<User> getUserByIdFromApi(String id) {
+        MutableLiveData<User> userData = new MutableLiveData<>();
+        userApi.getUserById(id).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    userData.setValue(response.body());
+                } else {
+                    userData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                userData.setValue(null);
+            }
+        });
+        return userData;
+    }
+
+
 
 
 

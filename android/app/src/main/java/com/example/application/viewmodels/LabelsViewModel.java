@@ -26,9 +26,10 @@ public class LabelsViewModel extends AndroidViewModel {
         return allLabels;
     }
 
-    public void addLabel(Label label) {
-        repository.addLabel(label);
+    public void addLabel(String userEmail, Label label) {
+        repository.addLabel(userEmail, label);
     }
+
 
     public void updateLabel(Label label) {
         repository.updateLabel(label);
@@ -36,5 +37,9 @@ public class LabelsViewModel extends AndroidViewModel {
 
     public void deleteLabel(Label label) {
         repository.deleteLabel(label);
+    }
+
+    public void refreshLabels() {
+        repository.refreshLabelsFromApi();
     }
 }

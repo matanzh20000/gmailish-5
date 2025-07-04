@@ -62,7 +62,7 @@ public class LabelsRepository {
         });
     }
 
-    private void refreshLabelsFromApi() {
+    public void refreshLabelsFromApi() {
         labelsApi.getLabels().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
@@ -78,8 +78,9 @@ public class LabelsRepository {
         });
     }
 
-    public void addLabel(Label label) {
-        labelsApi.addLabel("global", label).enqueue(new Callback<>() {
+
+    public void addLabel(String userEmail, Label label) {
+        labelsApi.addLabel(userEmail, label).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Label> call, @NonNull Response<Label> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -95,6 +96,7 @@ public class LabelsRepository {
             }
         });
     }
+
 
 
     public void updateLabel(Label label) {
