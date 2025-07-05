@@ -32,7 +32,6 @@ services:
     networks:
       - server-network
     environment:
-      - CONNECTION_STRING=mongodb://mongo:27017/gmailish
       - PORT=8080
 
   cppserver:
