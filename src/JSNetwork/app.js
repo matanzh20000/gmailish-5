@@ -8,21 +8,13 @@ const blacklistRoutes = require('./routes/blacklist');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-// 🟢 Define envPath BEFORE using it
 const envPath = require('path').resolve(__dirname, '.env');
-require('dotenv').config({ path: envPath }); // ✅ Now this works
+require('dotenv').config({ path: envPath }); 
 
-// ✅ Debug log
-console.log('MONGO_URI:', process.env.MONGO_URI); 
+console.log('CONNECTION_STRING:', process.env.CONNECTION_STRING); 
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('Connected to MongoDB');
-}).catch(err => {
-  console.error('MongoDB connection error:', err);
-});
+mongoose.connect(process.env.CONNECTION_STRING);
+console.log('Connected to MongoDB' + process.env.CONNECTION_STRING);
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
@@ -34,6 +26,6 @@ app.use('/api/blacklist', blacklistRoutes);
 app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Express server listening on port ${PORT}`);
 });

@@ -30,7 +30,7 @@ exports.createMail = async (req, res) => {
     return res.status(400).json({ error: 'Mail cannot be created - fields missing' });
   }
 
-  if (await getUserByMail(from) === null) {
+  if (!await getUserByMail(from)) {
     return res.status(400).json({ error: 'Mail cannot be created - sender does not exist' });
   }
 
@@ -38,18 +38,22 @@ exports.createMail = async (req, res) => {
 
   if (!draft) {
     for (const email of allRecipients) {
-      if (await getUserByMail(email) === null) {
+      if (!await getUserByMail(email)) {
         return res.status(400).json({ error: `Mail cannot be created - recipient ${email} does not exist` });
       }
     }
+  }
 
+  let isBlacklisted = false;
+  if (!draft) {
     const urls = [...extractUrls(body), ...extractUrls(subject)];
     for (const url of urls) {
       try {
         const response = await sendToCppServer(`GET ${url}`);
         const lastLine = response.trim().split('\n').pop();
         if (lastLine && lastLine.toLowerCase() === 'true true') {
-          return res.status(400).json({ error: `Cannot create mail: link is blacklisted (${url})` });
+          isBlacklisted = true;
+          break;
         }
       } catch (err) {
         return res.status(400).json({ error: 'Blacklist service unavailable' });
@@ -57,26 +61,47 @@ exports.createMail = async (req, res) => {
     }
   }
 
-  const timestamp = new Date();
-  const baseMail = {
-    from, to, copy, blindCopy, subject, body, draft, label,
-    owner: from, isRead: false, createdAt: timestamp, updatedAt: timestamp
-  };
-
   try {
-    const sentMail = await Mail.createMail(baseMail);
+    const timestamp = new Date();
+    const baseMail = {
+      from,
+      to,
+      copy,
+      blindCopy,
+      subject,
+      body,
+      draft,
+      createdAt: timestamp,
+      updatedAt: timestamp
+    };
 
-    if (!draft) {
-      const receivers = await Promise.all(allRecipients.map(email => Mail.createMail({
-        ...baseMail,
-        label: ['Inbox'],
-        owner: email
-      })));
-      return res.status(201).json([sentMail, ...receivers]);
-    } else {
-      return res.status(201).json([sentMail]);
+    const senderMail = await Mail.createMail({
+      ...baseMail,
+      label,
+      owner: from
+    });
+
+    if (draft) {
+      return res.status(201).json([senderMail]);
     }
+
+    const recipientLabel = isBlacklisted ? ['Spam'] : ['Inbox'];
+    const receiverMails = [];
+
+    for (const email of new Set(allRecipients)) {
+      if (isBlacklisted && email === from) continue;
+      const receiverMail = await Mail.createMail({
+        ...baseMail,
+        label: recipientLabel,
+        owner: email
+      });
+      receiverMails.push(receiverMail);
+    }
+
+    return res.status(201).json([senderMail, ...receiverMails]);
+
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: err.message });
   }
 };
