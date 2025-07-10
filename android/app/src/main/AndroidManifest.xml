@@ -14,12 +14,13 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
-
         <activity android:name=".InboxActivity" />
         <activity android:name=".MailViewActivity" />
         <activity android:name=".ComposeMailActivity"/>
         <activity android:name=".UserProfileActivity"/>
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".ComposeMailActivity"
+            android:theme="@style/Theme.App.Dialog"/>
         <activity android:name=".SignInActivity"
             android:exported="true">
             <intent-filter>

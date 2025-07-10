@@ -16,7 +16,9 @@
 
         <!-- Status bar color -->
         <item name="android:statusBarColor" >@color/teal_variant</item>
+
         <item name="android:textColorHint">#FFFFFF</item>
+
     </style>
 
 

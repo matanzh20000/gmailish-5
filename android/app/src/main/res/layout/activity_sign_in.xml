@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ScrollView
         android:fillViewport="true"
         android:layout_width="match_parent"
@@ -14,6 +15,7 @@
             android:padding="32dp"
             android:gravity="center"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:background="@color/backGroundMain">
 
@@ -22,6 +24,7 @@
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="?android:textColorPrimary"
+
                 android:layout_marginBottom="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -73,6 +76,7 @@
         </LinearLayout>
     </ScrollView>
 
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/themeSwitch"
         android:layout_width="96dp"
@@ -84,3 +88,4 @@
         android:thumb="@drawable/thumb_selector"
         app:track="@drawable/track_selector" />
 </FrameLayout>
+

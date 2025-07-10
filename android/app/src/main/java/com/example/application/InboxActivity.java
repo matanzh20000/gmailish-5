@@ -1,5 +1,6 @@
 package com.example.application;
 
+import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
@@ -35,6 +35,7 @@ import com.example.application.entities.Mail;
 import com.example.application.ui.theme.PreferenceManager;
 import com.example.application.viewmodels.LabelsViewModel;
 import com.example.application.viewmodels.MailsViewModel;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -130,8 +131,6 @@ public class InboxActivity extends AppCompatActivity {
 
 
         menuIcon.setOnClickListener(v -> drawerLayout.openDrawer(Gravity.LEFT));
-
-
 
         searchBar.addTextChangedListener(new android.text.TextWatcher() {
             @Override

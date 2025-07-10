@@ -60,6 +60,8 @@ public class ComposeMailActivity extends AppCompatActivity {
 
         mailsViewModel = new ViewModelProvider(this).get(MailsViewModel.class);
 
+
+
         ccBccToggle.setOnClickListener(v -> {
             boolean show = ccInput.getVisibility() == View.GONE;
             ccInput.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -113,3 +115,4 @@ public class ComposeMailActivity extends AppCompatActivity {
         });
     }
 }
+
