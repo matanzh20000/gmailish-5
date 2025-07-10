@@ -1,73 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fillViewport="true"
-    android:background="#FFFFFF"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="32dp"
-        android:gravity="center"
+    <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:text="Create an Account"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#202124"
-            android:layout_marginBottom="40dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/firstNameInput"
-            android:hint="First Name"
-            android:padding="14dp"
-            android:background="@drawable/rounded_input"
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:background="@color/backGroundMain">
 
-        <EditText
-            android:id="@+id/lastNameInput"
-            android:hint="Last Name"
-            android:padding="14dp"
-            android:background="@drawable/rounded_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <TextView
+                style="@style/FormTextStyle"
+                android:text="Create an Account"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/emailInput"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="14dp"
-            android:background="@drawable/rounded_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <LinearLayout
+                android:id="@+id/profileImageContainer"
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
 
-        <EditText
-            android:id="@+id/passwordInput"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="14dp"
-            android:background="@drawable/rounded_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp" />
+                <ImageView
+                    android:id="@+id/profileImageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_user_placeholder"
+                    android:background="@drawable/circle_background"
+                    android:contentDescription="Profile image"
+                    android:clickable="false"
+                    android:focusable="false" />
 
-        <Button
-            android:id="@+id/signUpButton"
-            android:text="Sign Up"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:background="@drawable/rounded_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp" />
+                <TextView
+                    style="@style/FormTextStyle"
+                    android:text="Upload photo"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
-    </LinearLayout>
-</ScrollView>
+            <EditText
+                style="@style/FormTextStyle"
+                android:id="@+id/firstNameInput"
+                android:hint="First Name"
+                android:background="@drawable/rounded_input"
+                android:padding="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                style="@style/FormTextStyle"
+                android:id="@+id/lastNameInput"
+                android:hint="Last Name"
+                android:background="@drawable/rounded_input"
+                android:padding="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <Spinner
+                android:id="@+id/genderSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_input"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/birthDateText"
+                style="@style/FormTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:background="@drawable/rounded_input"
+                android:text="Select Birth Date"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp" />
+
+            <EditText
+                style="@style/FormTextStyle"
+                android:id="@+id/emailInput"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/rounded_input"
+                android:padding="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                style="@style/FormTextStyle"
+                android:id="@+id/passwordInput"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_input"
+                android:padding="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp" />
+
+            <Button
+                android:id="@+id/signUpButton"
+                android:text="Sign Up"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</FrameLayout>

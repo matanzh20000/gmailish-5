@@ -1,6 +1,7 @@
 package com.example.application.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.application.R;
 import com.example.application.entities.Mail;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHolder> {
@@ -46,6 +50,7 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
         holder.subjectText.setText(mail.getSubject());
         holder.fromText.setText(mail.getFrom());
         holder.previewText.setText(mail.getBody());
+        holder.dateItem.setText(formatDate(mail.getCreatedAt()));
 
         if (position == selectedPosition) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.highlight));
@@ -55,12 +60,18 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
 
         // Load user image
         if (mail.getUserImage() != null && !mail.getUserImage().isEmpty()) {
-            // Use Glide or Picasso for real image loading from URL
+            String imageUrl = mail.getUserImage();
+            Log.d("MailAdapter", "User image URL: " + imageUrl + " for sender: " + mail.getFrom());
+            if (imageUrl != null && !imageUrl.startsWith("http")) {
+                imageUrl = "http://10.0.2.2:8080/" + imageUrl;
+            }
+
             Glide.with(context)
-                    .load(mail.getUserImage())
+                    .load(imageUrl)
                     .placeholder(R.drawable.ic_user_placeholder)
                     .circleCrop()
                     .into(holder.senderImage);
+
         } else {
             holder.senderImage.setImageResource(R.drawable.ic_user_placeholder);
         }
@@ -69,7 +80,7 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
 
         holder.itemView.setOnLongClickListener(v -> {
             int previousPosition = selectedPosition;
-            selectedPosition = holder.getAdapterPosition();
+            selectedPosition = holder.getBindingAdapterPosition();
 
             if (previousPosition != RecyclerView.NO_POSITION) {
                 notifyItemChanged(previousPosition);
@@ -104,6 +115,7 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
         TextView fromText;
         TextView previewText;
         ImageView senderImage;
+        TextView dateItem;
 
         public MailViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +123,18 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.MailViewHold
             fromText = itemView.findViewById(R.id.fromText);
             previewText = itemView.findViewById(R.id.previewText);
             senderImage = itemView.findViewById(R.id.senderImage);
+            dateItem = itemView.findViewById(R.id.dateText);
         }
     }
+
+    private String formatDate(String isoDate) {
+        try {
+            ZonedDateTime zdt = ZonedDateTime.parse(isoDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM");
+            return zdt.format(formatter);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
 }

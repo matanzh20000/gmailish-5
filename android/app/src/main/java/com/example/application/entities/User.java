@@ -15,7 +15,7 @@ public class User {
     // MongoDB _id
     @PrimaryKey
     @NonNull
-    @SerializedName("_id")  // Tell Gson to map _id → _id field from MongoDB
+    @SerializedName("_id")
     private String id;
 
     private String firstName;

@@ -30,6 +30,10 @@ public class MailsViewModel extends AndroidViewModel {
         repository.addMail(mail);
     }
 
+    public void sendMailWithBlacklistCheck(Mail mail) {
+        repository.sendMailWithBlacklistCheck(mail);
+    }
+
     public void updateMail(Mail mail) {
         repository.updateMail(mail);
     }
@@ -50,6 +54,7 @@ public class MailsViewModel extends AndroidViewModel {
         return repository.searchMailsByQuery(userEmail, query);
     }
 
-
-
+    public void moveMailToLabel(Mail mail, String labelName) {
+        repository.moveMailToLabel(mail, labelName);
+    }
 }

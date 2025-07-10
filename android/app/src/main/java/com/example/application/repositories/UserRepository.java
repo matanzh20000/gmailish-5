@@ -1,6 +1,8 @@
 package com.example.application.repositories;
 
 import android.app.Application;
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,15 +10,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.application.api.SignInRequest;
+import com.example.application.api.SignUpResultCallback;
 import com.example.application.api.TokenResponse;
 import com.example.application.api.UsersApi;
 import com.example.application.db.AppDatabase;
 import com.example.application.db.UserDao;
 import com.example.application.entities.User;
+import com.google.gson.JsonObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,31 +96,74 @@ public class UserRepository {
         return userData;
     }
 
+    public void createUser(User user, Uri imageUri, ContentResolver contentResolver, SignUpResultCallback callback) {
+        RequestBody firstName = RequestBody.create(MediaType.parse("text/plain"), user.getFirstName());
+        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"), user.getLastName());
+        RequestBody mail = RequestBody.create(MediaType.parse("text/plain"), user.getMail());
+        RequestBody password = RequestBody.create(MediaType.parse("text/plain"), user.getPassword());
+        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), user.getGender());
+        RequestBody year = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(user.getBirthDate().getYear()));
+        RequestBody month = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(user.getBirthDate().getMonth()));
+        RequestBody day = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(user.getBirthDate().getDay()));
 
+        MultipartBody.Part imagePart = null;
 
+        if (imageUri != null) {
+            try {
+                String mimeType = contentResolver.getType(imageUri);
+                InputStream inputStream = contentResolver.openInputStream(imageUri);
+                byte[] bytes = readBytes(inputStream);
 
+                String extension = (mimeType != null && mimeType.contains("/")) ? mimeType.split("/")[1] : "jpg";
+                String fileName = "upload_" + System.currentTimeMillis() + "." + extension;
 
-    public void createUser(User user) {
-        Call<User> call = userApi.createUser(user);
-        call.enqueue(new Callback<User>() {
+                RequestBody requestFile = RequestBody.create(
+                        MediaType.parse(mimeType != null ? mimeType : "image/jpeg"),
+                        bytes
+                );
+                imagePart = MultipartBody.Part.createFormData("avatar", fileName, requestFile);
+
+            } catch (IOException e) {
+                callback.onError("Failed to read image file: " + e.getMessage());
+                return;
+            }
+        }
+
+        Call<JsonObject> call = userApi.createUser(firstName, lastName, mail, password, gender, year, month, day, imagePart);
+
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    User createdUser = response.body();
-                    executor.execute(() -> userDao.insert(createdUser));
+                    String savedFileName = response.body().get("filename").getAsString();
+                    user.setImage("uploads/" + savedFileName);
+                    insert(user);
+                    callback.onSuccess();
                 } else {
-                    Log.e("UserRepo", "Failed to create user: " + response.message());
+                    String message = "Unknown error";
+                    try {
+                        if (response.errorBody() != null) {
+                            message = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callback.onError(message);
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e("UserRepo", "Network error: " + t.getMessage());
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
             }
         });
     }
 
-    // 🔍 Get user from local Room database
+
+
+
+
+    // Get user from local Room database
     public LiveData<User> getUserByEmail(String email) {
         return userDao.getUserByEmail(email);
     }
@@ -129,4 +182,17 @@ public class UserRepository {
     public void deleteAll() {
         executor.execute(userDao::deleteAllUsers);
     }
+
+    private byte[] readBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
 }

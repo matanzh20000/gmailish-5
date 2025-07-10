@@ -19,4 +19,9 @@
     <string name="more">more</string>
     <string name="delete_mail">Delete Mail</string>
     <string name="move_to_label">Move to Label</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="welcome_to_gmailish">Welcome to Gmailish</string>
 </resources>

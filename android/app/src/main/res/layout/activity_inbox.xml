@@ -102,7 +102,7 @@
                 android:contentDescription="@string/back"
                 android:padding="8dp"
                 android:src="@drawable/ic_arrow_back"
-                app:tint="?attr/colorOnPrimary" />
+                app:tint="@color/icon_tint" />
 
             <View
                 android:layout_width="0dp"
@@ -116,7 +116,7 @@
                 android:contentDescription="@string/more"
                 android:padding="8dp"
                 android:src="@drawable/ic_more_vert"
-                app:tint="?attr/colorOnPrimary" />
+                app:tint="@color/icon_tint" />
         </LinearLayout>
 
 
@@ -177,6 +177,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/icon_tint"
                 android:text="@string/add_label" />
 
             <LinearLayout
