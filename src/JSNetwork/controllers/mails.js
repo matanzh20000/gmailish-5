@@ -29,10 +29,10 @@ exports.createMail = async (req, res) => {
   ) {
     return res.status(400).json({ error: 'Mail cannot be created - fields missing' });
   }
-
-  if (!await getUserByMail(from)) {
-    return res.status(400).json({ error: 'Mail cannot be created - sender does not exist' });
-  }
+const senderUser = await getUserByMail(from);
+if (!senderUser) {
+  return res.status(400).json({ error: 'Mail cannot be created - sender does not exist' });
+}
 
   const allRecipients = [...to, ...copy, ...blindCopy];
 
@@ -71,6 +71,7 @@ exports.createMail = async (req, res) => {
       subject,
       body,
       draft,
+      userImage: req.body.userImage,
       createdAt: timestamp,
       updatedAt: timestamp
     };

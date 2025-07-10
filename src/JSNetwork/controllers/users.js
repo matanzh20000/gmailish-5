@@ -27,11 +27,14 @@ exports.createUser = async (req, res) => {
 
   try {
     const newUser = await User.createUser(firstName, lastName, birthDate, gender, mail, password, backupMail, imageUrl);
-    return res.status(201).location(`/api/users/${newUser._id}`).end();
+
+    return res.status(201).json({ filename: imageFile?.filename || 'default-avatar.png' });
+
   } catch (err) {
     return res.status(500).json({ message: 'Database error', error: err.message });
   }
 };
+
 
 
 exports.getUserById = async (req, res) => {
