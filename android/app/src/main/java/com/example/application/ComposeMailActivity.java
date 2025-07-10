@@ -26,6 +26,7 @@ public class ComposeMailActivity extends AppCompatActivity {
     private ImageView closeIcon;
     private TextView ccBccToggle;
 
+    private String userImage;
     private String userEmail;
     private MailsViewModel mailsViewModel;
 
@@ -48,6 +49,7 @@ public class ComposeMailActivity extends AppCompatActivity {
         ccInput = findViewById(R.id.ccInput);
         bccInput = findViewById(R.id.bccInput);
         ccBccToggle = findViewById(R.id.ccBccToggle);
+        userImage =  getIntent().getStringExtra("image");
 
         userEmail = getIntent().getStringExtra("email");
         if (userEmail == null) {
@@ -87,7 +89,12 @@ public class ComposeMailActivity extends AppCompatActivity {
             newMail.setLabel(List.of("Sent"));
             newMail.setOwner(userEmail);
             String baseUrl = "http://10.0.2.2:8080/";
-            newMail.setUserImage(baseUrl + "uploads/default-avatar.png");
+            if (userImage != null && !userImage.startsWith("http")) {
+                newMail.setUserImage(baseUrl + userImage);
+            } else {
+                newMail.setUserImage(userImage);
+            }
+
 
             if (!cc.isEmpty()) {
                 List<String> ccList = new ArrayList<>();
@@ -101,7 +108,7 @@ public class ComposeMailActivity extends AppCompatActivity {
                 newMail.setBlindCopy(bccList);
             }
 
-            mailsViewModel.addMail(newMail);
+            mailsViewModel.sendMailWithBlacklistCheck(newMail);
 
             Toast.makeText(this, "Mail sent to: " + to, Toast.LENGTH_SHORT).show();
             finish();

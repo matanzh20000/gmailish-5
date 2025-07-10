@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main ScrollView Content -->
+
     <ScrollView
         android:fillViewport="true"
         android:layout_width="match_parent"
@@ -15,21 +15,25 @@
             android:padding="32dp"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+
+            android:layout_height="wrap_content"
+            android:background="@color/backGroundMain">
 
             <TextView
-                android:text="Welcome to Gmailish"
+                android:text="@string/welcome_to_gmailish"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?android:textColorPrimary"
+
                 android:layout_marginBottom="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/emailInput"
-                android:hint="Email"
-                android:textColor="?attr/colorOnBackground"
+                android:hint="@string/email"
+                android:textColorHint="@color/hintColor"
+                android:textColor="@color/hintColor"
                 android:inputType="textEmailAddress"
                 android:padding="14dp"
                 android:background="@drawable/rounded_input"
@@ -39,8 +43,9 @@
 
             <EditText
                 android:id="@+id/passwordInput"
-                android:hint="Password"
-                android:textColor="?attr/colorOnBackground"
+                android:hint="@string/password"
+                android:textColorHint="@color/hintColor"
+                android:textColor="@color/hintColor"
                 android:inputType="textPassword"
                 android:padding="14dp"
                 android:background="@drawable/rounded_input"
@@ -50,7 +55,7 @@
 
             <Button
                 android:id="@+id/signInButton"
-                android:text="Sign In"
+                android:text="@string/sign_in"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:background="@drawable/rounded_button"
@@ -61,16 +66,17 @@
 
             <TextView
                 android:id="@+id/goToSignUp"
-                android:text="Don't have an account? Sign up"
-                android:textColor="#1A73E8"
+                android:text="@string/don_t_have_an_account_sign_up"
+                android:textColor="?android:textColorSecondary"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
+
         </LinearLayout>
     </ScrollView>
 
-    <!-- Floating Theme Switch in top-right corner -->
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/themeSwitch"
         android:layout_width="96dp"
@@ -82,3 +88,4 @@
         android:thumb="@drawable/thumb_selector"
         app:track="@drawable/track_selector" />
 </FrameLayout>
+

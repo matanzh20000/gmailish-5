@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
     <application
         android:theme="@style/Theme.MyApp"
         android:allowBackup="true"
@@ -14,8 +16,7 @@
         android:supportsRtl="true">
         <activity android:name=".InboxActivity" />
         <activity android:name=".MailViewActivity" />
-        <activity android:name=".ComposeMailActivity"
-            android:theme="@style/Theme.App.Dialog"/>
+        <activity android:name=".ComposeMailActivity"/>
         <activity android:name=".UserProfileActivity"/>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".ComposeMailActivity"

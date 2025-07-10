@@ -14,10 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application.entities.User;
 import com.example.application.entities.User.BirthDate;
+import com.example.application.ui.theme.PreferenceManager;
 import com.example.application.viewmodels.UserViewModel;
 
 import java.io.IOException;
@@ -43,6 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+
         // Bind Views
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
@@ -57,11 +62,8 @@ public class SignUpActivity extends AppCompatActivity {
         profileImageView.setOnClickListener(v -> openImagePicker());
 
         // Gender spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                new String[]{"Male", "Female", "Other"}
-        );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new String[]{"Male", "Female", "Other"});
+
         genderSpinner.setAdapter(adapter);
 
         // Birth date picker
@@ -75,10 +77,50 @@ public class SignUpActivity extends AppCompatActivity {
             picker.show();
         });
 
-        // ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         signUpButton.setOnClickListener(v -> handleSignUp());
+
+        userViewModel.getSignUpResult().observe(this, result -> {
+            if ("success".equals(result)) {
+                Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Sign up failed: " + result, Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_PICK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+            profileImageView.setImageURI(selectedImageUri);
+        }
+    }
+
+    private String encodeImageToBase64(Uri imageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            assert inputStream != null;
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+            return Base64.encodeToString(bytes, Base64.NO_WRAP);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void openImagePicker() {
@@ -122,6 +164,13 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+
+
+        if (!isValidGmailishEmail(email)) {
+            emailInput.setError("Must use a valid @gmailish.com email");
+            return;
+        }
+
         // Build birthDate object
         BirthDate birthDate = new BirthDate(birthYear, birthMonth, birthDay);
 
@@ -140,9 +189,14 @@ public class SignUpActivity extends AppCompatActivity {
             newUser.setImage(base64Image);
         }
 
-        userViewModel.createUser(newUser);
-        Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show();
 
-        finish();
+        userViewModel.createUser(newUser, selectedImageUri, getContentResolver());
     }
+
+
+    private boolean isValidGmailishEmail(String email) {
+        return email.matches("^[a-zA-Z0-9._%+-]+@gmailish\\.com$");
+    }
+
+
 }

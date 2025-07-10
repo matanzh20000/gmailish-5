@@ -2,6 +2,7 @@ package com.example.application;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.application.ui.theme.PreferenceManager;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -30,15 +32,28 @@ public class UserProfileActivity extends AppCompatActivity {
         Button signOutButton = findViewById(R.id.signOutButton);
 
         String imagePath = getIntent().getStringExtra("image");
+        Log.d("UserProfile", "Using image path: " + imagePath);
         String email = getIntent().getStringExtra("email");
         String baseUrl = "http://10.0.2.2:8080/";
-        String fullImageUrl = (imagePath != null && !imagePath.isEmpty()) ? baseUrl + imagePath : baseUrl + "uploads/default-avatar.png";
+        String fullImageUrl;
+        if (imagePath != null && !imagePath.isEmpty()) {
+            if (imagePath.startsWith("http")) {
+                fullImageUrl = imagePath;
+            } else {
+                fullImageUrl = baseUrl + imagePath;
+            }
+        } else {
+            fullImageUrl = baseUrl + "uploads/default-avatar.png";
+        }
 
         Glide.with(this)
                 .load(fullImageUrl)
                 .placeholder(R.drawable.ic_user_placeholder)
                 .circleCrop()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(userImageLarge);
+
 
         userEmail.setText(email);
 

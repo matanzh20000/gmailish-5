@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/compose_background"
+    android:background="?attr/colorPrimaryVariant"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <!-- Top bar with Close (X) -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp">
 
         <ImageView
             android:id="@+id/closeIcon"
@@ -21,12 +21,12 @@
             android:contentDescription="Close" />
     </RelativeLayout>
 
-    <!-- TO + CC/BCC Toggle -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
 
         <EditText
             android:id="@+id/toInput"
@@ -34,21 +34,22 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@null"
+            android:background="@drawable/rounded_input"
             android:padding="12dp"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="?android:textColorPrimary"
+            android:textColorHint="?android:textColorHint" />
 
         <TextView
             android:id="@+id/ccBccToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cc/Bcc"
-            android:textColor="@color/design_default_color_primary"
+            android:textColor="@color/copyColor"
             android:padding="8dp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- CC -->
     <EditText
         android:id="@+id/ccInput"
         android:hint="Cc"
@@ -56,10 +57,12 @@
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:inputType="textEmailAddress"
-        android:background="@null"
-        android:visibility="gone" />
+        android:background="@drawable/rounded_input"
+        android:visibility="gone"
+        android:textColor="?android:textColorPrimary"
+        android:textColorHint="?android:textColorHint"
+        android:layout_marginBottom="12dp" />
 
-    <!-- BCC -->
     <EditText
         android:id="@+id/bccInput"
         android:hint="Bcc"
@@ -67,19 +70,23 @@
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:inputType="textEmailAddress"
-        android:background="@null"
-        android:visibility="gone" />
+        android:background="@drawable/rounded_input"
+        android:visibility="gone"
+        android:textColor="?android:textColorPrimary"
+        android:textColorHint="?android:textColorHint"
+        android:layout_marginBottom="12dp" />
 
-    <!-- Subject -->
     <EditText
         android:id="@+id/subjectInput"
         android:hint="Subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:background="@null" />
+        android:background="@drawable/rounded_input"
+        android:textColor="?android:textColorPrimary"
+        android:textColorHint="?android:textColorHint"
+        android:layout_marginBottom="12dp" />
 
-    <!-- Body -->
     <EditText
         android:id="@+id/bodyInput"
         android:hint="Compose email"
@@ -90,16 +97,17 @@
         android:inputType="textMultiLine"
         android:minLines="8"
         android:padding="12dp"
-        android:background="@null" />
+        android:background="@drawable/rounded_input"
+        android:textColor="?android:textColorPrimary"
+        android:textColorHint="?android:textColorHint"
+        android:layout_marginBottom="12dp" />
 
-    <!-- Send Button -->
     <Button
         android:id="@+id/sendButton"
         android:text="Send"
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="@android:color/white" />
 
