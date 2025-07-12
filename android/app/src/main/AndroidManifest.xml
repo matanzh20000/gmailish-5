@@ -19,8 +19,6 @@
         <activity android:name=".ComposeMailActivity"/>
         <activity android:name=".UserProfileActivity"/>
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".ComposeMailActivity"
-            android:theme="@style/Theme.App.Dialog"/>
         <activity android:name=".SignInActivity"
             android:exported="true">
             <intent-filter>
