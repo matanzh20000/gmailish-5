@@ -63,7 +63,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Gender spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new String[]{"Male", "Female", "Other"});
-
         genderSpinner.setAdapter(adapter);
 
         // Birth date picker
@@ -77,8 +76,10 @@ public class SignUpActivity extends AppCompatActivity {
             picker.show();
         });
 
+        // Init ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
+        // Button click
         signUpButton.setOnClickListener(v -> handleSignUp());
 
         userViewModel.getSignUpResult().observe(this, result -> {
@@ -123,35 +124,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE_PICK);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            profileImageView.setImageURI(selectedImageUri);
-        }
-    }
-
-    private String encodeImageToBase64(Uri imageUri) {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
-            inputStream.close();
-            return Base64.encodeToString(bytes, Base64.NO_WRAP);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private void handleSignUp() {
         String first = firstNameInput.getText().toString().trim();
         String last = lastNameInput.getText().toString().trim();
@@ -163,7 +135,6 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
 
         if (!isValidGmailishEmail(email)) {
@@ -189,10 +160,8 @@ public class SignUpActivity extends AppCompatActivity {
             newUser.setImage(base64Image);
         }
 
-
         userViewModel.createUser(newUser, selectedImageUri, getContentResolver());
     }
-
 
     private boolean isValidGmailishEmail(String email) {
         return email.matches("^[a-zA-Z0-9._%+-]+@gmailish\\.com$");
