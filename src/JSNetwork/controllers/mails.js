@@ -71,7 +71,7 @@ if (!senderUser) {
       subject,
       body,
       draft,
-      userImage: req.body.userImage,
+      userImage: senderUser.image || 'uploads/default-avatar.png',
       createdAt: timestamp,
       updatedAt: timestamp
     };
