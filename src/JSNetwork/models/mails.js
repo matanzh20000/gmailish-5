@@ -12,7 +12,8 @@ const mailSchema = new mongoose.Schema({
   isRead: Boolean,
   createdAt: Date,
   updatedAt: Date,
-  owner: String
+  owner: String,
+  userImage: String
 });
 
 module.exports = mongoose.model('Mail', mailSchema);
