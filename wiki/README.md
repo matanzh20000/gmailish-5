@@ -238,7 +238,6 @@ To confirm that a URL is blacklisted:
 
 * JWT tokens are used for secure authentication.
 * `.env` file contains the secret key for token generation (do not expose publicly).
-* Android stores tokens securely using `SharedPreferences`.
 
 ---
 
