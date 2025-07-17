@@ -30,7 +30,8 @@
 
 ## Blacklisted Mail Appears At Spam Label
 
-<img width="487" height="838" alt="image" src="https://github.com/user-attachments/assets/cfd9cf01-f07f-47f2-ab26-f429423158e3" />
+<img width="933" height="839" alt="image" src="https://github.com/user-attachments/assets/052e9ba8-17b6-486c-8d07-1b721018fe9c" />
+
 
 
 ---
@@ -83,7 +84,8 @@
 
 ## Invalid Credentials
 
-<img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/de9db510-ad4d-4e8c-99af-3396ce969fda" />
+<img width="463" height="866" alt="image" src="https://github.com/user-attachments/assets/f3f396ca-c9dd-4983-98fa-476ab07ff9bf" />
+
 
 ---
 ## Sign-Up Success
