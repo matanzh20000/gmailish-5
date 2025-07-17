@@ -73,7 +73,6 @@
 
 ---
 
-
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
 
