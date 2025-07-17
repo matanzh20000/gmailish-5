@@ -8,7 +8,6 @@
 <img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/13a8b5dc-d5fc-42df-887c-38138505a9b0" />
 
 ---
-## Sign-In Dark Mode
 
 <details>
 <summary><strong>🌑 Sign-In Dark Mode</strong></summary>
