@@ -1,76 +1,68 @@
 ## Inbox Compose
 
-<img src="https://github.com/user-attachments/assets/465da636-fa4c-410d-8a28-fd54143a74a9" alt="Compose Example" width="100%"/>
+<img src="https://github.com/user-attachments/assets/ed61b99a-4754-4b05-b8a3-88104cb5454a" alt="Compose Example" width="100%"/>
 
 ---
 
 ## Label Creation
 
-<img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
+<img src="https://github.com/user-attachments/assets/dbba8664-6ce1-47f8-af29-1208af353a7b" alt="Label Example" width="100%"/>
 
 ## Dark Mode
 
-<img width="1439" height="808" alt="image" src="https://github.com/user-attachments/assets/d018956c-b5ba-4cf8-9d64-d1e60be9eb92" />
+<img width="1439" height="808" alt="image" src="https://github.com/user-attachments/assets/7b2d67b3-32c0-41be-b159-4dea1593cb8a" />
 
 ---
 ## Light Mode
 
-<img width="1437" height="804" alt="image" src="https://github.com/user-attachments/assets/5eb1dbfa-d964-42f1-87ea-c1fc4dd02234" />
+<img width="1437" height="804" alt="image" src="https://github.com/user-attachments/assets/159232e4-5a95-43ad-8259-dbe584ab2b43" />
 
 ---
 ## Spam Label
 
-<img width="1434" height="806" alt="image" src="https://github.com/user-attachments/assets/813820ae-8477-4a1a-a5cb-85cd1d43985f" />
+<img width="1434" height="806" alt="image" src="https://github.com/user-attachments/assets/171d229e-c23d-4713-b73d-ab53e8eb8a6a" />
 
 ---
-## Draft To Sent
 
-<img width="1439" height="812" alt="image" src="https://github.com/user-attachments/assets/2862a26e-49a3-4a2c-a300-2ae14ea967aa" />
-
----
 ## Blacklisted Mail Appears At Spam Label
 
-<img width="1438" height="809" alt="image" src="https://github.com/user-attachments/assets/de4528db-429e-43aa-9c0f-cb66e3df867c" />
+<img width="1438" height="809" alt="image" src="https://github.com/user-attachments/assets/934bd3dc-93a9-4949-bfb7-52ee9ad9ff24" />
 
 ---
 ## Mail View
 
-<img width="1436" height="808" alt="image" src="https://github.com/user-attachments/assets/2f86c8d5-87e2-47fa-96da-c748df3f4314" />
+<img width="1436" height="808" alt="image" src="https://github.com/user-attachments/assets/934bd3dc-93a9-4949-bfb7-52ee9ad9ff24" />
 
 ---
-## Sending Mail With URL
 
-<img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/4d0570e8-fe45-4a3f-9e72-627fad543a2b" />
-
----
 ## Edit Label
 
-<img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/c12e0938-d6f9-44c4-a492-9762ddc88c53" />
+<img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/724459d9-902a-43dc-90cb-959c9076c77d" />
 
 ---
 ## Searching For A Mail
 
-<img width="1438" height="810" alt="image" src="https://github.com/user-attachments/assets/283465cf-88bb-407a-a32a-2b289b374f15" />
+<img width="1438" height="810" alt="image" src="https://github.com/user-attachments/assets/d12f2868-aebd-4efa-b7f7-a4082e7ca3e2" />
 
 ---
 ## Editing Mails
 
-<img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/4d258213-d232-4a07-bd3c-22d25794a0d8" />
+<img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/4b8967f2-e818-4c5e-acf7-c58ae6d53c03" />
 
 ---
 ## Logout
 
-<img width="1436" height="803" alt="image" src="https://github.com/user-attachments/assets/42ebf693-e0fd-417f-94f6-bbe19cf0ebea" />
+<img width="1436" height="803" alt="image" src="https://github.com/user-attachments/assets/6f12577f-8287-468e-9a90-cee92e2b0518" />
 
 ---
 ## Sign-In Light Mode
 
-<img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/13a8b5dc-d5fc-42df-887c-38138505a9b0" />
+<img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/2723da7c-65ae-4fec-96c5-ded651b3ffc2" />
 
 ---
 ## Sign-In Dark Mode
 
-<img width="1431" height="767" alt="image" src="https://github.com/user-attachments/assets/7e001c25-2847-4808-bab6-78908761e160" />
+<img width="1431" height="767" alt="image" src="https://github.com/user-attachments/assets/f392d4fc-99c8-48e2-bd92-c899af0259ae" />
 
 ---
 ## Invalid Credentials
@@ -79,12 +71,12 @@
 
 ## Invalid Credentials
 
-<img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/6cbfe7cf-be8d-4956-bedc-0bfad4f56b4a" />
+<img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/de9db510-ad4d-4e8c-99af-3396ce969fda" />
 
 ---
 ## Sign-Up Success
 
-<img width="1439" height="806" alt="image" src="https://github.com/user-attachments/assets/db2ef5fd-5603-4a1f-9212-507b567065ad" />
+<img width="1439" height="806" alt="image" src="https://github.com/user-attachments/assets/12f05680-342c-41aa-9ee8-60baeac6ad79" />
 
 ---
 
