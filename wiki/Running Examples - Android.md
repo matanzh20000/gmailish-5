@@ -1,6 +1,7 @@
 ## Inbox Compose
 
-<img src="https://github.com/user-attachments/assets/ed61b99a-4754-4b05-b8a3-88104cb5454a" alt="Compose Example" width="100%"/>
+<img width="989" height="842" alt="image" src="https://github.com/user-attachments/assets/e8f7f59c-afce-45b1-a52b-0db1638ab872" />
+
 
 ---
 
