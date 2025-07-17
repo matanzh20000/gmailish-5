@@ -1,7 +1,9 @@
 ## Inbox Compose
 <img width="1440" height="811" alt="image" src="https://github.com/user-attachments/assets/8551d9a9-3a29-4e73-8544-1a623f4bab9e" />
+---
 ## Label Creation
 <img width="1438" height="808" alt="image" src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" />
+---
 ## Dark Mode
 <img width="1439" height="808" alt="image" src="https://github.com/user-attachments/assets/d018956c-b5ba-4cf8-9d64-d1e60be9eb92" />
 ## Light Mode
