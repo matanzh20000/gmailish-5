@@ -1,6 +1,9 @@
-## Sign-In Light Mode
+<details>
+<summary><strong>🔐 Sign-In Light Mode</strong></summary>
 
 **Demonstrates signing in with valid credentials in light mode.**
+
+</details>
 
 <img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/13a8b5dc-d5fc-42df-887c-38138505a9b0" />
 
