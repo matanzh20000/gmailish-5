@@ -1,7 +1,8 @@
 <details>
 <summary><strong>🔐 Sign-In Light Mode</strong></summary>
 
-**Valid credentials allow access to the inbox, with user preferences and theme restored from the last session. The interface is optimized for clarity and usability..**
+**Demonstrates a successful login in light theme.**  
+Valid credentials allow access to the inbox, with user preferences and theme restored from the last session. The interface is optimized for clarity and usability.
 
 </details>
 
@@ -12,7 +13,8 @@
 <details>
 <summary><strong>🌑 Sign-In Dark Mode</strong></summary>
 
-**Demonstrates signing in with valid credentials in dark mode.**
+**Demonstrates a successful login using dark mode.**  
+The interface appears in low-light mode based on saved preferences. It highlights theme persistence and secure session initialization.
 
 </details>
 
@@ -24,7 +26,8 @@
 <details>
 <summary><strong>❌ Invalid Credentials</strong></summary>
 
-**Shows error handling when user enters incorrect login credentials.**
+**Shows login failure handling when incorrect credentials are entered.**  
+The system provides immediate feedback, prevents login, and displays an error message without crashing or leaking any sensitive information.
 
 </details>
 
@@ -40,7 +43,8 @@
 <details>
 <summary><strong>✅ Sign-Up Success</strong></summary>
 
-**Demonstrates successful account registration with profile image upload.**
+**Demonstrates successful account creation and onboarding.**  
+New users can register with a name, password, and optional profile image. Upon success, the system redirects to the inbox and stores user information securely.
 
 </details>
 
@@ -53,7 +57,8 @@
 <details>
 <summary><strong>📝 Inbox Compose</strong></summary>
 
-**Shows the compose window with `To`, `Cc`, and `Bcc` fields, subject, and body editor.**
+**Shows the email composition interface within the inbox.**  
+Users can write new emails with support for `To`, `Cc`, and `Bcc` fields. The UI mirrors Gmail’s behavior, allowing dynamic toggling of recipient fields and saving unfinished drafts automatically.
 
 </details>
 
@@ -67,7 +72,8 @@
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
 
-**Displays the application in dark theme for comfortable low-light usage.**
+**Demonstrates the application in dark theme mode.**  
+automatically adjusts background and text colors, and preserves user preferences across sessions.
 
 </details>
 
@@ -77,7 +83,8 @@
 <details>
 <summary><strong>🌞 Light Mode</strong></summary>
 
-**Displays the application in light theme for default or high-visibility environments.**
+**Displays the application in standard light theme.**  
+Optimized for daytime usage, this mode offers maximum readability with bright backgrounds and high contrast for a clean and familiar email experience.
 
 </details>
 
@@ -89,7 +96,8 @@
 <details>
 <summary><strong>🛡️ Spam Label</strong></summary>
 
-**Shows the "Spam" folder where flagged emails are automatically categorized.**
+**Illustrates the automatic spam detection system.**  
+Mails flagged by the C++ Bloom filter server are auto-labeled as "Spam". Users can review these suspicious emails in the dedicated spam folder.
 
 </details>
 <img width="1434" height="806" alt="image" src="https://github.com/user-attachments/assets/813820ae-8477-4a1a-a5cb-85cd1d43985f" />
@@ -100,7 +108,8 @@
 <details>
 <summary><strong>📤 Draft To Sent</strong></summary>
 
-**Demonstrates sending a previously saved draft email successfully.**
+**Demonstrates sending a saved draft email.**  
+Users can return to previously saved drafts, make final edits, and send them seamlessly. The sent mail is moved to the "Sent" folder while preserving its content.
 
 </details>
 
@@ -112,7 +121,8 @@
 <details>
 <summary><strong>🚫 Blacklisted Mail Appears At Spam Label</strong></summary>
 
-**Shows an email with a blacklisted URL being auto-labeled as "Spam".**
+**Shows how emails with blacklisted URLs are handled.**  
+If an outgoing email contains a blacklisted link, it's intercepted by the C++ server and automatically redirected to the spam folder, keeping inboxes clean and safe.
 
 </details>
 
@@ -122,7 +132,8 @@
 <details>
 <summary><strong>📨 Mail View</strong></summary>
 
-**Displays the full content of a selected email with sender, subject, and body.**
+**Displays the full content of a selected email.**  
+Users can view sender, recipients, subject, timestamp, and body of the email in a clean, responsive layout. Links and formatting are preserved.
 
 </details>
 
@@ -134,7 +145,8 @@
 <details>
 <summary><strong>🔗 Sending Mail With URL</strong></summary>
 
-**Demonstrates how an email containing a URL is validated before being sent.**
+**Demonstrates how the system validates emails before sending.**  
+URLs included in emails are checked via the C++ server using a TCP call. Based on the result, the system decides whether to allow the send or mark the email as spam.
 
 </details>
 
@@ -145,7 +157,8 @@
 <details>
 <summary><strong>✏️ Labels</strong></summary>
 
-**Shows how users can rename or delete existing labels and create new labels and assign them to emails**
+**Shows editing functionality for existing labels.**  
+Users can rename labels or delete them entirely. Changes reflect instantly across all emails associated with those labels and are synced with the backend.
 
 </details>
 
@@ -158,7 +171,8 @@
 <details>
 <summary><strong>🔍 Searching For A Mail</strong></summary>
 
-**Demonstrates keyword-based email search in inbox and labels.**
+**Demonstrates keyword-based email search functionality.**  
+Users can search their mailboxes using subject or content keywords. Search results update in real time.
 
 </details>
 
@@ -169,7 +183,8 @@
 <details>
 <summary><strong>🛠️ Editing Mails</strong></summary>
 
-**Allows users to modify the contents of draft emails before sending.**
+**Allows users to edit draft messages.**  
+Drafts can be modified before sending, preserving any previous content. The system ensures the latest changes are saved and do not overwrite active sessions elsewhere.
 
 
 </details>
@@ -181,7 +196,8 @@
 <details>
 <summary><strong>🚪 Logout</strong></summary>
 
-**Shows how a user securely logs out of the system.**
+**Displays the logout process.**  
+Users can securely log out of their Gmailish account, clearing their local session token and returning to the login screen.
 
 </details>
 
