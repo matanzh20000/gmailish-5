@@ -7,6 +7,7 @@
 ## Label Creation
 
 <img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
+
 ## Dark Mode
 
 <img width="1439" height="808" alt="image" src="https://github.com/user-attachments/assets/d018956c-b5ba-4cf8-9d64-d1e60be9eb92" />
