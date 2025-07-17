@@ -1,3 +1,36 @@
+## Sign-In Light Mode
+
+Demonstrates signing in with valid credentials in light mode.
+
+<img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/13a8b5dc-d5fc-42df-887c-38138505a9b0" />
+
+---
+## Sign-In Dark Mode
+
+Demonstrates signing in with valid credentials in dark mode.
+
+<img width="1431" height="767" alt="image" src="https://github.com/user-attachments/assets/7e001c25-2847-4808-bab6-78908761e160" />
+
+---
+## Invalid Credentials
+
+Shows error handling when user enters incorrect login credentials.
+
+<img width="1433" height="801" alt="image" src="https://github.com/user-attachments/assets/d13cef66-0542-4a69-bffc-4126262187f2" />
+
+## Invalid Credentials
+
+<img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/6cbfe7cf-be8d-4956-bedc-0bfad4f56b4a" />
+
+---
+## Sign-Up Success
+
+Demonstrates successful account registration with profile image upload.
+
+<img width="1439" height="806" alt="image" src="https://github.com/user-attachments/assets/db2ef5fd-5603-4a1f-9212-507b567065ad" />
+
+---
+
 ## Inbox Compose
 
 Shows the compose window with To, Cc, and Bcc fields, subject, and body editor.
@@ -87,38 +120,6 @@ Allows users to modify the contents of draft emails before sending.
 Shows how a user securely logs out of the system.
 
 <img width="1436" height="803" alt="image" src="https://github.com/user-attachments/assets/42ebf693-e0fd-417f-94f6-bbe19cf0ebea" />
-
----
-## Sign-In Light Mode
-
-Demonstrates signing in with valid credentials in light mode.
-
-<img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/13a8b5dc-d5fc-42df-887c-38138505a9b0" />
-
----
-## Sign-In Dark Mode
-
-Demonstrates signing in with valid credentials in dark mode.
-
-<img width="1431" height="767" alt="image" src="https://github.com/user-attachments/assets/7e001c25-2847-4808-bab6-78908761e160" />
-
----
-## Invalid Credentials
-
-Shows error handling when user enters incorrect login credentials.
-
-<img width="1433" height="801" alt="image" src="https://github.com/user-attachments/assets/d13cef66-0542-4a69-bffc-4126262187f2" />
-
-## Invalid Credentials
-
-<img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/6cbfe7cf-be8d-4956-bedc-0bfad4f56b4a" />
-
----
-## Sign-Up Success
-
-Demonstrates successful account registration with profile image upload.
-
-<img width="1439" height="806" alt="image" src="https://github.com/user-attachments/assets/db2ef5fd-5603-4a1f-9212-507b567065ad" />
 
 ---
 
