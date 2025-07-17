@@ -63,10 +63,11 @@
 
 
 
+
 <details>
 <summary><strong🏷️ Label Creation</strong></summary>
 
-
+**Demonstrates how users can create new labels and assign them to emails.**
 
 </details>
 
@@ -75,7 +76,7 @@
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
 
-
+**Displays the application in dark theme for comfortable low-light usage.**
 
 </details>
 
@@ -85,7 +86,7 @@
 <details>
 <summary><strong>🌞 Light Mode</strong></summary>
 
-
+**Displays the application in light theme for default or high-visibility environments.**
 
 </details>
 
@@ -160,7 +161,6 @@
 <img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/c12e0938-d6f9-44c4-a492-9762ddc88c53" />
 
 ---
-## Searching For A Mail
 
 <summary><strong>🔍 Searching For A Mail</strong></summary>
 
@@ -171,7 +171,6 @@
 <img width="1438" height="810" alt="image" src="https://github.com/user-attachments/assets/283465cf-88bb-407a-a32a-2b289b374f15" />
 
 ---
-## Editing Mails
 
 <details>
 <summary><strong>🛠️ Editing Mails</strong></summary>
@@ -184,7 +183,6 @@
 <img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/4d258213-d232-4a07-bd3c-22d25794a0d8" />
 
 ---
-## Logout
 
 <details>
 <summary><strong>🚪 Logout</strong></summary>
