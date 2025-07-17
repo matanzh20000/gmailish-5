@@ -62,8 +62,6 @@
 ---
 
 
-
-
 <details>
 <summary><strong🏷️ Label Creation</strong></summary>
 
@@ -72,6 +70,9 @@
 </details>
 
 <img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
+
+---
+
 
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
@@ -162,6 +163,7 @@
 
 ---
 
+<details>
 <summary><strong>🔍 Searching For A Mail</strong></summary>
 
 **Demonstrates keyword-based email search in inbox and labels.**
