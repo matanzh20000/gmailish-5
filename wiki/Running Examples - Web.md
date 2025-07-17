@@ -18,7 +18,7 @@ Shows error handling when user enters incorrect login credentials.
 
 <img width="1433" height="801" alt="image" src="https://github.com/user-attachments/assets/d13cef66-0542-4a69-bffc-4126262187f2" />
 
-## Invalid Credentials
+
 
 <img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/6cbfe7cf-be8d-4956-bedc-0bfad4f56b4a" />
 
