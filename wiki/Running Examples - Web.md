@@ -19,7 +19,7 @@
 <img width="1431" height="767" alt="image" src="https://github.com/user-attachments/assets/7e001c25-2847-4808-bab6-78908761e160" />
 
 ---
-## Invalid Credentials
+
 
 <details>
 <summary><strong>❌ Invalid Credentials</strong></summary>
@@ -35,7 +35,7 @@
 <img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/6cbfe7cf-be8d-4956-bedc-0bfad4f56b4a" />
 
 ---
-## Sign-Up Success
+
 
 <details>
 <summary><strong>✅ Sign-Up Success</strong></summary>
@@ -48,7 +48,7 @@
 
 ---
 
-## Inbox Compose
+
 
 <details>
 <summary><strong>📝 Inbox Compose</strong></summary>
@@ -61,12 +61,12 @@
 
 ---
 
-## Label Creation
+
 
 <details>
 <summary><strong🏷️ Label Creation</strong></summary>
 
-**Demonstrates how users can create new labels and assign them to emails.**
+
 
 </details>
 
@@ -75,7 +75,7 @@
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
 
-**Displays the application in dark theme for comfortable low-light usage.**
+
 
 </details>
 
@@ -85,14 +85,14 @@
 <details>
 <summary><strong>🌞 Light Mode</strong></summary>
 
-**Displays the application in light theme for default or high-visibility environments.**
+
 
 </details>
 
 <img width="1437" height="804" alt="image" src="https://github.com/user-attachments/assets/5eb1dbfa-d964-42f1-87ea-c1fc4dd02234" />
 
 ---
-## Spam Label
+
 
 <details>
 <summary><strong>🛡️ Spam Label</strong></summary>
@@ -103,7 +103,7 @@
 <img width="1434" height="806" alt="image" src="https://github.com/user-attachments/assets/813820ae-8477-4a1a-a5cb-85cd1d43985f" />
 
 ---
-## Draft To Sent
+
 
 <details>
 <summary><strong>📤 Draft To Sent</strong></summary>
@@ -115,7 +115,7 @@
 <img width="1439" height="812" alt="image" src="https://github.com/user-attachments/assets/2862a26e-49a3-4a2c-a300-2ae14ea967aa" />
 
 ---
-## Blacklisted Mail Appears At Spam Label
+
 
 <details>
 <summary><strong>🚫 Blacklisted Mail Appears At Spam Label</strong></summary>
@@ -127,15 +127,6 @@
 <img width="1438" height="809" alt="image" src="https://github.com/user-attachments/assets/de4528db-429e-43aa-9c0f-cb66e3df867c" />
 
 ---
-## Mail View
-
-**Displays the full content of a selected email with sender, subject, and body.**
-
-<img width="1436" height="808" alt="image" src="https://github.com/user-attachments/assets/2f86c8d5-87e2-47fa-96da-c748df3f4314" />
-
----
-## Sending Mail With URL
-
 <details>
 <summary><strong>📨 Mail View</strong></summary>
 
@@ -143,10 +134,21 @@
 
 </details>
 
+
+<img width="1436" height="808" alt="image" src="https://github.com/user-attachments/assets/2f86c8d5-87e2-47fa-96da-c748df3f4314" />
+
+---
+
+<details>
+<summary><strong>🔗 Sending Mail With URL</strong></summary>
+
+**Demonstrates how an email containing a URL is validated before being sent.**
+
+</details>
+
 <img width="1437" height="807" alt="image" src="https://github.com/user-attachments/assets/4d0570e8-fe45-4a3f-9e72-627fad543a2b" />
 
 ---
-## Edit Label
 
 <details>
 <summary><strong>✏️ Edit Label</strong></summary>
