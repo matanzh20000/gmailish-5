@@ -1,10 +1,14 @@
 ## Inbox Compose
 
+Shows the compose window with To, Cc, and Bcc fields, subject, and body editor.
+
 <img src="https://github.com/user-attachments/assets/8551d9a9-3a29-4e73-8544-1a623f4bab9e" alt="Compose Example" width="100%"/>
 
 ---
 
 ## Label Creation
+
+Demonstrates how users can create new labels and assign them to emails.
 
 <img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
 
