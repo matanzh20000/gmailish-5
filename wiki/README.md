@@ -218,7 +218,7 @@ To confirm that a URL is blacklisted:
 
 ---
 
-## Android Client
+## Android Feautres
 
 ### Tech Stack & Architecture
 
