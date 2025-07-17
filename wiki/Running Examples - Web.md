@@ -1,7 +1,7 @@
 <details>
 <summary><strong>🔐 Sign-In Light Mode</strong></summary>
 
-**Demonstrates signing in with valid credentials in light mode.**
+**Valid credentials allow access to the inbox, with user preferences and theme restored from the last session. The interface is optimized for clarity and usability..**
 
 </details>
 
