@@ -63,18 +63,6 @@
 
 
 
-<details>
-<summary><strong🏷️ Label Creation</strong></summary>
-
-**Demonstrates how users can create new labels and assign them to emails.**
-
-</details>
-
-<img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
-
----
-
-
 
 <details>
 <summary><strong>🌙 Dark Mode</strong></summary>
@@ -155,13 +143,15 @@
 ---
 
 <details>
-<summary><strong>✏️ Edit Label</strong></summary>
+<summary><strong>✏️ Labels</strong></summary>
 
-**Shows how users can rename or delete existing labels.**
+**Shows how users can rename or delete existing labels and create new labels and assign them to emails**
 
 </details>
 
 <img width="1438" height="807" alt="image" src="https://github.com/user-attachments/assets/c12e0938-d6f9-44c4-a492-9762ddc88c53" />
+
+<img src="https://github.com/user-attachments/assets/c8a1e959-b076-47d6-90a9-3100a6a87ffa" alt="Label Example" width="100%"/>
 
 ---
 
