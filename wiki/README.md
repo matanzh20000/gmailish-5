@@ -220,28 +220,40 @@ To confirm that a URL is blacklisted:
 
 ## Android Client
 
-### Tech Stack
+### Tech Stack & Architecture
 
-* **Language**: Java
-* **Architecture**: MVVM
-* **Persistence**: Room Database
-* **Data Layer**: Repository pattern
-* **Networking**: Retrofit or native HTTP libraries
+The Android client is built using a **clean MVVM (Model-View-ViewModel)** architecture to ensure a scalable, testable, and maintainable codebase. It leverages several modern Android components and design patterns:
 
-### Features
+- **Language**: Java
+- **Architecture**: MVVM
+  - **Model Layer**: Handles local database entities and API data structures.
+  - **Repository Layer**: Serves as a single source of truth, abstracting data from Room and network sources.
+  - **ViewModel Layer**: Manages UI-related data and lifecycle awareness using `LiveData`.
+  - **View Layer**: Activities and fragments observe data from ViewModel and handle user interaction.
+- **Persistence**: Room Database
+  - Stores user data, login sessions, and email drafts for offline access and local caching.
+- **Networking**: Retrofit 
+  - Communicates securely with the Gmailish backend API designed with NodeJs.
+- **Session Management**: `SharedPreferences`
+  - Securely stores JWT tokens for authentication.
 
-* JWT-based login/registration.
-* Fetch emails, view details, compose, and send.
-* Store drafts offline using Room.
-* Dark/light mode support.
-* Works in sync with Node.js server and C++ blacklist checker.
+### Core Features
 
-### Setup
+- **Authentication**:
+  - Secure login and registration using JWT tokens.
+  
+- **Email Functionality**:
+  - View inbox, sent mail, and labels.
+  - Compose and send new emails with subject and body.
+  - Automatically scans outgoing email content for blacklisted URLs (via the backend).
 
-1. Open the Android project in Android Studio.
-2. Ensure emulator/device is set up.
-3. Set the backend IP to your local machine or Docker alias (e.g., `10.0.2.2` for emulator).
-4. Run the app.
+- **Dark/Light Mode**:
+  - Follows system UI mode preference.
+  - Ensures a user-friendly experience in both themes.
+
+- **Responsive UI**:
+  - Designed with modern Material Components for a consistent mobile experience.
+  - Handles loading, error, and empty states gracefully.
 
 ---
 
