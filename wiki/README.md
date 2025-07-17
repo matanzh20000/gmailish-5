@@ -10,7 +10,6 @@
 * [Android Client](#android-client)
 * [Notes](#notes)
 * [Security & Configuration](#security--configuration)
-* [Run Demo](#run-demo)
 
 ---
 
@@ -183,15 +182,21 @@ TCP provides reliable, ordered delivery of messages, which is essential for cust
 
 ### Running the Android Application
 
-1. Clone this repository.
-2. Open Android Studio and choose "Open an existing project".
-3. Navigate to the android/ directory inside the cloned repository and open it as a project.
-4. Copy all the content of android folder into your local project 
-5. (Optional) If you prefer working inside a new project:
+1. Clone this **repository**.
+
+2. Open **Android Studio** and choose "**Open an existing project**".
+  
+3. Navigate to the **android/** directory inside the **cloned repository** and open it as a project.
+  
+4. **Copy all** the content of the android folder into your local project
+   
+5. **(Optional)** If you prefer working inside a new project:
 Create a new Android project in Android Studio.
-Copy the contents of the android/ folder into your newly created project's app/ folder, replacing the default files.
-6. Sync Gradle and build the project.
-7. Run the app: Select an emulator or connected device and click "Run" in Android Studio.
+Copy the contents of the **android/** folder into your newly created project's app/ folder, replacing the default files.
+
+6. **Sync Gradle** and build the project.
+   
+7. **Run the app:** Select an emulator or connected device and click "Run" in Android Studio.
 
 ---
 
@@ -255,7 +260,4 @@ To confirm that a URL is blacklisted:
 
 ---
 
-## Run Demo
 
-Try it on `http://localhost:3000`
-enjoy! :)
