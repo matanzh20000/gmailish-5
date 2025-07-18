@@ -4,6 +4,7 @@ import static com.example.application.utils.Utils.extractUrls;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -16,6 +17,9 @@ import com.example.application.db.AppDatabase;
 import com.example.application.db.MailDao;
 import com.example.application.entities.Mail;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,20 +126,64 @@ public class MailsRepository {
         mailsApi.createMail(mail).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                Log.d("MailsRepository", "Response status: " + response.code());
+
+                if (!response.isSuccessful()) {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            String cleanMessage = extractErrorMessage(errorBody);
+                            errorMessage.postValue(cleanMessage);
+                        } else {
+                            errorMessage.postValue("Mail creation failed with status: " + response.code());
+                        }
+                    } catch (IOException e) {
+                        errorMessage.postValue("Mail creation failed: error reading response");
+                    }
+                    mailSentSuccess.postValue(false);  // tell UI it failed
+                    return;
+                }
+
+                if (response.body() != null) {
                     for (Mail m : response.body()) {
                         insertMail(m);
                     }
+                    refreshMailsFromApi(mail.getOwner());
                 }
-                refreshMailsFromApi(mail.getOwner());
+                mailSentSuccess.postValue(true); // tell UI it succeeded
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Mail>> call, @NonNull Throwable t) {
-                Log.e("MailsRepository", "Failed to create mail", t);
+                errorMessage.postValue("Mail creation failed: " + t.getMessage());
+                mailSentSuccess.postValue(false);
             }
         });
     }
+
+
+
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    private final MutableLiveData<Boolean> mailSentSuccess = new MutableLiveData<>();
+    public LiveData<Boolean> getMailSentSuccess() {
+        return mailSentSuccess;
+    }
+    private String extractErrorMessage(String errorBody) {
+        try {
+            JSONObject json = new JSONObject(errorBody);
+            if (json.has("error")) {
+                return json.getString("error");
+            }
+        } catch (Exception e) {
+            Log.e("MailsRepository", "Error parsing error body", e);
+        }
+        return "Mail creation failed.";
+    }
+
 
 
     public void addMailToSpam(Mail mail) {

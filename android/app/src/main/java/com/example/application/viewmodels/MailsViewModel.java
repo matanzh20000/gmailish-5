@@ -38,6 +38,15 @@ public class MailsViewModel extends AndroidViewModel {
         repository.updateMail(mail);
     }
 
+    public LiveData<String> getErrorMessage() {
+        return repository.getErrorMessage();
+    }
+
+    public LiveData<Boolean> getMailSentSuccess() {
+        return repository.getMailSentSuccess();
+    }
+
+
     public void deleteMail(Mail mail) {
         repository.deleteMail(mail);
     }

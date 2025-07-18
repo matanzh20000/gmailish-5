@@ -11,8 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.application.ui.theme.PreferenceManager;
+import androidx.lifecycle.Observer;
 
+import com.example.application.ui.theme.PreferenceManager;
 import com.example.application.entities.Mail;
 import com.example.application.viewmodels.MailsViewModel;
 
@@ -30,7 +31,6 @@ public class ComposeMailActivity extends AppCompatActivity {
     private String userEmail;
     private MailsViewModel mailsViewModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (PreferenceManager.isDarkMode(this)) {
@@ -38,6 +38,7 @@ public class ComposeMailActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_mail);
 
@@ -49,9 +50,10 @@ public class ComposeMailActivity extends AppCompatActivity {
         ccInput = findViewById(R.id.ccInput);
         bccInput = findViewById(R.id.bccInput);
         ccBccToggle = findViewById(R.id.ccBccToggle);
-        userImage =  getIntent().getStringExtra("image");
 
+        userImage = getIntent().getStringExtra("image");
         userEmail = getIntent().getStringExtra("email");
+
         if (userEmail == null) {
             Toast.makeText(this, "User email missing", Toast.LENGTH_SHORT).show();
             finish();
@@ -67,7 +69,23 @@ public class ComposeMailActivity extends AppCompatActivity {
             ccInput.setVisibility(show ? View.VISIBLE : View.GONE);
             bccInput.setVisibility(show ? View.VISIBLE : View.GONE);
         });
+
         closeIcon.setOnClickListener(v -> finish());
+
+        // 🔁 Observe error and success before sending
+        mailsViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mailsViewModel.getMailSentSuccess().observe(this, success -> {
+            if (success != null && success) {
+                String to = toInput.getText().toString().trim();
+                Toast.makeText(this, "Mail sent to: " + to, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
         sendButton.setOnClickListener(v -> {
             String to = toInput.getText().toString().trim();
@@ -88,6 +106,7 @@ public class ComposeMailActivity extends AppCompatActivity {
             newMail.setBody(body);
             newMail.setLabel(List.of("Sent"));
             newMail.setOwner(userEmail);
+
             String baseUrl = "http://10.0.2.2:8080/";
             if (userImage != null && !userImage.startsWith("http")) {
                 newMail.setUserImage(baseUrl + userImage);
@@ -95,23 +114,15 @@ public class ComposeMailActivity extends AppCompatActivity {
                 newMail.setUserImage(userImage);
             }
 
-
             if (!cc.isEmpty()) {
-                List<String> ccList = new ArrayList<>();
-                ccList.add(cc);
-                newMail.setCopy(ccList);
+                newMail.setCopy(new ArrayList<>(List.of(cc)));
             }
 
             if (!bcc.isEmpty()) {
-                List<String> bccList = new ArrayList<>();
-                bccList.add(bcc);
-                newMail.setBlindCopy(bccList);
+                newMail.setBlindCopy(new ArrayList<>(List.of(bcc)));
             }
 
             mailsViewModel.sendMailWithBlacklistCheck(newMail);
-
-            Toast.makeText(this, "Mail sent to: " + to, Toast.LENGTH_SHORT).show();
-            finish();
         });
     }
 }
